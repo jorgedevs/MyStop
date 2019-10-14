@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+	xmlns="http://xamarin.com/schemas/2014/forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+	x:Class="MyStop.BusArrivalsPage"
+	BackgroundColor="{StaticResource SkyColor}">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<Style x:Key="TitleStyle" TargetType="Label">
+				<Setter Property="TextColor" Value="White" />
+				<Setter Property="FontSize" Value="Medium" />
+				<Setter Property="HorizontalOptions" Value="StartAndExpand" />
+				<Setter Property="VerticalOptions" Value="Center" />
+			</Style>			
+			<Style x:Key="ListItemStyle" TargetType="Label">
+				<Setter Property="TextColor" Value="White" />
+				<Setter Property="FontSize" Value="Small" />
+				<Setter Property="VerticalOptions" Value="CenterAndExpand" />
+			</Style>
+		</ResourceDictionary>
+	</ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid>
+            <Image Source="bg_clouds1" Opacity="0.5" Aspect="AspectFill" />
+            
+    	    <Grid x:Name="grdContent">
+                <Grid.Padding>
+                    <OnPlatform x:TypeArguments="Thickness"
+                        iOS="0,20,0,0"
+                        Android="0,30,0,0" />
+                </Grid.Padding>
+                
+    		    <Grid.RowDefinitions>
+                    <RowDefinition Height="45" />
+                    <RowDefinition Height="*" />
+    			    <RowDefinition Height="3*" />
+    			    <RowDefinition Height="*" />
+    		    </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid Grid.Row="0" ColumnSpacing="10" Margin="10,0,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="45" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="45" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.ColumnSpan="3" Text="Bus Stop" Style="{StaticResource TitleLabelStyle}" />
+
+                    <Grid Grid.Column="0">
+                        <Image Source="icon_back_arrow" Aspect="AspectFit" HorizontalOptions="Start" VerticalOptions="Center" />
+                        <Button x:Name="btnBack" BackgroundColor="Transparent" />
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Image Aspect="AspectFit" Source="icon_favourites_add" HorizontalOptions="End" VerticalOptions="Center">
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding StopFound}" Value="true">
+                                     <Setter Property="Source" Value="icon_favourites_remove" />
+                                 </DataTrigger>
+                                 <DataTrigger TargetType="Image" Binding="{Binding StopFound}" Value="false">
+                                     <Setter Property="Source" Value="icon_favourites_add" />
+                                 </DataTrigger>
+                            </Image.Triggers>    
+                        </Image>
+                        
+                        <Button BackgroundColor="Transparent" Command="{Binding FavouriteCommand}" />
+                    </Grid>
+                </Grid>
+
+    		    <!-- Bus Stop Detail Header -->
+    		    <Grid Grid.Row="1" ColumnSpacing="10" Padding="10,8,10,8">
+    			    <Grid.ColumnDefinitions>
+     				    <ColumnDefinition Width="Auto" />
+    				    <ColumnDefinition Width="*" />
+     			    </Grid.ColumnDefinitions>
+
+    			    <Image Grid.Column="0" Source="img_stopsign.png" VerticalOptions="Center" HorizontalOptions="Start" />
+
+                    <StackLayout Grid.Column="1" Grid.ColumnSpan="2" VerticalOptions="Center">
+    			        <Label Text="{Binding StopInfo}" LineBreakMode="TailTruncation" Style="{StaticResource TitleStyle}" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" Text="{Binding StopNumber, StringFormat='Stop #{0}'}" Style="{StaticResource TitleStyle}" FontSize="33" />
+                            <Image Grid.Column="1" Source="icon_alert.png" IsVisible="{Binding IsBusAlertActive}" Scale="0.7" HorizontalOptions="End" VerticalOptions="Center" />
+                        </Grid>
+                    </StackLayout>
+                </Grid>
+
+    		    <!-- Bus Arrivals -->
+    		    <Grid Grid.Row="2">
+                    <ListView x:Name="listSchedule" ItemsSource="{Binding ArrivalTimes}" BackgroundColor="Transparent" 
+    				    HasUnevenRows="true" SeparatorVisibility="None" IsPullToRefreshEnabled="true" Margin="0,5,0,5">
+    				    <ListView.ItemTemplate>
+    					    <DataTemplate>
+    						    <ViewCell>
+    							    <Grid Padding="17">
+    								    <Grid.ColumnDefinitions>
+    									    <ColumnDefinition Width="4*" />
+    									    <ColumnDefinition Width="*" />
+    								    </Grid.ColumnDefinitions>
+
+    								    <StackLayout Grid.Column="0" Orientation="Horizontal">
+    									    <Label Text="{Binding RouteNo}" Style="{StaticResource ListItemStyle}" />
+    									    <Label Text="{Binding Destination, StringFormat=' {0}'}" Style="{StaticResource ListItemStyle}" />
+    								    </StackLayout>
+
+    								    <Label Grid.Column="1" Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"  
+    									    Style="{StaticResource ListItemStyle}" HorizontalTextAlignment="End" />
+    							    </Grid>
+    						    </ViewCell>
+    					    </DataTemplate>
+    				    </ListView.ItemTemplate>
+    			    </ListView> 
+
+                    <Image x:Name="imgTopList" Source="img_gradient_top" Aspect="AspectFill" InputTransparent="true" VerticalOptions="Start" />
+                    <Image x:Name="imgBottomList" Source="img_gradient_bottom" Aspect="AspectFill" InputTransparent="true" VerticalOptions="End" />
+    		    </Grid>
+
+    		    <!-- Footer -->
+    		    <Grid Grid.Row="3">
+                    <Image x:Name="imgFooter" Source="bg_arrivals" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="End" />
+    			    <Image x:Name="imgBus" Source="img_bus_side" IsVisible="false" Scale="0.9" HorizontalOptions="Start" VerticalOptions="End"  />
+    		    </Grid>
+    	    </Grid>
+
+            <!-- Bus Alert Dialog -->
+            <Grid x:Name="grdBusAlert" BackgroundColor="#77000000" Padding="10" IsVisible="{Binding IsBusAlertVisible}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Frame Grid.Row="1" BackgroundColor="{StaticResource SkyColor}">
+                    <Grid RowSpacing="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="1" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Text="Set Bus Reminder" TextColor="White" FontSize="Large" FontAttributes="Bold" />
+
+                        <BoxView Grid.Row="1" Color="White" HeightRequest="1" />
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Label Grid.Column="0" Text="Alert me when bus is" TextColor="White" VerticalOptions="Center" />
+                            
+                            <Frame Grid.Column="1" BackgroundColor="White" HasShadow="false" Padding="0">            
+                                <Entry Text="{Binding AlertTime}" TextColor="{StaticResource SkyColor}" Keyboard="Numeric" WidthRequest="45" HorizontalTextAlignment="Center" />
+                            </Frame>
+
+                            <Label Grid.Column="2" Text="mins away." TextColor="White" VerticalOptions="Center" />
+                        </Grid>
+
+                        <Grid Grid.Row="3" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" Command="{Binding CancelAlertCommand}" Text="Cancel" TextColor="White" FontAttributes="Bold" BorderWidth="2" BorderColor="White" BackgroundColor="#55FFFFFF" />    
+                            <Button Grid.Column="1" Command="{Binding ConfirmAlertCommand}" Text="Confirm" TextColor="White" FontAttributes="Bold" BorderWidth="2" BorderColor="White" BackgroundColor="#55FFFFFF" />    
+                        </Grid>
+                    </Grid>
+                </Frame>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

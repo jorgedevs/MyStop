@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+	x:Class="MyStop.DonationPage"
+	BackgroundColor="{StaticResource SkyColor}">
+
+    <ContentPage.Content>
+        <Grid>
+            <Image Source="bg_donate" Aspect="AspectFill" />
+            
+        	<Grid>
+                <Grid.Padding>
+                    <OnPlatform x:TypeArguments="Thickness"
+                        iOS="0,18,0,0"
+                        Android="0,30,0,0" />
+                </Grid.Padding>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="3*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid Grid.Row="0" ColumnSpacing="10" Margin="10,0,10,0">                                        
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.ColumnSpan="3" Text="Support MyStop" Style="{StaticResource TitleLabelStyle}" />
+                    
+                    <Grid Grid.Column="0">
+                        <Image Source="icon_back_arrow" Aspect="AspectFit" VerticalOptions="Center" />
+                        <Button x:Name="btnBack" BackgroundColor="Transparent" />
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Image Aspect="AspectFit" VerticalOptions="Center">
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding StopFound}" Value="true">
+                                     <Setter Property="Source" Value="icon_favourites_remove" />
+                                 </DataTrigger>
+                                 <DataTrigger TargetType="Image" Binding="{Binding StopFound}" Value="false">
+                                     <Setter Property="Source" Value="icon_favourites_add" />
+                                 </DataTrigger>
+                            </Image.Triggers>    
+                        </Image>
+                        
+                        <Button BackgroundColor="Transparent" Command="{Binding FavouriteCommand}" />
+                    </Grid>
+                </Grid>
+                
+                <Grid Grid.Row="1" RowSpacing="20" ColumnSpacing="10" Padding="25,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="3*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
+            			<Image Source="img_donate_header.png" />
+            		</Grid>
+
+            		<Grid Grid.Row="1" Grid.Column="0">
+            			<Image Source="img_donate_ticket1" />
+            		</Grid>
+
+                    <Grid Grid.Row="1" Grid.Column="1">
+                        <Image Source="img_donate_ticket2" />
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.Column="2">
+                        <Image Source="img_donate_ticket5" />
+                    </Grid>
+
+            		<Grid Grid.Row="2" Grid.ColumnSpan="3"> 
+            			<Image Source="img_donate_thanks.png" HorizontalOptions="Center" VerticalOptions="Start" />
+            		</Grid>                    
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Image Source="bg_donate_city.png" Aspect="AspectFill" HorizontalOptions="FillAndExpand" VerticalOptions="End" />
+                </Grid>
+        	</Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

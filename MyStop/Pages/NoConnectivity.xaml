@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+	xmlns="http://xamarin.com/schemas/2014/forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+	x:Class="MyStop.NoConnectivity"
+	Title="No Connection Found"
+	BackgroundColor="#06bfcc">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="2*" />
+			<RowDefinition Height="2*" />
+			<RowDefinition Height="2*" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="3*" />
+		</Grid.RowDefinitions>
+
+		<Image Grid.Row="0" Source="img_cloud1.png" HorizontalOptions="Start" VerticalOptions="Start"  />
+		<Image Grid.Row="1" Source="img_cloud2.png" HorizontalOptions="End" VerticalOptions="Start" />
+
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="3*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<StackLayout Grid.Column="1">
+				<Label Text="MyStop" TextColor="White" FontSize="40" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Start" />
+				<Label Text="Connection Needed!" TextColor="Aqua" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center" />
+			</StackLayout>
+		</Grid>
+
+		<Image Grid.Row="3" Source="img_cloud3.png" HorizontalOptions="Start" VerticalOptions="Start" />
+		<Image Grid.Row="4" Source="bg_home.png" Scale="1.05" HorizontalOptions="CenterAndExpand" VerticalOptions="End" />
+	</Grid>
+</ContentPage>
