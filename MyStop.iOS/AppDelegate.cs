@@ -1,7 +1,5 @@
 ﻿using Foundation;
-using Plugin.Toasts;
 using UIKit;
-using UserNotifications;
 using Xamarin.Forms;
 
 namespace MyStop.iOS
@@ -24,39 +22,13 @@ namespace MyStop.iOS
             App.ScreenWidth = (int)UIScreen.MainScreen.NativeBounds.Width;
             App.ScreenHeight = (int)UIScreen.MainScreen.NativeBounds.Height;
 
-            global::Xamarin.Forms.Forms.Init();
+            Forms.Init();
 
-            DependencyService.Register<ToastNotification>();
-            ToastNotification.Init();
-
-			UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.LightContent, false);
+            UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.LightContent, false);
             UIApplication.SharedApplication.StatusBarHidden = false;
             LoadApplication(new App());
 
-            if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-            {
-                // Request Permissions
-                UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound, (granted, error) =>
-                {
-                    // Do something if needed
-                });
-            }
-            else if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-            {
-                var notificationSettings = UIUserNotificationSettings.GetSettingsForTypes
-                (
-                    UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound, null
-                );
-
-                app.RegisterUserNotificationSettings(notificationSettings);
-            }
-
             return base.FinishedLaunching(app, options);
-        }
-
-        public override void ReceivedLocalNotification(UIApplication application, UILocalNotification notification)
-        {
-            // Local Notifications are received here
         }
     }
 }
