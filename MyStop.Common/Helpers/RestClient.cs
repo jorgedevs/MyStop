@@ -11,7 +11,7 @@ namespace MyStop
 {
 	public sealed class RestClient
 	{
-        private const string RestServiceBaseAddress = "http://api.translink.ca/RTTIAPI/V1/stops/";
+        private const string RestServiceBaseAddress = "https://api.translink.ca/RTTIAPI/V1/stops/";
         private const string AcceptHeaderApplicationJson = "application/json";
         private HttpClient client;
 

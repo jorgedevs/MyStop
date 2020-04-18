@@ -4,8 +4,8 @@ using Android.Content.PM;
 
 namespace MyStop.Forms.Droid
 {
-    [Activity(Label = "MyStop", Icon = "@mipmap/icon_launcher", RoundIcon = "@mipmap/icon_round_launcher", Theme = "@style/Theme.Splash", MainLauncher = true, NoHistory = true,
-		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(Label = "MyStop", Icon = "@mipmap/icon_launcher", RoundIcon = "@mipmap/icon_round_launcher", Theme = "@style/Theme.Splash", 
+		MainLauncher = true, NoHistory = true, ConfigurationChanges = ConfigChanges.ScreenSize, ScreenOrientation = ScreenOrientation.Portrait)]
 	public class SplashScreen : Activity
 	{
 		protected override void OnCreate (Bundle bundle)
