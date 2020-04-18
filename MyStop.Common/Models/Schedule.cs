@@ -2,32 +2,32 @@
 {
     public class Schedule : BaseModel
     {
-        private string routeNo;
-        public string RouteNo
-        {
-            get { return routeNo; }
-            set { routeNo = value; NotifyPropertyChanged("RouteNo"); }
-        }
-
-        private string destination;
-        public string Destination
-        {
-            get { return destination; }
-            set { destination = value; NotifyPropertyChanged("Destination"); }
-        }
-
-        private int expectedCountdown;
+        int expectedCountdown;
         public int ExpectedCountdown
         {
-            get { return expectedCountdown; }
-            set { expectedCountdown = value; NotifyPropertyChanged("ExpectedCountdown"); }
+            get => expectedCountdown;
+            set { expectedCountdown = value; NotifyPropertyChanged(nameof(ExpectedCountdown)); }
         }
 
-        private string scheduleStatus;
+        string routeNo;
+        public string RouteNo
+        {
+            get => routeNo;
+            set { routeNo = value; NotifyPropertyChanged(nameof(RouteNo)); }
+        }
+
+        string destination;
+        public string Destination
+        {
+            get => destination;
+            set { destination = value; NotifyPropertyChanged(nameof(Destination)); }
+        }
+
+        string scheduleStatus;
         public string ScheduleStatus
         {
-            get { return scheduleStatus; }
-            set { scheduleStatus = value; NotifyPropertyChanged("ScheduleStatus"); }
+            get => scheduleStatus;
+            set { scheduleStatus = value; NotifyPropertyChanged(nameof(ScheduleStatus)); }
         }
     }
 }

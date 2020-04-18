@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MyStop.Models;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using System.Diagnostics;
-using MyStop.Models;
 
 namespace MyStop
 {
-	public sealed class RestClient
-	{
+    public sealed class RestClient
+    {
         private const string RestServiceBaseAddress = "https://api.translink.ca/RTTIAPI/V1/stops/";
         private const string AcceptHeaderApplicationJson = "application/json";
         private HttpClient client;
@@ -121,17 +121,17 @@ namespace MyStop
         {
             return @"
             {
-	            ""StopNo"": 50023,
+                ""StopNo"": 50023,
                 ""Name"": ""WB DAVIE ST NS HAMILTON ST"",
-	            ""BayNo"": ""N"",
-	            ""City"": ""VANCOUVER"",
-	            ""OnStreet"": ""DAVIE ST"",
-	            ""AtStreet"": ""HAMILTON ST"",
-	            ""Latitude"": 49.274860,
-	            ""Longitude"": -123.122530,
-	            ""WheelchairAccess"": 1,
-	            ""Distance"": -1,
-	            ""Routes"": ""006""
+                ""BayNo"": ""N"",
+                ""City"": ""VANCOUVER"",
+                ""OnStreet"": ""DAVIE ST"",
+                ""AtStreet"": ""HAMILTON ST"",
+                ""Latitude"": 49.274860,
+                ""Longitude"": -123.122530,
+                ""WheelchairAccess"": 1,
+                ""Distance"": -1,
+                ""Routes"": ""006""
             }";
         }
 
@@ -139,71 +139,70 @@ namespace MyStop
         {
             return @"
             [{
-	            ""RouteNo"": ""002"",
-	            ""RouteName"": ""MACDONALD\/DOWNTOWN "",
-	            ""Direction"": ""EAST"",
-	            ""RouteMap"": {
-		            ""Href"": ""http:\/\/nb.translink.ca\/geodata\/002.kmz""
-	            },
-	            ""Schedules"": [{
-			            ""Pattern"": ""EB1"",
-			            ""Destination"": ""DOWNTOWN"",
-			            ""ExpectedLeaveTime"": ""11:29pm 2017-06-13"",
-			            ""ExpectedCountdown"": 4,
-			            ""ScheduleStatus"": "" "",
-			            ""CancelledTrip"": false,
-			            ""CancelledStop"": false,
-			            ""AddedTrip"": false,
-			            ""AddedStop"": false,
-			            ""LastUpdate"": ""11:21:47 pm""
-		            }, {
-			            ""Pattern"": ""EB1"",
-			            ""Destination"": ""DOWNTOWN"",
-			            ""ExpectedLeaveTime"": ""11:46pm 2017-06-13"",
-			            ""ExpectedCountdown"": 21,
-			            ""ScheduleStatus"": "" "",
-			            ""CancelledTrip"": false,
-			            ""CancelledStop"": false,
-			            ""AddedTrip"": false,
-			            ""AddedStop"": false,
-			            ""LastUpdate"": ""10:24:10 pm""
-		            }, {
-			            ""Pattern"": ""EB1"",
-			            ""Destination"": ""DOWNTOWN"",
-			            ""ExpectedLeaveTime"": ""12:03am"",
-			            ""ExpectedCountdown"": 38,
-			            ""ScheduleStatus"": "" "",
-			            ""CancelledTrip"": false,
-			            ""CancelledStop"": false,
-			            ""AddedTrip"": false,
-			            ""AddedStop"": false,
-			            ""LastUpdate"": ""10:41:03 pm""
-		            }, {
-			            ""Pattern"": ""EB1"",
-			            ""Destination"": ""DOWNTOWN"",
-			            ""ExpectedLeaveTime"": ""12:34am"",
-			            ""ExpectedCountdown"": 69,
-			            ""ScheduleStatus"": "" "",
-			            ""CancelledTrip"": false,
-			            ""CancelledStop"": false,
-			            ""AddedTrip"": false,
-			            ""AddedStop"": false,
-			            ""LastUpdate"": ""11:12:03 pm""
-		            }, {
-			            ""Pattern"": ""EB1"",
-			            ""Destination"": ""DOWNTOWN"",
-			            ""ExpectedLeaveTime"": ""1:04am"",
-			            ""ExpectedCountdown"": 99,
-			            ""ScheduleStatus"": ""*"",
-			            ""CancelledTrip"": false,
-			            ""CancelledStop"": false,
-			            ""AddedTrip"": false,
-			            ""AddedStop"": false,
-			            ""LastUpdate"": ""01:03:33 am""
-		            }
-	            ]
+                ""RouteNo"": ""002"",
+                ""RouteName"": ""MACDONALD\/DOWNTOWN "",
+                ""Direction"": ""EAST"",
+                ""RouteMap"": {
+                    ""Href"": ""http:\/\/nb.translink.ca\/geodata\/002.kmz""
+                },
+                ""Schedules"": [{
+                        ""Pattern"": ""EB1"",
+                        ""Destination"": ""DOWNTOWN"",
+                        ""ExpectedLeaveTime"": ""11:29pm 2017-06-13"",
+                        ""ExpectedCountdown"": 4,
+                        ""ScheduleStatus"": "" "",
+                        ""CancelledTrip"": false,
+                        ""CancelledStop"": false,
+                        ""AddedTrip"": false,
+                        ""AddedStop"": false,
+                        ""LastUpdate"": ""11:21:47 pm""
+                    }, {
+                        ""Pattern"": ""EB1"",
+                        ""Destination"": ""DOWNTOWN"",
+                        ""ExpectedLeaveTime"": ""11:46pm 2017-06-13"",
+                        ""ExpectedCountdown"": 21,
+                        ""ScheduleStatus"": "" "",
+                        ""CancelledTrip"": false,
+                        ""CancelledStop"": false,
+                        ""AddedTrip"": false,
+                        ""AddedStop"": false,
+                        ""LastUpdate"": ""10:24:10 pm""
+                    }, {
+                        ""Pattern"": ""EB1"",
+                        ""Destination"": ""DOWNTOWN"",
+                        ""ExpectedLeaveTime"": ""12:03am"",
+                        ""ExpectedCountdown"": 38,
+                        ""ScheduleStatus"": "" "",
+                        ""CancelledTrip"": false,
+                        ""CancelledStop"": false,
+                        ""AddedTrip"": false,
+                        ""AddedStop"": false,
+                        ""LastUpdate"": ""10:41:03 pm""
+                    }, {
+                        ""Pattern"": ""EB1"",
+                        ""Destination"": ""DOWNTOWN"",
+                        ""ExpectedLeaveTime"": ""12:34am"",
+                        ""ExpectedCountdown"": 69,
+                        ""ScheduleStatus"": "" "",
+                        ""CancelledTrip"": false,
+                        ""CancelledStop"": false,
+                        ""AddedTrip"": false,
+                        ""AddedStop"": false,
+                        ""LastUpdate"": ""11:12:03 pm""
+                    }, {
+                        ""Pattern"": ""EB1"",
+                        ""Destination"": ""DOWNTOWN"",
+                        ""ExpectedLeaveTime"": ""1:04am"",
+                        ""ExpectedCountdown"": 99,
+                        ""ScheduleStatus"": ""*"",
+                        ""CancelledTrip"": false,
+                        ""CancelledStop"": false,
+                        ""AddedTrip"": false,
+                        ""AddedStop"": false,
+                        ""LastUpdate"": ""01:03:33 am""
+                    }
+                ]
             }]";
         }
     }
 }
-

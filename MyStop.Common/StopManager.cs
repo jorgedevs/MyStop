@@ -6,35 +6,35 @@ using SQLite;
 
 namespace MyStop
 {
-	public class StopManager
-	{
-		private readonly SQLiteConnection conn;
+    public class StopManager
+    {
+        private readonly SQLiteConnection conn;
 
-		public StopManager()
-		{
+        public StopManager()
+        {
             conn = DependencyService.Get<ISQLite>().GetConnection();
             conn.CreateTable<Stop>();
-		}
+        }
 
-		public List<Stop> GetStops() 
-		{
+        public List<Stop> GetStops() 
+        {
             return (from t in conn.Table<Stop>() select t).ToList();
         }
 
-		public bool IsStop(string stopNo)
-		{
+        public bool IsStop(string stopNo)
+        {
             return (GetStops().Where(s => s.StopNo == stopNo).ToList().Count > 0);
         }
 
-		public int AddStop(Stop stop)
-		{
-			return conn.Insert(stop);
-		}
+        public int AddStop(Stop stop)
+        {
+            return conn.Insert(stop);
+        }
 
-		public int DeleteStop(Stop stop)
-		{
-			return conn.Delete(stop);
-		}
+        public int DeleteStop(Stop stop)
+        {
+            return conn.Delete(stop);
+        }
 
         public int UpdateStops(List<Stop> stops)
         {
@@ -43,5 +43,5 @@ namespace MyStop
             
             return 0;
         }
-	}
+    }
 }

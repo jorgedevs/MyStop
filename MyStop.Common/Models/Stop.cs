@@ -4,35 +4,35 @@ namespace MyStop.Models
 {
     [Table("Stop")]
     public class Stop : BaseModel
-    {	
+    {
         string stopNo;
-		[PrimaryKey]
-		public string StopNo
+        [PrimaryKey]
+        public string StopNo
         {
-            get { return stopNo; }
-            set { stopNo = value; NotifyPropertyChanged("StopNo"); }
+            get => stopNo;
+            set { stopNo = value; NotifyPropertyChanged(nameof(StopNo)); }
         }
 
         string name;
-		[Unique]
+        [Unique]
         public string Name
         {
-            get { return name; }
-            set { name = value; NotifyPropertyChanged("Name"); }
+            get => name; 
+            set { name = value; NotifyPropertyChanged(nameof(Name)); }
         }
-		
+        
         string routes;
         public string Routes
         {
-            get { return routes; }
-            set { routes = value; NotifyPropertyChanged("Routes"); }
+            get => routes;
+            set { routes = value; NotifyPropertyChanged(nameof(Routes)); }
         }
 
         string tag;
         public string Tag
         {
-            get { return tag; }
-            set { tag = value; NotifyPropertyChanged("Tag"); }
+            get => tag;
+            set { tag = value; NotifyPropertyChanged(nameof(Tag)); }
         }
     }
 }

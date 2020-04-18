@@ -5,15 +5,15 @@
         bool editMode;
         public bool EditMode
         {
-            get { return editMode; }
-            set { editMode = value; NotifyPropertyChanged("EditMode"); }
+            get => editMode;
+            set { editMode = value; NotifyPropertyChanged(nameof(EditMode)); }
         }
 
         bool hasTag;
         public bool HasTag
         {
-            get { return hasTag; }
-            set { hasTag = value; NotifyPropertyChanged("HasTag"); }
+            get => hasTag; 
+            set { hasTag = value; NotifyPropertyChanged(nameof(HasTag)); }
         }
     }
 }
