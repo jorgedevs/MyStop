@@ -10,15 +10,15 @@ namespace MyStop.Forms.Droid
     [Activity(Label = "MyStop", Icon = "@mipmap/icon_launcher", RoundIcon = "@mipmap/icon_round_launcher", Theme = "@style/Theme.Icon", 
         LaunchMode = LaunchMode.SingleTask, ConfigurationChanges = ConfigChanges.ScreenSize, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
-    {                
-		public static Activity Activity { get; set; }
+    {
+        public static Activity Activity { get; set; }
 
-		protected override void OnCreate(Bundle bundle)
+        protected override void OnCreate(Bundle bundle)
         {
             Window.AddFlags(Android.Views.WindowManagerFlags.DrawsSystemBarBackgrounds);
             base.OnCreate(bundle);
 
-			MainActivity.Activity = this;
+            MainActivity.Activity = this;
             App.ScreenWidth = Resources.DisplayMetrics.WidthPixels; 
             App.ScreenHeight = Resources.DisplayMetrics.HeightPixels; 
 

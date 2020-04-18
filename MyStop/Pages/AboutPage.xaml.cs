@@ -4,11 +4,11 @@ using Xamarin.Forms;
 
 namespace MyStop
 {
-	public partial class AboutPage : ContentPage
-	{
-		public AboutPage ()
-		{
-			InitializeComponent ();
+    public partial class AboutPage : ContentPage
+    {
+        public AboutPage ()
+        {
+            InitializeComponent ();
             NavigationPage.SetHasNavigationBar(this, false);
             Analytics.TrackEvent("NAV - About Us");
 
@@ -51,6 +51,5 @@ namespace MyStop
 
             base.OnDisappearing();
         }
-	}
+    }
 }
-

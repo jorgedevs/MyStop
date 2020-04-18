@@ -1,15 +1,14 @@
-﻿using System;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace MyStop
 {
-	public partial class DonationPage : ContentPage
-	{
-		public DonationPage ()
-		{
-			InitializeComponent ();
+    public partial class DonationPage : ContentPage
+    {
+        public DonationPage ()
+        {
+            InitializeComponent ();
 
-		}
+        }
 
         protected override void OnAppearing()
         {
@@ -24,5 +23,5 @@ namespace MyStop
 
             base.OnDisappearing();
         }
-	}
+    }
 }

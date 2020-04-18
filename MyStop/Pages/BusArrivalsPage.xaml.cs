@@ -1,14 +1,14 @@
-﻿using MyStop.Models;
+﻿using Microsoft.AppCenter.Analytics;
+using MyStop.Models;
 using MyStop.ViewModels;
-using Microsoft.AppCenter.Analytics;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MyStop
 {
-	public partial class BusArrivalsPage : ContentPage
-	{
+    public partial class BusArrivalsPage : ContentPage
+    {
         Random randomBusModel;
         BusArrivalsViewModel vm;
         bool _keepTicking;
@@ -55,7 +55,7 @@ namespace MyStop
             }
 
             Animate();
-		}
+        }
 
         #region Arrival Times Loop
         public bool Tick()

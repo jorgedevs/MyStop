@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentPage 
-	xmlns="http://xamarin.com/schemas/2014/forms" 
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns="http://xamarin.com/schemas/2014/forms" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
     xmlns:local="clr-namespace:MyStop.Views"
-	x:Class="MyStop.MainPage"
-	BackgroundColor="{StaticResource SkyColor}">
+    x:Class="MyStop.MainPage"
+    BackgroundColor="{StaticResource SkyColor}">
 
     <ContentPage.Content>
         <Grid x:Name="grdContent">
@@ -13,11 +13,6 @@
                     iOS="0,20,0,0"
                     Android="0,30,0,0" />
             </Grid.Padding>
-
-            <!--
-            <Image x:Name="imgFooter" Source="bg_home.png" Aspect="AspectFill" Scale="1.01" VerticalOptions="End" />
-            <Image x:Name="imgBusFront" Source="img_bus_front.png" TranslationX="-65" Margin="0,0,0,-5" VerticalOptions="End" />
-            -->
 
             <RelativeLayout>
                 <Image x:Name="imgCloud1" Source="img_cloud1.png" TranslationX="-200"
@@ -44,18 +39,12 @@
                     RelativeLayout.WidthConstraint =  "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=1.0, Constant=0}"
                     RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.15, Constant=0}"/>
 
-                <!--<Image Source="img_lamp_night.png" TranslationX="-80" Scale="0.55"
-                    RelativeLayout.XConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.87, Constant=0}"
-                    RelativeLayout.YConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.81, Constant=0}"
-                    RelativeLayout.WidthConstraint =  "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.10, Constant=0}"
-                    RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.175, Constant=0}"/>-->
-
                 <Image x:Name="imgLamp" Source="img_lamp.png" 
                     RelativeLayout.XConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.87, Constant=0}"
                     RelativeLayout.YConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.81, Constant=0}"
                     RelativeLayout.WidthConstraint =  "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.10, Constant=0}"
                     RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.175, Constant=0}"/>
-                
+
                 <Image x:Name="imgBusFront" Source="img_bus_front.png" TranslationX="-5"
                     RelativeLayout.XConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.17, Constant=0}"
                     RelativeLayout.YConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.81, Constant=0}"
@@ -70,16 +59,16 @@
                     <Image Source="icon_favourites" VerticalOptions="Start" HorizontalOptions="End" />
                     <Button x:Name="btnMyStops" BackgroundColor="Transparent" />
                 </Grid>
-                
+
                 <StackLayout Spacing="0" 
-        			RelativeLayout.XConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.30, Constant=0}"
-        			RelativeLayout.YConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.22, Constant=0}"
-        			RelativeLayout.WidthConstraint =  "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.40, Constant=0}"
-        			RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.225, Constant=0}">
+                    RelativeLayout.XConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.30, Constant=0}"
+                    RelativeLayout.YConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.22, Constant=0}"
+                    RelativeLayout.WidthConstraint =  "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.40, Constant=0}"
+                    RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.225, Constant=0}">
 
                     <Label Text="MyStop" TextColor="White" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" />
                     <Label Text="enter stop number" TextColor="Aqua" FontSize="Small" HorizontalOptions="Center" />
-                    
+
                     <Grid Margin="6,5,6,0" ColumnSpacing="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*" />
@@ -88,7 +77,7 @@
 
                         <Frame Grid.Column="0" HasShadow="False" BackgroundColor="White" Padding="0">
                             <Entry x:Name="entSearch" Text="{Binding BusStopNumber}" Placeholder="50075" TextColor="{StaticResource SkyColor}" 
-        						Margin="7,0,7,0" HorizontalTextAlignment="Center" VerticalOptions="Center" Keyboard="Numeric" />
+                                Margin="7,0,7,0" HorizontalTextAlignment="Center" VerticalOptions="Center" Keyboard="Numeric" />
                         </Frame>
 
                         <Image Grid.Column="1" Source="icon_search" Aspect="AspectFit" Scale="0.65" />
@@ -98,12 +87,12 @@
                 </StackLayout>
 
                 <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="true" Color="White"
-        			RelativeLayout.XConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.43, Constant=0}"
-        			RelativeLayout.YConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.41, Constant=0}"
-        			RelativeLayout.WidthConstraint =  "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.14, Constant=0}"
-        			RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.14, Constant=0}" />
+                    RelativeLayout.XConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.43, Constant=0}"
+                    RelativeLayout.YConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.41, Constant=0}"
+                    RelativeLayout.WidthConstraint =  "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.14, Constant=0}"
+                    RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.14, Constant=0}" />
             </RelativeLayout>
-            
+
             <local:WhatsNewView x:Name="viewWhatsNew" IsVisible="False" />
         </Grid>
     </ContentPage.Content>

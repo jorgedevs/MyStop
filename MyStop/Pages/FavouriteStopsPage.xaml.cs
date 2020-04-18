@@ -1,9 +1,9 @@
-﻿using MyStop.Models;
-using System;
-using Xamarin.Forms;
+﻿using Microsoft.AppCenter.Analytics;
+using MyStop.Models;
 using MyStop.ViewModels;
-using Microsoft.AppCenter.Analytics;
+using System;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace MyStop
 {

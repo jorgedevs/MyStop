@@ -3,20 +3,19 @@ using MyStop.ViewModels;
 using MyStop.Views;
 using System;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace MyStop
 {
-	public partial class MainPage : ContentPage
-	{
+    public partial class MainPage : ContentPage
+    {
         int animationLength = 60;
         bool isAnimating;
         bool keepTicking;
 
         public MainPage ()
-		{
-			InitializeComponent();
+        {
+            InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
             BindingContext = new MainViewModel();
 
@@ -41,7 +40,7 @@ namespace MyStop
             Animate();
 
             //if (App.ShowWhatsNew)
-            //viewWhatsNew.IsVisible = true;            
+            //viewWhatsNew.IsVisible = true;
         }
 
         public bool Tick()
