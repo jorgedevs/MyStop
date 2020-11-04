@@ -1,6 +1,7 @@
 ﻿using Android.App;
-using Android.OS;
+using Android.Content;
 using Android.Content.PM;
+using Android.OS;
 
 namespace MyStop.Forms.Droid
 {
@@ -10,10 +11,20 @@ namespace MyStop.Forms.Droid
 	{
 		protected override void OnCreate (Bundle bundle)
 		{
-            Window.AddFlags(Android.Views.WindowManagerFlags.DrawsSystemBarBackgrounds);
-			base.OnCreate (bundle);
-			this.StartActivity(typeof(MainActivity));
-			Finish ();
-		}
+            base.OnCreate(bundle);
+
+            if (!this.IsTaskRoot
+                && this.Intent.HasCategory(Intent.CategoryLauncher)
+                && !string.IsNullOrEmpty(this.Intent.Action)
+                && this.Intent.Action == Intent.ActionMain)
+            {
+                Finish();
+                return;
+            }
+
+            var intent = new Intent(this, typeof(MainActivity));
+            StartActivity(intent);
+            Finish();
+        }
 	}
 }

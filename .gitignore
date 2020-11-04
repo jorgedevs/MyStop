@@ -38,3 +38,4 @@ MyStop.iOS/bin/
 MyStop.iOS/obj/
 MyStop.Droid/MyStop.Forms.Android.csproj.user
 MyStop.Droid/Resources/Resource.Designer.cs
+MyStop.iOS/MyStop.Forms.iOS.csproj.user

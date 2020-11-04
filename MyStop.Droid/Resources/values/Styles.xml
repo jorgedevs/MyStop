@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-  <style name="Theme.Splash" parent="Theme.AppCompat.Light.DarkActionBar">
-    <item name="android:windowTranslucentStatus">true</item>
-    <item name="android:windowBackground">@mipmap/splash</item>
+  <style name="Theme.Splash" parent="android:Theme">
+    <item name="android:windowBackground">@drawable/splash_screen</item>
     <item name="android:windowNoTitle">true</item>
-  </style>
-  
-  <style name="Theme.Icon" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="android:windowIsTranslucent">false</item>
+    <item name="android:windowIsFloating">false</item>
+    <item name="android:backgroundDimEnabled">true</item>
+  </style>  
+  <style name="Theme.Icon" parent="MainTheme.Base">
     <item name="android:windowTranslucentStatus">true</item>
     <item name="android:icon">@mipmap/icon_launcher</item>
 
@@ -25,5 +26,11 @@
     <!-- You can also set colorControlNormal, colorControlActivated
          colorControlHighlight and colorSwitchThumbNormal. -->
     <item name="windowActionModeOverlay">true</item>
+  </style>  
+  <style name="MainTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="android:colorPrimaryDark">#000000</item>
+  </style>
+  <style name="AppCompatDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+    <item name="colorAccent">#FF4081</item>
   </style>
 </resources>
