@@ -21,6 +21,7 @@ namespace MyStop.iOS
         {
             App.ScreenWidth = (int)UIScreen.MainScreen.NativeBounds.Width;
             App.ScreenHeight = (int)UIScreen.MainScreen.NativeBounds.Height;
+            App.StatusBarHeight = (int)UIApplication.SharedApplication.StatusBarFrame.Height;
 
             Forms.Init();
 

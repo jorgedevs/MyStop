@@ -13,6 +13,7 @@ namespace MyStop
 {
 	public partial class App : Application
 	{
+        public static int StatusBarHeight { get; set; }
         public static int ScreenWidth { get; set; }
         public static int ScreenHeight { get; set; }
         public static int AndroidIcon { get; set; }

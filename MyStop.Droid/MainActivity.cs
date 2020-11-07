@@ -20,7 +20,12 @@ namespace MyStop.Forms.Droid
 
             MainActivity.Activity = this;
             App.ScreenWidth = Resources.DisplayMetrics.WidthPixels; 
-            App.ScreenHeight = Resources.DisplayMetrics.HeightPixels; 
+            App.ScreenHeight = Resources.DisplayMetrics.HeightPixels;
+            int resourceId = Resources.GetIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0)
+            {
+                App.StatusBarHeight = (int)(Resources.GetDimensionPixelSize(resourceId) / Resources.DisplayMetrics.Density);
+            }
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 

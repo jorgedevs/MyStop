@@ -17,15 +17,7 @@ namespace MyStop
                 imgFooter.Source = ImageSource.FromFile("bg_donate_city_night.png");
             }
 
-            if (Device.RuntimePlatform == Device.iOS)
-            {
-                if (App.ScreenWidth == 828 && App.ScreenHeight == 1792 ||  // iPhone XR
-                    App.ScreenWidth == 1125 && App.ScreenHeight == 2436 || // iPhone X/XS
-                    App.ScreenWidth == 1242 && App.ScreenHeight == 2688)   // iPhone XS Max
-                {
-                    grdContent.Padding = new Thickness(0, 35, 0, 0);
-                }
-            }
+            grdContent.Padding = new Thickness(0, Device.RuntimePlatform == Device.Android ? App.StatusBarHeight + 5 : 40, 0, 0);
 
             string version = DependencyService.Get<IAppVersionAndBuild>().GetVersionNumber();
             string build = "(" + DependencyService.Get<IAppVersionAndBuild>().GetBuildNumber() + ")";

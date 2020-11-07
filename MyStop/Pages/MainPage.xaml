@@ -60,16 +60,17 @@
                     <Button x:Name="btnMyStops" BackgroundColor="Transparent" />
                 </Grid>
 
-                <StackLayout Spacing="0" 
+                <StackLayout Spacing="5" 
                     RelativeLayout.XConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.30, Constant=0}"
                     RelativeLayout.YConstraint =      "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.22, Constant=0}"
                     RelativeLayout.WidthConstraint =  "{ConstraintExpression Type=RelativeToParent, Property=Width,  Factor=0.40, Constant=0}"
                     RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.225, Constant=0}">
 
                     <Label Text="MyStop" TextColor="White" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" />
+                    
                     <Label Text="enter stop number" TextColor="Aqua" FontSize="Small" HorizontalOptions="Center" />
 
-                    <Grid Margin="6,5,6,0" ColumnSpacing="2">
+                    <Grid Margin="6,5,6,0" ColumnSpacing="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*" />
                             <ColumnDefinition Width="*" />
