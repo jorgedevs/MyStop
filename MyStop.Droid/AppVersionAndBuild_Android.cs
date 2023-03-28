@@ -22,7 +22,7 @@ namespace MyStop.Forms.Droid
 
         public string GetBuildNumber()
         {
-            return _appInfo.VersionCode.ToString();
+            return _appInfo.LongVersionCode.ToString();
         }
     }
 }

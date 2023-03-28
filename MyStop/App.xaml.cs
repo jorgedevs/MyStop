@@ -44,20 +44,20 @@ namespace MyStop
             if(!DesignTime)
     			StopMan = new StopManager ();
 
-            DateTime today = DateTime.Now;
-            DateTime sunset = DaylightDates.GetDaylight(today.Month).Sunset;
-            DateTime sunrise = DaylightDates.GetDaylight(today.Month).Sunrise;
+            //DateTime today = DateTime.Now;
+            //DateTime sunset = DaylightDates.GetDaylight(today.Month).Sunset;
+            //DateTime sunrise = DaylightDates.GetDaylight(today.Month).Sunrise;
 
-            if (today.TimeOfDay >= sunrise.TimeOfDay && today.TimeOfDay <= sunset.TimeOfDay)
-            {
-                IsNight = false;
-                App.Current.Resources["SkyColor"] = Color.FromHex("#06bfcc");
-            }
-            else
-            {
+            //if (today.TimeOfDay >= sunrise.TimeOfDay && today.TimeOfDay <= sunset.TimeOfDay)
+            //{
+            //    IsNight = false;
+            //    App.Current.Resources["SkyColor"] = Color.FromHex("#06bfcc");
+            //}
+            //else
+            //{
                 IsNight = true;
                 App.Current.Resources["SkyColor"] = Color.FromHex("#133B4F");
-            }
+            //}
 
             MainPage = new NavigationPage(new MainPage()) 
 			{ 
