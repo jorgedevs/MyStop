@@ -39,3 +39,8 @@ MyStop.iOS/obj/
 MyStop.Droid/MyStop.Forms.Android.csproj.user
 MyStop.Droid/Resources/Resource.Designer.cs
 MyStop.iOS/MyStop.Forms.iOS.csproj.user
+Source/MyStop.MauiVersion/MyStop.MauiVersion/obj/
+Source/MyStop.XamarinVersion (Legacy)/MyStop.Droid/obj/
+Source/MyStop.XamarinVersion (Legacy)/MyStop/obj/
+Source/MyStop.MauiVersion/MyStop.MauiVersion/bin/
+Source/MyStop.XamarinVersion (Legacy)/MyStop.Common/obj/
