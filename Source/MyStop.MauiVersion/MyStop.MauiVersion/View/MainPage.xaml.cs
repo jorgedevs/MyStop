@@ -1,10 +1,19 @@
-﻿namespace MyStop.MauiVersion
+﻿using MyStop.MauiVersion.Model;
+using MyStop.MauiVersion.View;
+using MyStop.MauiVersion.ViewModel;
+
+namespace MyStop.MauiVersion;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    public MainPage()
     {
-        public MainPage()
+        InitializeComponent();
+        BindingContext = new MainViewModel();
+
+        MessagingCenter.Subscribe<MainViewModel, Stop>(this, MainViewModel.STOP_FOUND, async (sender, arg) =>
         {
-            InitializeComponent();
-        }
+            await Navigation.PushAsync(new BusArrivalsPage(arg), true);
+        });
     }
 }
