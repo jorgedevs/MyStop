@@ -1,12 +1,18 @@
-﻿namespace MyStop.MauiVersion
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
+﻿using MyStop.MauiVersion.Utils;
 
-            MainPage = new AppShell();
-        }
+namespace MyStop.MauiVersion;
+
+public partial class App : Application
+{
+    public static StopManager StopManager { get; set; }
+
+    public App()
+    {
+        InitializeComponent();
+
+        StopManager = new StopManager();
+        _ = StopManager.Init();
+
+        MainPage = new AppShell();
     }
 }

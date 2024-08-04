@@ -7,7 +7,9 @@ namespace MyStop.MauiVersion.ViewModel;
 public class BusArrivalsViewModel : BaseViewModel
 {
     public Stop Stop { get; set; }
+
     public Schedule Schedule { get; set; }
+
     public ObservableCollection<Schedule> ArrivalTimes { get; set; }
 
     bool isBusAlertActive;
@@ -45,11 +47,11 @@ public class BusArrivalsViewModel : BaseViewModel
         set { stopInfo = value; OnPropertyChanged(nameof(StopInfo)); }
     }
 
-    bool stopFound;
-    public bool StopFound
+    bool isFavouriteBusStop;
+    public bool IsFavouriteBusStop
     {
-        get => stopFound;
-        set { stopFound = value; OnPropertyChanged(nameof(StopFound)); }
+        get => isFavouriteBusStop;
+        set { isFavouriteBusStop = value; OnPropertyChanged(nameof(IsFavouriteBusStop)); }
     }
 
     public Command FavouriteCommand { get; set; }
@@ -58,10 +60,10 @@ public class BusArrivalsViewModel : BaseViewModel
 
     public BusArrivalsViewModel()
     {
-        StopFound = false;
+        IsFavouriteBusStop = false;
         StopNumber = "50043";
         StopInfo = "PRODUCTION STATION BAY 1";
-        StopFound = true;
+        IsFavouriteBusStop = true;
 
         ArrivalTimes =
         [
@@ -73,28 +75,28 @@ public class BusArrivalsViewModel : BaseViewModel
         ];
     }
 
-    public BusArrivalsViewModel(Stop _stop)
+    public BusArrivalsViewModel(Stop stop)
     {
         ArrivalTimes = new ObservableCollection<Schedule>();
 
         isBusAlertActive = false;
         IsBusAlertVisible = false;
         AlertTime = "5";
-        StopFound = false;
-        StopNumber = _stop.StopNo;
-        StopInfo = _stop.Name;
-        Stop = _stop;
+        IsFavouriteBusStop = false;
+        StopNumber = stop.StopNo;
+        StopInfo = stop.Name;
+        Stop = stop;
 
         //StopFound = App.StopMan.IsStop(StopNumber);
 
-        //FavouriteCommand = new Command(FavouriteCommandExecute);
+        FavouriteCommand = new Command(FavouriteCommandExecute);
         //CancelAlertCommand = new Command(CancelAlertCommandExecute);
         //ConfirmAlertCommand = new Command(ConfirmAlertCommandExecute);
 
-        GetData();
+        _ = GetBusArrivalsTimes();
     }
 
-    public async Task GetData()
+    public async Task GetBusArrivalsTimes()
     {
         if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
         {
@@ -108,27 +110,27 @@ public class BusArrivalsViewModel : BaseViewModel
         }
     }
 
-    //void FavouriteCommandExecute()
-    //{
-    //    Stop stop = new Stop()
-    //    {
-    //        Name = Stop.Name,
-    //        Routes = Stop.Routes,
-    //        StopNo = Stop.StopNo,
-    //        Tag = Stop.Tag
-    //    };
+    void FavouriteCommandExecute()
+    {
+        Stop stop = new Stop()
+        {
+            Name = Stop.Name,
+            Routes = Stop.Routes,
+            StopNo = Stop.StopNo,
+            Tag = Stop.Tag
+        };
 
-    //    if (StopFound)
-    //    {
-    //        App.StopMan.DeleteStop(stop);
-    //        StopFound = false;
-    //        MessagingCenter.Send(this, "REMOVE_FAVOURITE_STOP", stop);
-    //    }
-    //    else
-    //    {
-    //        App.StopMan.AddStop(stop);
-    //        StopFound = true;
-    //        MessagingCenter.Send(this, "ADD_FAVOURITE_STOP", stop);
-    //    }
-    //}
+        if (IsFavouriteBusStop)
+        {
+            App.StopManager.DeleteStop(stop);
+            IsFavouriteBusStop = false;
+            MessagingCenter.Send(this, "REMOVE_FAVOURITE_STOP", stop);
+        }
+        else
+        {
+            App.StopManager.AddStop(stop);
+            IsFavouriteBusStop = true;
+            MessagingCenter.Send(this, "ADD_FAVOURITE_STOP", stop);
+        }
+    }
 }

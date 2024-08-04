@@ -3,11 +3,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="MyStop.MauiVersion.MainPage"
-    BackgroundColor="{StaticResource SkyColor}">
+    BackgroundColor="{StaticResource SkyColor}"
+    Title="Home">
 
     <Shell.TitleView>
-        <Grid>
-            <ImageButton Source="icon_favourites" HeightRequest="40" WidthRequest="40" HorizontalOptions="End" Margin="0,0,5,0" />
+        <Grid HorizontalOptions="End">
+            <ImageButton Source="icon_favourites" Clicked="ImageButtonClicked" HeightRequest="40" WidthRequest="40" HorizontalOptions="End" Margin="0,0,5,0" />
         </Grid>
     </Shell.TitleView>
 
@@ -20,7 +21,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Image Grid.Row="0" Source="img_cloud1" HorizontalOptions="Start" Margin="10,0,0,0" />
+        <Image Grid.Row="0" Source="img_cloud1" HorizontalOptions="Start" Margin="10,10,0,0" />
 
         <StackLayout 
             Grid.Row="1"
@@ -69,7 +70,7 @@
         <Image Grid.Row="3" Source="img_cloud3" HorizontalOptions="Start" Margin="40,10,0,0"  />
 
         <Grid Grid.Row="4">
-            <Image Source="bg_home" VerticalOptions="End" />
+            <Image Source="bg_home" HorizontalOptions="FillAndExpand" VerticalOptions="End" />
 
             <Image Source="img_bus_front" HeightRequest="170" HorizontalOptions="Start" VerticalOptions="End" TranslationY="10" Margin="30,0,0,0" />
 

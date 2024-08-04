@@ -5,6 +5,12 @@
     x:Class="MyStop.MauiVersion.View.BusArrivalsPage"
     BackgroundColor="{StaticResource SkyColor}">
 
+    <Shell.TitleView>
+        <Grid HorizontalOptions="End">
+            <ImageButton Source="icon_favourites_add" HeightRequest="40" WidthRequest="40" HorizontalOptions="End" Margin="0,0,5,0" />
+        </Grid>
+    </Shell.TitleView>
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="TitleStyle" TargetType="Label">
@@ -32,38 +38,6 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
-                <!--<Grid Grid.Row="0" ColumnSpacing="10" Margin="10,0,10,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="45" />
-                    </Grid.ColumnDefinitions>
-
-                    <Label Grid.ColumnSpan="3" Text="Bus Stop" Style="{StaticResource TitleLabelStyle}" />
-
-                    <Grid Grid.Column="0">
-                        <Image Source="icon_back_arrow" Aspect="AspectFit" HorizontalOptions="Start" VerticalOptions="Center" />
-                        <Button x:Name="btnBack" BackgroundColor="Transparent" />
-                    </Grid>
-
-                    <Grid Grid.Column="2">
-                        <Image Aspect="AspectFit" Source="icon_favourites_add" HorizontalOptions="End" VerticalOptions="Center">
-                            <Image.Triggers>
-                                <DataTrigger TargetType="Image" Binding="{Binding StopFound}" Value="true">
-                                    <Setter Property="Source" Value="icon_favourites_remove" />
-                                </DataTrigger>
-                                <DataTrigger TargetType="Image" Binding="{Binding StopFound}" Value="false">
-                                    <Setter Property="Source" Value="icon_favourites_add" />
-                                </DataTrigger>
-                            </Image.Triggers>
-                        </Image>
-
-                        <Button BackgroundColor="Transparent" Command="{Binding FavouriteCommand}" />
-                    </Grid>
-                </Grid>-->
-
-                <!-- Bus Stop Detail Header -->
                 <Grid Grid.Row="0" ColumnSpacing="10" Padding="10,8,10,8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -81,13 +55,12 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" Text="{Binding StopNumber, StringFormat='Stop #{0}'}" Style="{StaticResource TitleStyle}" FontSize="33" />
+                            <Label Grid.Column="0" Text="{Binding StopNumber, StringFormat='Bus Stop #{0}'}" Style="{StaticResource TitleStyle}" FontSize="32" />
                             <Image Grid.Column="1" Source="icon_alert.png" IsVisible="{Binding IsBusAlertActive}" Scale="0.7" HorizontalOptions="End" VerticalOptions="Center" />
                         </Grid>
                     </StackLayout>
                 </Grid>
 
-                <!-- Bus Arrivals -->
                 <Grid Grid.Row="1">
                     <ListView x:Name="listSchedule" ItemsSource="{Binding ArrivalTimes}" BackgroundColor="Transparent" 
                         HasUnevenRows="true" SeparatorVisibility="None" IsPullToRefreshEnabled="true" Margin="0,5,0,5">

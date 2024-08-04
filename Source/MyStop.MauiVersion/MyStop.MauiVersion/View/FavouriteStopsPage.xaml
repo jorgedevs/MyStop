@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MyStop.MauiVersion.View.FavouriteStopsPage"
+    Title="My Bus Stops"
+    BackgroundColor="{StaticResource SkyColor}">
+
+    <ContentPage.Content>
+        <Grid>
+            <Image Source="bg_clouds2" Opacity="0.2" Aspect="AspectFill" />
+
+            <Grid x:Name="grdContent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <!--<Grid Grid.Row="0" ColumnSpacing="5" Margin="10,0,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="45" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="45" />
+                        <ColumnDefinition Width="45" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.ColumnSpan="4" Text="My Stops" Style="{StaticResource TitleLabelStyle}" />
+
+                    <Grid Grid.Column="0">
+                        <Image Source="icon_back_arrow" Aspect="AspectFit" HorizontalOptions="Start" VerticalOptions="Center" />
+                        <Button x:Name="btnBack" BackgroundColor="Transparent" />
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Image Aspect="AspectFit" HorizontalOptions="End" VerticalOptions="Center">
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding EnableEdit}" Value="true">
+                                    <Setter Property="Source" Value="icon_save" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding EnableEdit}" Value="false">
+                                    <Setter Property="Source" Value="icon_edit" />
+                                </DataTrigger>
+                            </Image.Triggers>
+                        </Image>
+                        <Button Command="{Binding ToggleEditCommand}" BackgroundColor="Transparent" />
+                    </Grid>
+
+                    <Grid Grid.Column="3">
+                        <Image Source="icon_donate" Aspect="AspectFit" HorizontalOptions="End" VerticalOptions="Center" />
+                        <Button x:Name="btnDonate" BackgroundColor="Transparent" />
+                    </Grid>
+                </Grid>-->
+
+                <!-- Content -->
+                <Grid Grid.Row="0">
+                    <ListView x:Name="listStops" ItemsSource="{Binding ItemList}" BackgroundColor="Transparent" 
+                        HasUnevenRows="true" SeparatorVisibility="None" VerticalOptions="Fill" Margin="0,5,0,5">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Grid ColumnSpacing="5" Padding="5,10,5,10" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="7*" />
+                                            <ColumnDefinition Width="10" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Image Grid.Column="0" Source="icon_stop.png" Aspect="AspectFit" WidthRequest="60" />
+
+                                        <StackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                            <Label Text="{Binding StopNo, StringFormat='BUS STOP #{0}'}" TextColor="White"  />
+                                            <Label Text="{Binding Name}" TextColor="White" LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Routes, StringFormat='ROUTES {0}'}" TextColor="#92f4f4" FontSize="Small" LineBreakMode="TailTruncation" />
+                                            <Label IsVisible="{Binding EditMode}" Text="Name Stop" TextColor="#0673e5" FontSize="Small" LineBreakMode="TailTruncation" />
+                                        </StackLayout>
+
+                                        <!--<StackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center" IsVisible="{Binding HasTag}">
+                                            <Label Text="{Binding Tag}" TextColor="White" FontAttributes="Bold" FontSize="20" />
+                                            <Label IsVisible="{Binding EditMode}" Text="Edit Stop" TextColor="#0673e5" FontSize="Small" LineBreakMode="TailTruncation" />
+                                        </StackLayout>-->
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+
+                    <Image x:Name="imgTopList" Source="img_gradient_top" Aspect="AspectFill" InputTransparent="true" VerticalOptions="Start" />
+                    <Image x:Name="imgBottomList" Source="img_gradient_bottom" Aspect="AspectFill" InputTransparent="true" VerticalOptions="End" />
+                </Grid>
+
+                <Image Grid.Row="1" x:Name="imgFooter" Source="bg_terminal" Scale="1.001" Aspect="AspectFill" HorizontalOptions="FillAndExpand" VerticalOptions="End" />
+                <Image Grid.Row="1" x:Name="imgBus" Source="img_bus_side" IsVisible="true" Scale="0.8" HorizontalOptions="Start" VerticalOptions="End"  />
+            </Grid>
+
+            <Grid x:Name="grdEditTag" BackgroundColor="#77000000" Padding="20" IsVisible="false">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Frame BackgroundColor="{StaticResource SkyColor}" Grid.Row="1">
+                    <Grid RowSpacing="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="1" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Text="Name this Bus Stop" TextColor="White" FontSize="Large" FontAttributes="Bold" />
+
+                        <BoxView Grid.Row="1" Color="White" HeightRequest="1" />
+
+                        <Frame Grid.Row="2" BackgroundColor="White" HasShadow="false" Padding="10">
+                            <Entry Text="{Binding TagName}" TextColor="{StaticResource SkyColor}" Placeholder="Enter bus stop name" />
+                        </Frame>
+
+                        <Grid Grid.Row="3" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" Command="{Binding CancelEditCommand}" Text="Cancel" TextColor="White" FontAttributes="Bold" BorderWidth="2" BorderColor="White" BackgroundColor="#55FFFFFF" />
+                            <Button Grid.Column="1" Command="{Binding SaveChangesCommand}" Text="Save Changes" TextColor="White" FontAttributes="Bold" BorderWidth="2" BorderColor="White" BackgroundColor="#55FFFFFF" />
+                        </Grid>
+                    </Grid>
+                </Frame>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
