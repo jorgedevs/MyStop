@@ -1,8 +1,7 @@
 ﻿using MyStop.MauiVersion.Model;
-using MyStop.MauiVersion.View;
 using MyStop.MauiVersion.ViewModel;
 
-namespace MyStop.MauiVersion;
+namespace MyStop.MauiVersion.View;
 
 public partial class MainPage : ContentPage
 {

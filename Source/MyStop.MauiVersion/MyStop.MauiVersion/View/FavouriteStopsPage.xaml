@@ -16,42 +16,6 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
-                <!--<Grid Grid.Row="0" ColumnSpacing="5" Margin="10,0,10,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="45" />
-                        <ColumnDefinition Width="45" />
-                    </Grid.ColumnDefinitions>
-
-                    <Label Grid.ColumnSpan="4" Text="My Stops" Style="{StaticResource TitleLabelStyle}" />
-
-                    <Grid Grid.Column="0">
-                        <Image Source="icon_back_arrow" Aspect="AspectFit" HorizontalOptions="Start" VerticalOptions="Center" />
-                        <Button x:Name="btnBack" BackgroundColor="Transparent" />
-                    </Grid>
-
-                    <Grid Grid.Column="2">
-                        <Image Aspect="AspectFit" HorizontalOptions="End" VerticalOptions="Center">
-                            <Image.Triggers>
-                                <DataTrigger TargetType="Image" Binding="{Binding EnableEdit}" Value="true">
-                                    <Setter Property="Source" Value="icon_save" />
-                                </DataTrigger>
-                                <DataTrigger TargetType="Image" Binding="{Binding EnableEdit}" Value="false">
-                                    <Setter Property="Source" Value="icon_edit" />
-                                </DataTrigger>
-                            </Image.Triggers>
-                        </Image>
-                        <Button Command="{Binding ToggleEditCommand}" BackgroundColor="Transparent" />
-                    </Grid>
-
-                    <Grid Grid.Column="3">
-                        <Image Source="icon_donate" Aspect="AspectFit" HorizontalOptions="End" VerticalOptions="Center" />
-                        <Button x:Name="btnDonate" BackgroundColor="Transparent" />
-                    </Grid>
-                </Grid>-->
-
                 <!-- Content -->
                 <Grid Grid.Row="0">
                     <ListView x:Name="listStops" ItemsSource="{Binding ItemList}" BackgroundColor="Transparent" 

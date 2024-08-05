@@ -30,8 +30,6 @@ public partial class BusArrivalsPage : ContentPage
         //    imgBottomList.Source = ImageSource.FromFile("img_gradient_bottom_night.png");
         //}
 
-        //grdContent.Padding = new Thickness(0, Device.RuntimePlatform == Device.Android ? App.StatusBarHeight + 5 : 40, 0, 0);
-
         //Animate();
     }
 }
