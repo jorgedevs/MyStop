@@ -6,11 +6,11 @@
     Title="Bus Arrival Times"
     BackgroundColor="{StaticResource SkyColor}">
 
-    <!--<Shell.TitleView>
-        <Grid HorizontalOptions="End">
-            <ImageButton Source="icon_favourites_add" HeightRequest="40" WidthRequest="40" HorizontalOptions="End" Margin="0,0,5,0" />
-        </Grid>
-    </Shell.TitleView>-->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            IconImageSource="{Binding FavoriteIcon}"
+            Command="{Binding FavouriteCommand}" />
+    </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
         <ResourceDictionary>

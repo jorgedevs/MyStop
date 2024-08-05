@@ -54,26 +54,16 @@ public class BusArrivalsViewModel : BaseViewModel
         set { isFavouriteBusStop = value; OnPropertyChanged(nameof(IsFavouriteBusStop)); }
     }
 
+    string favoriteIcon;
+    public string FavoriteIcon
+    {
+        get => favoriteIcon;
+        set { favoriteIcon = value; OnPropertyChanged(nameof(FavoriteIcon)); }
+    }
+
     public Command FavouriteCommand { get; set; }
     public Command CancelAlertCommand { get; set; }
     public Command ConfirmAlertCommand { get; set; }
-
-    public BusArrivalsViewModel()
-    {
-        IsFavouriteBusStop = false;
-        StopNumber = "50043";
-        StopInfo = "PRODUCTION STATION BAY 1";
-        IsFavouriteBusStop = true;
-
-        ArrivalTimes =
-        [
-            new Schedule() { RouteNo = "002", Destination = "MACDONALD - 16 AVE", ExpectedCountdown = 0 },
-            new Schedule() { RouteNo = "005", Destination = "ROBSON", ExpectedCountdown = 3 },
-            new Schedule() { RouteNo = "002", Destination = "MACDONALD - 16 AVE", ExpectedCountdown = 5 },
-            new Schedule() { RouteNo = "005", Destination = "ROBSON", ExpectedCountdown = 7 },
-            new Schedule() { RouteNo = "002", Destination = "MACDONALD - 16 AVE", ExpectedCountdown = 10 },
-        ];
-    }
 
     public BusArrivalsViewModel(Stop stop)
     {
@@ -87,11 +77,21 @@ public class BusArrivalsViewModel : BaseViewModel
         StopInfo = stop.Name;
         Stop = stop;
 
-        //StopFound = App.StopMan.IsStop(StopNumber);
-
         FavouriteCommand = new Command(FavouriteCommandExecute);
         //CancelAlertCommand = new Command(CancelAlertCommandExecute);
         //ConfirmAlertCommand = new Command(ConfirmAlertCommandExecute);
+
+        _ = Initialize();
+    }
+
+    public async Task Initialize()
+    {
+        IsFavouriteBusStop = await App.StopManager.IsStop(StopNumber);
+
+        if (IsFavouriteBusStop)
+            FavoriteIcon = "icon_favourites_remove.png";
+        else
+            FavoriteIcon = "icon_favourites_add.png";
 
         _ = GetBusArrivalsTimes();
     }
@@ -110,7 +110,7 @@ public class BusArrivalsViewModel : BaseViewModel
         }
     }
 
-    void FavouriteCommandExecute()
+    async void FavouriteCommandExecute()
     {
         Stop stop = new Stop()
         {
@@ -122,15 +122,17 @@ public class BusArrivalsViewModel : BaseViewModel
 
         if (IsFavouriteBusStop)
         {
-            App.StopManager.DeleteStop(stop);
+            await App.StopManager.DeleteStop(stop);
             IsFavouriteBusStop = false;
             MessagingCenter.Send(this, "REMOVE_FAVOURITE_STOP", stop);
+            FavoriteIcon = "icon_favourites_add.png";
         }
         else
         {
-            App.StopManager.AddStop(stop);
+            await App.StopManager.AddStop(stop);
             IsFavouriteBusStop = true;
             MessagingCenter.Send(this, "ADD_FAVOURITE_STOP", stop);
+            FavoriteIcon = "icon_favourites_remove.png";
         }
     }
 }
