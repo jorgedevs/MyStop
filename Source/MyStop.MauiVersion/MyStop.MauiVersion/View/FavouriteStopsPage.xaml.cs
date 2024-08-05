@@ -13,6 +13,11 @@ public partial class FavouriteStopsPage : ContentPage
         BindingContext = vm = new FavouritesStopsViewModel();
     }
 
+    private async void ImageButtonClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AboutPage(), true);
+    }
+
     async void ListStopsItemTapped(object sender, ItemTappedEventArgs e)
     {
         listStops.SelectedItem = null;

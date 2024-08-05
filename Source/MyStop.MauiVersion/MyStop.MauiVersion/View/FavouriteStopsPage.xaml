@@ -6,6 +6,12 @@
     Title="My Bus Stops"
     BackgroundColor="{StaticResource SkyColor}">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+        IconImageSource="icon_donate.png"
+        Clicked="ImageButtonClicked" />
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Content>
         <Grid>
             <Image Source="bg_clouds2" Opacity="0.2" Aspect="AspectFill" />
