@@ -52,8 +52,8 @@
 
                 <Frame Grid.Column="0" HasShadow="False" BackgroundColor="White" BorderColor="White" Padding="5,0" CornerRadius="5">
                     <Grid>
-                        <Entry x:Name="entSearch" Text="{Binding BusStopNumber}" Placeholder="50075" TextColor="{StaticResource SkyColor}" 
-                     HorizontalTextAlignment="Center" VerticalOptions="Center" Keyboard="Numeric" />
+                        <Entry x:Name="entSearch" Text="{Binding BusStopNumber}" FontSize="10"  Placeholder="50075" TextColor="{StaticResource SkyColor}" 
+                            HorizontalTextAlignment="Center" VerticalOptions="Center" Keyboard="Numeric" />
                     </Grid>
                 </Frame>
 
@@ -70,11 +70,11 @@
         <Image Grid.Row="3" Source="img_cloud3" HorizontalOptions="Start" Margin="40,10,0,0"  />
 
         <Grid Grid.Row="4">
-            <Image Source="bg_home" HorizontalOptions="FillAndExpand" VerticalOptions="End" />
+            <Image Source="bg_home" Scale="1.1" HorizontalOptions="FillAndExpand" VerticalOptions="End" />
 
             <Image Source="img_bus_front" HeightRequest="170" HorizontalOptions="Start" VerticalOptions="End" TranslationY="10" Margin="30,0,0,0" />
 
-            <Image Source="img_lamp" HorizontalOptions="End" Margin="0,0,10,20" />
+            <Image Source="img_lamp" Scale="0.75" HorizontalOptions="End" Margin="0,0,15,10" />
         </Grid>
     </Grid>
 </ContentPage>
