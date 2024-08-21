@@ -43,7 +43,9 @@ public class FavouritesStopsViewModel : BaseViewModel
     }
 
     public Command ToggleEditCommand { get; set; }
+
     public Command CancelEditCommand { get; set; }
+
     public Command SaveChangesCommand { get; set; }
 
     public FavouritesStopsViewModel()
@@ -53,69 +55,18 @@ public class FavouritesStopsViewModel : BaseViewModel
         EditIcon = "icon_edit";
 
         ToggleEditCommand = new Command(ToggleEditCommandExecute);
+
         CancelEditCommand = new Command(CancelEditCommandExecute);
+
         SaveChangesCommand = new Command(SaveChangesCommandExecute);
-
-        MessagingCenter.Subscribe<BusArrivalsViewModel, Stop>(this, "ADD_FAVOURITE_STOP", (sender, arg) =>
-        {
-            ItemList.Add(new FavouriteStop()
-            {
-                Tag = arg.Tag,
-                Name = arg.Name,
-                StopNo = arg.StopNo,
-                Routes = arg.Routes,
-                HasTag = !string.IsNullOrEmpty(arg.Tag),
-                EditMode = false,
-            });
-        });
-        MessagingCenter.Subscribe<BusArrivalsViewModel, Stop>(this, "REMOVE_FAVOURITE_STOP", (sender, arg) =>
-        {
-            foreach (var item in ItemList)
-            {
-                if (item.StopNo == arg.StopNo)
-                {
-                    ItemList.Remove(item);
-                    break;
-                }
-            }
-        });
-
-        //if (App.DesignTime)
-        //{
-        //    ItemList.Add(new FavouriteStop() { Tag = "", Name = "NB BURRARD ST NS DAVIE ST", StopNo = "50075", Routes = "002, 032, 044, N22", HasTag = !string.IsNullOrEmpty(""), EditMode = false });
-        //    ItemList.Add(new FavouriteStop() { Tag = "", Name = "BURRARD STN BAY 1", StopNo = "50043", Routes = "002, 032, 044, N22", HasTag = !string.IsNullOrEmpty(""), EditMode = false });
-        //}
-        //else
-        //{
-        _ = LoadStops();
-        //}
     }
 
-    async Task LoadStops()
-    {
-        var stops = await App.StopManager.GetStops();
-
-        if (stops == null)
-            return;
-
-        foreach (var stop in stops)
-        {
-            ItemList.Add(new FavouriteStop()
-            {
-                Tag = stop.Tag,
-                Name = stop.Name,
-                StopNo = stop.StopNo,
-                Routes = stop.Routes,
-                HasTag = !string.IsNullOrEmpty(stop.Tag),
-                EditMode = false,
-            });
-        }
-    }
-
-    public void ToggleEditCommandExecute()
+    private void ToggleEditCommandExecute()
     {
         EnableEdit = !EnableEdit;
-        EditIcon = EnableEdit ? "icon_save" : "icon_edit";
+        EditIcon = EnableEdit 
+            ? "icon_save" 
+            : "icon_edit";
 
         if (!EnableEdit)
         {
@@ -140,12 +91,12 @@ public class FavouritesStopsViewModel : BaseViewModel
         }
     }
 
-    public void CancelEditCommandExecute()
+    private void CancelEditCommandExecute()
     {
         IsEditVisible = false;
     }
 
-    public void SaveChangesCommandExecute()
+    private void SaveChangesCommandExecute()
     {
         foreach (var stop in ItemList)
         {
@@ -161,9 +112,25 @@ public class FavouritesStopsViewModel : BaseViewModel
         IsEditVisible = false;
     }
 
-    public void Dispose()
+    public async Task LoadStops()
     {
-        MessagingCenter.Unsubscribe<BusArrivalsViewModel, Stop>(this, "ADD_FAVOURITE_STOP");
-        MessagingCenter.Unsubscribe<BusArrivalsViewModel, Stop>(this, "REMOVE_FAVOURITE_STOP");
+        var stops = await App.StopManager.GetStops();
+
+        if (stops == null)
+            return;
+
+        ItemList.Clear();
+        foreach (var stop in stops)
+        {
+            ItemList.Add(new FavouriteStop()
+            {
+                Tag = stop.Tag,
+                Name = stop.Name,
+                StopNo = stop.StopNo,
+                Routes = stop.Routes,
+                HasTag = !string.IsNullOrEmpty(stop.Tag),
+                EditMode = false,
+            });
+        }
     }
 }

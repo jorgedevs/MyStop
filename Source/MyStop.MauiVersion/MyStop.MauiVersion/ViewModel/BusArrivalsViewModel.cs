@@ -12,32 +12,18 @@ public class BusArrivalsViewModel : BaseViewModel
 
     public ObservableCollection<Schedule> ArrivalTimes { get; set; }
 
-    bool isBusAlertActive;
-    public bool IsBusAlertActive
+    bool isFavouriteBusStop;
+    public bool IsFavouriteBusStop
     {
-        get => isBusAlertActive;
-        set { isBusAlertActive = value; OnPropertyChanged(nameof(IsBusAlertActive)); }
+        get => isFavouriteBusStop;
+        set { isFavouriteBusStop = value; OnPropertyChanged(nameof(IsFavouriteBusStop)); }
     }
 
-    bool isBusAlertVisible;
-    public bool IsBusAlertVisible
+    bool isUpdatingArrivalTimes;
+    public bool IsUpdatingArrivalTimes
     {
-        get => isBusAlertVisible;
-        set { isBusAlertVisible = value; OnPropertyChanged(nameof(IsBusAlertVisible)); }
-    }
-
-    string alertTime;
-    public string AlertTime
-    {
-        get => alertTime;
-        set { alertTime = value; OnPropertyChanged(nameof(AlertTime)); }
-    }
-
-    string stopNumber;
-    public string StopNumber
-    {
-        get => stopNumber;
-        set { stopNumber = value; OnPropertyChanged(nameof(StopNumber)); }
+        get => isUpdatingArrivalTimes;
+        set { isUpdatingArrivalTimes = value; OnPropertyChanged(nameof(IsUpdatingArrivalTimes)); }
     }
 
     string stopInfo;
@@ -47,11 +33,11 @@ public class BusArrivalsViewModel : BaseViewModel
         set { stopInfo = value; OnPropertyChanged(nameof(StopInfo)); }
     }
 
-    bool isFavouriteBusStop;
-    public bool IsFavouriteBusStop
+    string stopNumber;
+    public string StopNumber
     {
-        get => isFavouriteBusStop;
-        set { isFavouriteBusStop = value; OnPropertyChanged(nameof(IsFavouriteBusStop)); }
+        get => stopNumber;
+        set { stopNumber = value; OnPropertyChanged(nameof(StopNumber)); }
     }
 
     string favoriteIcon;
@@ -62,29 +48,29 @@ public class BusArrivalsViewModel : BaseViewModel
     }
 
     public Command FavouriteCommand { get; set; }
-    public Command CancelAlertCommand { get; set; }
-    public Command ConfirmAlertCommand { get; set; }
+
+    public Command RefreshCommand { get; set; }
 
     public BusArrivalsViewModel(Stop stop)
     {
         ArrivalTimes = new ObservableCollection<Schedule>();
 
-        isBusAlertActive = false;
-        IsBusAlertVisible = false;
-        AlertTime = "5";
         IsFavouriteBusStop = false;
-        StopNumber = stop.StopNo;
-        StopInfo = stop.Name;
+        StopNumber = stop.StopNo!;
+        StopInfo = stop.Name!;
         Stop = stop;
 
-        FavouriteCommand = new Command(FavouriteCommandExecute);
-        //CancelAlertCommand = new Command(CancelAlertCommandExecute);
-        //ConfirmAlertCommand = new Command(ConfirmAlertCommandExecute);
+        FavouriteCommand = new Command(ToggleSaveBusStop);
+        RefreshCommand = new Command(async () => 
+        {
+            await GetBusArrivalsTimes();
+            IsUpdatingArrivalTimes = false;
+        });
 
         _ = Initialize();
     }
 
-    public async Task Initialize()
+    private async Task Initialize()
     {
         IsFavouriteBusStop = await App.StopManager.IsStop(StopNumber);
 
@@ -93,10 +79,10 @@ public class BusArrivalsViewModel : BaseViewModel
         else
             FavoriteIcon = "icon_favourites_add.png";
 
-        _ = GetBusArrivalsTimes();
+        await GetBusArrivalsTimes();
     }
 
-    public async Task GetBusArrivalsTimes()
+    private async Task GetBusArrivalsTimes()
     {
         if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
         {
@@ -110,9 +96,9 @@ public class BusArrivalsViewModel : BaseViewModel
         }
     }
 
-    async void FavouriteCommandExecute()
+    private async void ToggleSaveBusStop()
     {
-        Stop stop = new Stop()
+        var stop = new Stop()
         {
             Name = Stop.Name,
             Routes = Stop.Routes,
@@ -124,14 +110,12 @@ public class BusArrivalsViewModel : BaseViewModel
         {
             await App.StopManager.DeleteStop(stop);
             IsFavouriteBusStop = false;
-            MessagingCenter.Send(this, "REMOVE_FAVOURITE_STOP", stop);
             FavoriteIcon = "icon_favourites_add.png";
         }
         else
         {
             await App.StopManager.AddStop(stop);
             IsFavouriteBusStop = true;
-            MessagingCenter.Send(this, "ADD_FAVOURITE_STOP", stop);
             FavoriteIcon = "icon_favourites_remove.png";
         }
     }

@@ -9,7 +9,7 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem 
         IconImageSource="icon_donate.png"
-        Clicked="ImageButtonClicked" />
+        Clicked="AboutToButtonClicked" />
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
@@ -24,7 +24,7 @@
 
                 <!-- Content -->
                 <Grid Grid.Row="0">
-                    <ListView x:Name="listStops" ItemsSource="{Binding ItemList}" BackgroundColor="Transparent" 
+                    <ListView x:Name="listStops" ItemsSource="{Binding ItemList}" ItemTapped="ListStopsItemTapped" BackgroundColor="Transparent" 
                         HasUnevenRows="true" SeparatorVisibility="None" VerticalOptions="Fill" Margin="0,5,0,5">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -41,7 +41,7 @@
                                         <StackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                             <Label Text="{Binding StopNo, StringFormat='BUS STOP #{0}'}" TextColor="White"  />
                                             <Label Text="{Binding Name}" TextColor="White" LineBreakMode="TailTruncation" />
-                                            <Label Text="{Binding Routes, StringFormat='ROUTES {0}'}" TextColor="#92f4f4" FontSize="Small" LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Routes, StringFormat='ROUTES {0}'}" TextColor="#92f4f4" LineBreakMode="TailTruncation" />
                                             <Label IsVisible="{Binding EditMode}" Text="Name Stop" TextColor="#0673e5" FontSize="Small" LineBreakMode="TailTruncation" />
                                         </StackLayout>
 

@@ -15,13 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".NET MAUI", ".NET MAUI", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyStop.MauiVersion", "MyStop.MauiVersion\MyStop.MauiVersion\MyStop.MauiVersion.csproj", "{E6EFB644-E20D-463E-81CA-3D6323710435}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia Version", "Avalonia Version", "{57B1E228-EBD6-4580-B013-7698050F8A58}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{57B1E228-EBD6-4580-B013-7698050F8A58}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyStop.AvaloniaVersion", "MyStop.AvaloniaVersion\MyStop.AvaloniaVersion.csproj", "{849010F0-0314-4BBF-B75F-24036DABB596}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyStop.AvaloniaVersion.Android", "MyStop.AvaloniaVersion.Android\MyStop.AvaloniaVersion.Android.csproj", "{34EB1793-B61F-4A28-B64D-B7575A78923A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meadow Version", "Meadow Version", "{62EB1068-EDAF-458F-AE41-4558AC7607A5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meadow", "Meadow", "{62EB1068-EDAF-458F-AE41-4558AC7607A5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyStop.MeadowVersion.Core", "MyStop.MeadowVersion.Core\MyStop.MeadowVersion.Core.csproj", "{770C2CB9-4E45-4521-9009-3703B5B39721}"
 EndProject

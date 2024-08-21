@@ -13,12 +13,12 @@ public partial class FavouriteStopsPage : ContentPage
         BindingContext = vm = new FavouritesStopsViewModel();
     }
 
-    private async void ImageButtonClicked(object sender, EventArgs e)
+    private async void AboutToButtonClicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new AboutPage(), true);
     }
 
-    async void ListStopsItemTapped(object sender, ItemTappedEventArgs e)
+    private async void ListStopsItemTapped(object sender, ItemTappedEventArgs e)
     {
         listStops.SelectedItem = null;
 
@@ -41,13 +41,6 @@ public partial class FavouriteStopsPage : ContentPage
     {
         base.OnAppearing();
 
-        listStops.ItemTapped += ListStopsItemTapped;
-    }
-
-    protected override void OnDisappearing()
-    {
-        listStops.ItemTapped -= ListStopsItemTapped;
-
-        base.OnDisappearing();
+        _ = vm.LoadStops();
     }
 }
