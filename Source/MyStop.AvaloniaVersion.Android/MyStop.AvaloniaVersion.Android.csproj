@@ -15,6 +15,26 @@
     <AndroidResource Include="Icon.png">
       <Link>Resources\drawable\Icon.png</Link>
     </AndroidResource>
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\icon_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\icon_round_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\icon_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\icon_round_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\icon_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\icon_round_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\icon_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\icon_round_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-hdpi\icon_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-hdpi\icon_round_launcher.png" />
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\splash_logo.png" />
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\splash_bg.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\splash_bg.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\splash_logo.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\splash_bg.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\splash_logo.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\splash_logo.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\splash_bg.png" />
+    <AndroidResource Include="Resources\mipmap-hdpi\splash_bg.png" />
+    <AndroidResource Include="Resources\mipmap-hdpi\splash_logo.png" />
   </ItemGroup>
 
   <ItemGroup>

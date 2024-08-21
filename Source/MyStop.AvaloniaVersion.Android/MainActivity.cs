@@ -8,7 +8,7 @@ namespace MyStop.AvaloniaVersion.Android;
 
 [Activity(
     Label = "MyStop.AvaloniaVersion.Android",
-    Theme = "@style/MyTheme.NoActionBar",
+    Theme = "@style/MyTheme",
     Icon = "@drawable/icon",
     MainLauncher = true,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
