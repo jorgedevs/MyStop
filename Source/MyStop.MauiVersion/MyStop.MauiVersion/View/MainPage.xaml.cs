@@ -5,19 +5,14 @@ namespace MyStop.MauiVersion.View;
 
 public partial class MainPage : ContentPage
 {
-    public MainPage()
+    public MainPage(MainViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new MainViewModel();
+        BindingContext = viewModel;
 
         MessagingCenter.Subscribe<MainViewModel, Stop>(this, MainViewModel.STOP_FOUND, async (sender, arg) =>
         {
-            await Navigation.PushAsync(new BusArrivalsPage(arg), true);
+            //await Navigation.PushAsync(new BusArrivalsPage(arg), true);
         });
-    }
-
-    private async void ImageButtonClicked(object sender, EventArgs e)
-    {
-        await Navigation.PushAsync(new FavouriteStopsPage(), true);
     }
 }

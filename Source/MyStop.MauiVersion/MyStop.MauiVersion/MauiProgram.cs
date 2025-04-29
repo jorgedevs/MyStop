@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using MyStop.MauiVersion.View;
+using MyStop.MauiVersion.ViewModel;
 
 namespace MyStop.MauiVersion;
 
@@ -18,6 +20,16 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+
+        builder.Services.AddTransient<BaseViewModel>();
+        builder.Services.AddTransient<BusArrivalsViewModel>();
+        builder.Services.AddTransient<FavouriteStopsViewModel>();
+        builder.Services.AddTransient<MainViewModel>();
+
+        builder.Services.AddTransient<AboutPage>();
+        builder.Services.AddTransient<BusArrivalsPage>();
+        builder.Services.AddTransient<FavouriteStopsPage>();
+        builder.Services.AddTransient<MainPage>();
 
         return builder.Build();
     }

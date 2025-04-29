@@ -5,17 +5,12 @@ namespace MyStop.MauiVersion.View;
 
 public partial class FavouriteStopsPage : ContentPage
 {
-    FavouritesStopsViewModel vm;
+    FavouriteStopsViewModel vm;
 
-    public FavouriteStopsPage()
+    public FavouriteStopsPage(FavouriteStopsViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = vm = new FavouritesStopsViewModel();
-    }
-
-    private async void AboutToButtonClicked(object sender, EventArgs e)
-    {
-        await Navigation.PushAsync(new AboutPage(), true);
+        BindingContext = vm = viewModel;
     }
 
     private async void ListStopsItemTapped(object sender, ItemTappedEventArgs e)

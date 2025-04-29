@@ -1,9 +1,11 @@
 ﻿using MyStop.MauiVersion.Model;
+using MyStop.MauiVersion.View;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace MyStop.MauiVersion.ViewModel;
 
-public class FavouritesStopsViewModel : BaseViewModel
+public class FavouriteStopsViewModel : BaseViewModel
 {
     public ObservableCollection<FavouriteStop> ItemList { get; set; }
 
@@ -42,13 +44,15 @@ public class FavouritesStopsViewModel : BaseViewModel
         set { editIcon = value; OnPropertyChanged(nameof(EditIcon)); }
     }
 
-    public Command ToggleEditCommand { get; set; }
+    public ICommand ToggleEditCommand { get; set; }
 
-    public Command CancelEditCommand { get; set; }
+    public ICommand CancelEditCommand { get; set; }
 
-    public Command SaveChangesCommand { get; set; }
+    public ICommand SaveChangesCommand { get; set; }
 
-    public FavouritesStopsViewModel()
+    public ICommand GoToAboutPage { get; set; }
+
+    public FavouriteStopsViewModel()
     {
         ItemList = new ObservableCollection<FavouriteStop>();
 
@@ -59,13 +63,15 @@ public class FavouritesStopsViewModel : BaseViewModel
         CancelEditCommand = new Command(CancelEditCommandExecute);
 
         SaveChangesCommand = new Command(SaveChangesCommandExecute);
+
+        GoToAboutPage = new Command(async () => await Shell.Current.GoToAsync(nameof(AboutPage)));
     }
 
     private void ToggleEditCommandExecute()
     {
         EnableEdit = !EnableEdit;
-        EditIcon = EnableEdit 
-            ? "icon_save" 
+        EditIcon = EnableEdit
+            ? "icon_save"
             : "icon_edit";
 
         if (!EnableEdit)

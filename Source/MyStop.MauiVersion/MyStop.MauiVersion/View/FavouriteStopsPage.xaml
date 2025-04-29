@@ -8,8 +8,8 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem 
-        IconImageSource="icon_donate.png"
-        Clicked="AboutToButtonClicked" />
+            IconImageSource="icon_donate.png"
+            Command="{Binding GoToAboutPage}" />
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>

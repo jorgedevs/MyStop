@@ -1,6 +1,8 @@
 ﻿using MyStop.MauiVersion.Model;
 using MyStop.MauiVersion.Utils;
+using MyStop.MauiVersion.View;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace MyStop.MauiVersion.ViewModel;
 
@@ -15,7 +17,7 @@ public class MainViewModel : BaseViewModel
     public bool IsBusy
     {
         get => isBusy;
-        set { isBusy = value; OnPropertyChanged(nameof(IsBusy)); GetStopInfoCommand.ChangeCanExecute(); }
+        set { isBusy = value; OnPropertyChanged(nameof(IsBusy)); }
     }
 
     string busStopNumber;
@@ -25,14 +27,21 @@ public class MainViewModel : BaseViewModel
         set { busStopNumber = value; OnPropertyChanged(nameof(BusStopNumber)); }
     }
 
-    public Command GetStopInfoCommand { get; set; }
+    public ICommand GetStopInfoCommand { get; set; }
+
+    public ICommand GoToFavoriteStops { get; set; }
 
     public MainViewModel()
     {
         BusStopNumber = "";
+
         GetStopInfoCommand = new Command(
            async () => await GetStopInfoCommandExecute(),
            () => !IsBusy);
+
+        GoToFavoriteStops = new Command(
+            async () => await Shell.Current.GoToAsync(nameof(FavouriteStopsPage)),
+            () => !IsBusy);
     }
 
     private async Task GetStopInfoCommandExecute()

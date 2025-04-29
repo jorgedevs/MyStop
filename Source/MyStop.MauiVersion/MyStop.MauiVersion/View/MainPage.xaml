@@ -9,7 +9,7 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem 
             IconImageSource="icon_favourites.png"
-            Clicked="ImageButtonClicked" />
+            Command="{Binding GoToFavoriteStops}" />
     </ContentPage.ToolbarItems>
 
     <Grid RowSpacing="60">
