@@ -17,58 +17,95 @@
             <Style x:Key="TitleStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White" />
                 <Setter Property="FontSize" Value="Medium" />
-                <Setter Property="HorizontalOptions" Value="StartAndExpand" />
+                <Setter Property="HorizontalOptions" Value="Start" />
                 <Setter Property="VerticalOptions" Value="Center" />
             </Style>
             <Style x:Key="ListItemStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White" />
                 <Setter Property="FontSize" Value="Default" />
-                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="Center" />
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Content>
         <Grid>
-            <Grid x:Name="grdContent" Padding="0,10,0,0">
+            <Grid 
+                x:Name="grdContent" 
+                Padding="0,10,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" ColumnSpacing="10" Padding="10,8,10,8">
+                <Grid 
+                    Grid.Row="0"
+                    ColumnSpacing="10" 
+                    Padding="10,8,10,8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Image Grid.Column="0" Source="img_stopsign.png" VerticalOptions="Center" HorizontalOptions="Start" WidthRequest="80" />
+                    <Image 
+                        Grid.Column="0" 
+                        Source="img_stopsign.png" 
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Start" 
+                        WidthRequest="80" />
 
-                    <StackLayout Grid.Column="1" Grid.ColumnSpan="2" VerticalOptions="Center">
-                        <Label Text="{Binding StopInfo}" LineBreakMode="TailTruncation" Style="{StaticResource TitleStyle}" />
-                        <Label Grid.Column="0" Text="{Binding StopNumber, StringFormat='Bus Stop #{0}'}" Style="{StaticResource TitleStyle}" FontSize="32" />
+                    <StackLayout 
+                        Grid.Column="1" 
+                        Grid.ColumnSpan="2" 
+                        VerticalOptions="Center">
+                        <Label 
+                            Text="{Binding StopInfo}" 
+                            LineBreakMode="TailTruncation" 
+                            Style="{StaticResource TitleStyle}" />
+                        <Label 
+                            Grid.Column="0" 
+                            Text="{Binding StopNumber, StringFormat='Stop #{0}'}" 
+                            Style="{StaticResource TitleStyle}" 
+                            FontSize="40"
+                            FontAttributes="Bold"/>
                     </StackLayout>
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <ListView x:Name="listSchedule" ItemsSource="{Binding ArrivalTimes}" RefreshCommand="{Binding RefreshCommand}" BackgroundColor="Transparent" 
-                        HasUnevenRows="true" SeparatorVisibility="None" IsPullToRefreshEnabled="true" IsRefreshing="{Binding IsUpdatingArrivalTimes}" Margin="0,5,0,5">
+                    <ListView 
+                        x:Name="listSchedule" 
+                        ItemsSource="{Binding ArrivalTimes}" 
+                        RefreshCommand="{Binding RefreshCommand}" 
+                        BackgroundColor="Transparent" 
+                        HasUnevenRows="true" 
+                        SeparatorVisibility="None" 
+                        IsPullToRefreshEnabled="true" 
+                        IsRefreshing="{Binding IsUpdatingArrivalTimes}" 
+                        Margin="0,5,0,5">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <Grid Padding="17,10" ColumnSpacing="10">
+                                    <Grid 
+                                        Padding="17,10" 
+                                        ColumnSpacing="10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
 
-                                        <Label Grid.Column="0" Text="{Binding RouteNo}"
+                                        <Label 
+                                            Grid.Column="0" 
+                                            Text="{Binding RouteNo}"
                                             Style="{StaticResource ListItemStyle}" />
-                                        <Label Grid.Column="1" Text="{Binding Destination, StringFormat='{0}'}"
+                                        <Label
+                                            Grid.Column="1" 
+                                            Text="{Binding Destination, StringFormat='{0}'}"
                                             Style="{StaticResource ListItemStyle}" />
-                                        <Label Grid.Column="2" Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"
+                                        <Label 
+                                            Grid.Column="2" 
+                                            Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"
                                             Style="{StaticResource ListItemStyle}" />
                                     </Grid>
                                 </ViewCell>
@@ -76,14 +113,34 @@
                         </ListView.ItemTemplate>
                     </ListView>
 
-                    <Image x:Name="imgTopList" Source="img_gradient_top" Aspect="AspectFill" InputTransparent="true" VerticalOptions="Start" />
-                    <Image x:Name="imgBottomList" Source="img_gradient_bottom" Aspect="AspectFill" InputTransparent="true" VerticalOptions="End" />
+                    <Image 
+                        x:Name="imgTopList" 
+                        Source="img_gradient_top" 
+                        Aspect="AspectFill" 
+                        InputTransparent="true" 
+                        VerticalOptions="Start" />
+                    <Image 
+                        x:Name="imgBottomList" 
+                        Source="img_gradient_bottom" 
+                        Aspect="AspectFill" 
+                        InputTransparent="true" 
+                        VerticalOptions="End" />
                 </Grid>
 
-                <!-- Footer -->
-                <Grid Grid.Row="2">
-                    <Image x:Name="imgFooter" Source="bg_arrivals" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="End" />
-                    <Image x:Name="imgBus" Source="img_bus_side" IsVisible="false" Scale="0.9" HorizontalOptions="Start" VerticalOptions="End"  />
+                <Grid 
+                    Grid.Row="2">
+                    <Image 
+                        x:Name="imgFooter" 
+                        Source="bg_arrivals" 
+                        Aspect="Fill" 
+                        HorizontalOptions="Fill" 
+                        VerticalOptions="End" />
+                    <Image 
+                        x:Name="imgBus" 
+                        Source="img_bus_side" 
+                        IsVisible="false" Scale="0.9" 
+                        HorizontalOptions="Start" 
+                        VerticalOptions="End"  />
                 </Grid>
             </Grid>
         </Grid>

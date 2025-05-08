@@ -11,7 +11,7 @@ public partial class App : Application
         InitializeComponent();
 
         StopManager = new StopManager();
-        _ = StopManager.Init();
+        //_ = StopManager.Init();
 
         MainPage = new AppShell();
     }

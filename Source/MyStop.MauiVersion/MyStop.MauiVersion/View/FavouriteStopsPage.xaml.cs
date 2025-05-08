@@ -1,4 +1,3 @@
-using MyStop.MauiVersion.Model;
 using MyStop.MauiVersion.ViewModel;
 
 namespace MyStop.MauiVersion.View;
@@ -19,16 +18,16 @@ public partial class FavouriteStopsPage : ContentPage
 
         if (e.Item != null)
         {
-            if (((FavouriteStop)e.Item).EditMode)
-            {
-                vm.StopNumber = ((FavouriteStop)e.Item).StopNo!;
-                vm.TagName = ((FavouriteStop)e.Item).Tag;
-                vm.IsEditVisible = true;
-            }
-            else
-            {
-                await Navigation.PushAsync(new BusArrivalsPage(e.Item as Stop));
-            }
+            //if (((FavouriteStop)e.Item).EditMode)
+            //{
+            //    vm.StopNumber = ((FavouriteStop)e.Item).StopNo!;
+            //    vm.TagName = ((FavouriteStop)e.Item).Tag;
+            //    vm.IsEditVisible = true;
+            //}
+            //else
+            //{
+            //    await Navigation.PushAsync(new BusArrivalsPage(e.Item as Stop));
+            //}
         }
     }
 

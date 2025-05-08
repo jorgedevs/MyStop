@@ -1,0 +1,11 @@
+﻿namespace MyStop.MauiVersion.CSVs;
+
+public class Transfer
+{
+    public string? from_stop_id { get; set; }
+    public string? to_stop_id { get; set; }
+    public string? transfer_type { get; set; }
+    public string? min_transfer_time { get; set; }
+    public string? from_trip_id { get; set; }
+    public string? to_trip_id { get; set; }
+}

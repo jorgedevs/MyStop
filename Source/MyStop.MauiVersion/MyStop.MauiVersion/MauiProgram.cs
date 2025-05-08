@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MyStop.MauiVersion.Services;
 using MyStop.MauiVersion.View;
 using MyStop.MauiVersion.ViewModel;
 
@@ -20,6 +21,9 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+
+        builder.Services.AddSingleton<IGtfsService, GtfsService>();
+        builder.Services.AddSingleton<ISQLiteService, SQLiteService>();
 
         builder.Services.AddTransient<BaseViewModel>();
         builder.Services.AddTransient<BusArrivalsViewModel>();

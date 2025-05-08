@@ -1,4 +1,4 @@
-﻿using MyStop.MauiVersion.Model;
+﻿using MyStop.MauiVersion.CSVs;
 using MyStop.MauiVersion.View;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -7,7 +7,7 @@ namespace MyStop.MauiVersion.ViewModel;
 
 public class FavouriteStopsViewModel : BaseViewModel
 {
-    public ObservableCollection<FavouriteStop> ItemList { get; set; }
+    public ObservableCollection<Stop> ItemList { get; set; }
 
     bool isEditVisible;
     public bool IsEditVisible
@@ -54,7 +54,7 @@ public class FavouriteStopsViewModel : BaseViewModel
 
     public FavouriteStopsViewModel()
     {
-        ItemList = new ObservableCollection<FavouriteStop>();
+        ItemList = new ObservableCollection<Stop>();
 
         EditIcon = "icon_edit";
 
@@ -80,20 +80,20 @@ public class FavouriteStopsViewModel : BaseViewModel
 
             foreach (var item in ItemList)
             {
-                stops.Add(new Stop()
-                {
-                    Tag = item.Tag,
-                    Name = item.Name,
-                    Routes = item.Routes,
-                    StopNo = item.StopNo
-                });
+                //stops.Add(new Stop()
+                //{
+                //    Tag = item.Tag,
+                //    Name = item.Name,
+                //    Routes = item.Routes,
+                //    StopNo = item.StopNo
+                //});
             }
             //App.StopManager.UpdateStops(stops);
         }
 
         foreach (var stop in ItemList)
         {
-            stop.EditMode = EnableEdit;
+            //stop.EditMode = EnableEdit;
         }
     }
 
@@ -106,12 +106,12 @@ public class FavouriteStopsViewModel : BaseViewModel
     {
         foreach (var stop in ItemList)
         {
-            if (stop.StopNo == StopNumber)
-            {
-                stop.Tag = string.IsNullOrEmpty(TagName) ? string.Empty : TagName.ToUpper();
-                stop.HasTag = !string.IsNullOrEmpty(TagName);
-                break;
-            }
+            //if (stop.StopNo == StopNumber)
+            //{
+            //    stop.Tag = string.IsNullOrEmpty(TagName) ? string.Empty : TagName.ToUpper();
+            //    stop.HasTag = !string.IsNullOrEmpty(TagName);
+            //    break;
+            //}
         }
 
         TagName = string.Empty;
@@ -120,23 +120,23 @@ public class FavouriteStopsViewModel : BaseViewModel
 
     public async Task LoadStops()
     {
-        var stops = await App.StopManager.GetStops();
+        //var stops = await App.StopManager.GetStops();
 
-        if (stops == null)
-            return;
+        //if (stops == null)
+        //    return;
 
-        ItemList.Clear();
-        foreach (var stop in stops)
-        {
-            ItemList.Add(new FavouriteStop()
-            {
-                Tag = stop.Tag,
-                Name = stop.Name,
-                StopNo = stop.StopNo,
-                Routes = stop.Routes,
-                HasTag = !string.IsNullOrEmpty(stop.Tag),
-                EditMode = false,
-            });
-        }
+        //ItemList.Clear();
+        //foreach (var stop in stops)
+        //{
+        //    ItemList.Add(new FavouriteStop()
+        //    {
+        //        Tag = stop.Tag,
+        //        Name = stop.Name,
+        //        StopNo = stop.StopNo,
+        //        Routes = stop.Routes,
+        //        HasTag = !string.IsNullOrEmpty(stop.Tag),
+        //        EditMode = false,
+        //    });
+        //}
     }
 }

@@ -1,11 +1,17 @@
-﻿using MyStop.MauiVersion.Model;
+﻿using MyStop.MauiVersion.CSVs;
+using MyStop.MauiVersion.Model;
+using MyStop.MauiVersion.Services;
 using MyStop.MauiVersion.Utils;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace MyStop.MauiVersion.ViewModel;
 
-public class BusArrivalsViewModel : BaseViewModel
+public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 {
+    private readonly IGtfsService _gtfsService;
+    private readonly ISQLiteService _sqliteService;
+
     public Stop Stop { get; set; }
 
     public Schedule Schedule { get; set; }
@@ -47,21 +53,24 @@ public class BusArrivalsViewModel : BaseViewModel
         set { favoriteIcon = value; OnPropertyChanged(nameof(FavoriteIcon)); }
     }
 
-    public Command FavouriteCommand { get; set; }
+    public ICommand FavouriteCommand { get; set; }
 
-    public Command RefreshCommand { get; set; }
+    public ICommand RefreshCommand { get; set; }
 
-    public BusArrivalsViewModel(Stop stop)
+    public BusArrivalsViewModel(
+        IGtfsService gtfsService,
+        ISQLiteService sqliteService)
     {
+        _gtfsService = gtfsService;
+        _sqliteService = sqliteService;
+
         ArrivalTimes = new ObservableCollection<Schedule>();
 
         IsFavouriteBusStop = false;
-        StopNumber = stop.StopNo!;
-        StopInfo = stop.Name!;
-        Stop = stop;
 
         FavouriteCommand = new Command(ToggleSaveBusStop);
-        RefreshCommand = new Command(async () => 
+
+        RefreshCommand = new Command(async () =>
         {
             await GetBusArrivalsTimes();
             IsUpdatingArrivalTimes = false;
@@ -72,14 +81,27 @@ public class BusArrivalsViewModel : BaseViewModel
 
     private async Task Initialize()
     {
-        IsFavouriteBusStop = await App.StopManager.IsStop(StopNumber);
+        IsFavouriteBusStop = false; //await App.StopManager.IsStop(StopNumber);
 
         if (IsFavouriteBusStop)
             FavoriteIcon = "icon_favourites_remove.png";
         else
             FavoriteIcon = "icon_favourites_add.png";
 
-        await GetBusArrivalsTimes();
+        //await GetBusArrivalsTimes();
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.ContainsKey("BusStopNumber"))
+        {
+            string? stopCode = query["BusStopNumber"] as string;
+
+            var stop = _sqliteService.GetStopInfo(stopCode!);
+            Stop = stop;
+            StopNumber = Stop.stop_code!;
+            StopInfo = Stop.stop_name!;
+        }
     }
 
     private async Task GetBusArrivalsTimes()
@@ -98,23 +120,23 @@ public class BusArrivalsViewModel : BaseViewModel
 
     private async void ToggleSaveBusStop()
     {
-        var stop = new Stop()
-        {
-            Name = Stop.Name,
-            Routes = Stop.Routes,
-            StopNo = Stop.StopNo,
-            Tag = Stop.Tag
-        };
+        //var stop = new Stop()
+        //{
+        //    Name = Stop.Name,
+        //    Routes = Stop.Routes,
+        //    StopNo = Stop.StopNo,
+        //    Tag = Stop.Tag
+        //};
 
         if (IsFavouriteBusStop)
         {
-            await App.StopManager.DeleteStop(stop);
+            //await App.StopManager.DeleteStop(stop);
             IsFavouriteBusStop = false;
             FavoriteIcon = "icon_favourites_add.png";
         }
         else
         {
-            await App.StopManager.AddStop(stop);
+            //await App.StopManager.AddStop(stop);
             IsFavouriteBusStop = true;
             FavoriteIcon = "icon_favourites_remove.png";
         }
