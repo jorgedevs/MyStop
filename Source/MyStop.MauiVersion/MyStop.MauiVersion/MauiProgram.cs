@@ -24,6 +24,7 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<IGtfsService, GtfsService>();
         builder.Services.AddSingleton<ISQLiteService, SQLiteService>();
+        builder.Services.AddSingleton<IGtfsLiveService, GtfsLiveService>();
 
         builder.Services.AddTransient<BaseViewModel>();
         builder.Services.AddTransient<BusArrivalsViewModel>();

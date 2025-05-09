@@ -9,6 +9,7 @@ public class MainViewModel : BaseViewModel
 {
     private readonly IGtfsService _gtfsService;
     private readonly ISQLiteService _sqliteService;
+    private readonly IGtfsLiveService _gtfsLiveService;
 
     public const string INVALID_CODE_ENTERED = "INVALID_CODE_ENTERED";
     public const string STOP_NOT_FOUND = "STOP_NOT_FOUND";
@@ -34,10 +35,12 @@ public class MainViewModel : BaseViewModel
 
     public MainViewModel(
         IGtfsService gtfsService,
-        ISQLiteService sqliteService)
+        ISQLiteService sqliteService,
+        IGtfsLiveService gtfsLiveService)
     {
         _gtfsService = gtfsService;
         _sqliteService = sqliteService;
+        _gtfsLiveService = gtfsLiveService;
 
         BusStopNumber = "";
 
@@ -50,6 +53,13 @@ public class MainViewModel : BaseViewModel
             () => !IsBusy);
 
         //_ = Initialize();
+    }
+
+    public async Task Tests()
+    {
+        await _gtfsLiveService.TripUpdate();
+        await _gtfsLiveService.PositionUpdate();
+        await _gtfsLiveService.ServiceAlert();
     }
 
     private async Task Initialize()

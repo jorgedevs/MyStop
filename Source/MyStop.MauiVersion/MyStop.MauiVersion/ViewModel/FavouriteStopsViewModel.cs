@@ -1,4 +1,6 @@
 ﻿using MyStop.MauiVersion.CSVs;
+using MyStop.MauiVersion.Model;
+using MyStop.MauiVersion.Services;
 using MyStop.MauiVersion.View;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -7,7 +9,10 @@ namespace MyStop.MauiVersion.ViewModel;
 
 public class FavouriteStopsViewModel : BaseViewModel
 {
-    public ObservableCollection<Stop> ItemList { get; set; }
+    private readonly IGtfsService _gtfsService;
+    private readonly ISQLiteService _sqliteService;
+
+    public ObservableCollection<SavedStop> ItemList { get; set; }
 
     bool isEditVisible;
     public bool IsEditVisible
@@ -52,9 +57,14 @@ public class FavouriteStopsViewModel : BaseViewModel
 
     public ICommand GoToAboutPage { get; set; }
 
-    public FavouriteStopsViewModel()
+    public FavouriteStopsViewModel(
+        IGtfsService gtfsService,
+        ISQLiteService sqliteService)
     {
-        ItemList = new ObservableCollection<Stop>();
+        _gtfsService = gtfsService;
+        _sqliteService = sqliteService;
+
+        ItemList = new ObservableCollection<SavedStop>();
 
         EditIcon = "icon_edit";
 
@@ -118,25 +128,25 @@ public class FavouriteStopsViewModel : BaseViewModel
         IsEditVisible = false;
     }
 
-    public async Task LoadStops()
+    public void LoadStops()
     {
-        //var stops = await App.StopManager.GetStops();
+        var stops = _sqliteService.GetSavedStops();
 
-        //if (stops == null)
-        //    return;
+        if (stops == null)
+            return;
 
-        //ItemList.Clear();
-        //foreach (var stop in stops)
-        //{
-        //    ItemList.Add(new FavouriteStop()
-        //    {
-        //        Tag = stop.Tag,
-        //        Name = stop.Name,
-        //        StopNo = stop.StopNo,
-        //        Routes = stop.Routes,
-        //        HasTag = !string.IsNullOrEmpty(stop.Tag),
-        //        EditMode = false,
-        //    });
-        //}
+        ItemList.Clear();
+        foreach (var stop in stops)
+        {
+            ItemList.Add(new SavedStop()
+            {
+                //Tag = stop.Tag,
+                stop_name = stop.stop_name,
+                stop_code = stop.stop_code,
+                //Routes = stop.Routes,
+                //HasTag = !string.IsNullOrEmpty(stop.Tag),
+                //EditMode = false,
+            });
+        }
     }
 }

@@ -1,45 +1,9 @@
 ﻿using MyStop.MauiVersion.CSVs;
+using MyStop.MauiVersion.Model;
 using MyStop.MauiVersion.Utils;
 using SQLite;
 
 namespace MyStop.MauiVersion.Services;
-
-public interface ISQLiteService
-{
-    public Task SaveAgency(Agency agency);
-
-    public Task SaveCalendars(List<Calendar> calendars);
-
-    public Task SaveCalendarDates(List<CalendarDate> calendarDates);
-
-    public Task SaveDirectionNamesExceptions(List<DirectionNamesException> directionNamesExceptions);
-
-    public Task SaveDirections(List<Direction> directions);
-
-    public Task SaveFeedInfo(FeedInfo feedInfo);
-
-    public Task SaveRouteNamesExceptions(List<RouteNamesException> routeNamesExceptions);
-
-    public Task SaveRoutes(List<Route> routes);
-
-    public Task SaveShapes(List<Shape> shapes);
-
-    public Task SaveSignupPeriods(List<SignupPeriod> signupPeriods);
-
-    public Task SaveStopOrderExceptions(List<StopOrderException> stopOrderExceptions);
-
-    public Task SaveStops(List<Stop> stops);
-
-    public Task SaveStopTimes(List<StopTime> stopTimes);
-
-    public Task SaveTransfers(List<Transfer> transfers);
-
-    public Task SaveTrips(List<Trip> trips);
-
-    public bool IsStop(string stopCode);
-
-    public Stop GetStopInfo(string stopCode);
-}
 
 public class SQLiteService : ISQLiteService
 {
@@ -76,6 +40,8 @@ public class SQLiteService : ISQLiteService
             await connection.CreateTableAsync<StopTime>();
             await connection.CreateTableAsync<Transfer>();
             await connection.CreateTableAsync<Trip>();
+
+            await connection.CreateTableAsync<SavedStop>();
         }
         catch (Exception ex)
         {
@@ -203,5 +169,30 @@ public class SQLiteService : ISQLiteService
     public Stop GetStopInfo(string stopCode)
     {
         return connection.Table<Stop>().FirstOrDefaultAsync(i => i.stop_code == stopCode).Result;
+    }
+
+    public bool IsSavedStop(string stopCode)
+    {
+        if (string.IsNullOrEmpty(stopCode))
+        {
+            return false;
+        }
+
+        return connection.Table<SavedStop>().Where(i => i.stop_code == stopCode).CountAsync().Result > 0;
+    }
+
+    public async Task SaveStop(SavedStop stop)
+    {
+        if (stop == null)
+        {
+            return;
+        }
+
+        await connection.InsertOrReplaceAsync(stop);
+    }
+
+    public List<SavedStop> GetSavedStops()
+    {
+        return connection.Table<SavedStop>().ToListAsync().Result;
     }
 }
