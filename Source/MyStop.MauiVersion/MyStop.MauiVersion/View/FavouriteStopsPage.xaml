@@ -61,21 +61,24 @@
                                             Spacing="0" 
                                             VerticalOptions="Center">
                                             <Label 
-                                                Text="{Binding StopNo, StringFormat='BUS STOP #{0}'}" 
-                                                TextColor="White"  />
+                                                Text="{Binding stop_code, StringFormat='BUS STOP #{0}'}" 
+                                                TextColor="White"
+                                                FontAttributes="Bold" />
                                             <Label 
-                                                Text="{Binding Name}" 
-                                                TextColor="White" LineBreakMode="TailTruncation" />
+                                                Text="{Binding stop_name}" 
+                                                TextColor="White" LineBreakMode="TailTruncation"
+                                                FontAttributes="Bold"/>
                                             <Label 
-                                                Text="{Binding Routes, StringFormat='ROUTES {0}'}" 
+                                                Text="{Binding stop_desc, StringFormat='ROUTES {0}'}" 
                                                 TextColor="#92f4f4" 
+                                                FontAttributes="Bold"
                                                 LineBreakMode="TailTruncation" />
-                                            <Label 
+                                            <!--<Label 
                                                 IsVisible="{Binding EditMode}" 
                                                 Text="Name Stop" 
                                                 TextColor="#0673e5" 
                                                 FontSize="Small" 
-                                                LineBreakMode="TailTruncation" />
+                                                LineBreakMode="TailTruncation" />-->
                                         </StackLayout>
 
                                         <!--<StackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center" IsVisible="{Binding HasTag}">

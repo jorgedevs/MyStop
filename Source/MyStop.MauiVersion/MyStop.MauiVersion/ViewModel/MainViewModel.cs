@@ -44,26 +44,35 @@ public class MainViewModel : BaseViewModel
 
         BusStopNumber = "";
 
-        GetStopInfoCommand = new Command(
-           async () => await GetStopInfoCommandExecute(),
-           () => !IsBusy);
+        GetStopInfoCommand = new Command(Tests);
+        //async () => await c cz43
+        //(),
 
         GoToFavoriteStops = new Command(
-            async () => await Shell.Current.GoToAsync(nameof(FavouriteStopsPage)),
-            () => !IsBusy);
+            async () => await Shell.Current.GoToAsync(nameof(FavouriteStopsPage)));
 
         //_ = Initialize();
     }
 
-    public async Task Tests()
+    public void Tests()
     {
-        await _gtfsLiveService.TripUpdate();
-        await _gtfsLiveService.PositionUpdate();
-        await _gtfsLiveService.ServiceAlert();
+        Task.Run(async () =>
+        {
+            //await _gtfsLiveService.TripUpdate();
+            await _gtfsLiveService.PositionUpdate();
+            await _gtfsLiveService.ServiceAlert();
+        });
     }
 
     private async Task Initialize()
     {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+
         string gtfsUrl = "https://gtfs-static.translink.ca/gtfs/google_transit.zip";
         string localPath = Path.Combine(FileSystem.AppDataDirectory, "GTFS");
 
@@ -71,86 +80,103 @@ public class MainViewModel : BaseViewModel
 
         string gtfsFolder = Path.Combine(FileSystem.AppDataDirectory, "GTFS", "unzipped");
 
-        var tasks = new List<Task>
-        {
-            Task.Run(async () =>
-            {
-                var agency = _gtfsService.ParseAgency(Path.Combine(gtfsFolder, "agency.txt"));
-                await _sqliteService.SaveAgency(agency);
-            }),
-            Task.Run(async () =>
-            {
-                var calendar = _gtfsService.ParseCalendar(Path.Combine(gtfsFolder, "calendar.txt"));
-                await _sqliteService.SaveCalendars(calendar);
-            }),
-            Task.Run(async () =>
-            {
-                var calendarDates = _gtfsService.ParseCalendarDates(Path.Combine(gtfsFolder, "calendar_dates.txt"));
-                await _sqliteService.SaveCalendarDates(calendarDates);
-            }),
-            Task.Run(async () =>
-            {
-                var directionNamesExceptions = _gtfsService.ParseDirectionNamesExceptions(Path.Combine(gtfsFolder, "direction_names_exceptions.txt"));
-                await _sqliteService.SaveDirectionNamesExceptions(directionNamesExceptions);
-            }),
-            Task.Run(async () =>
-            {
-                var directions = _gtfsService.ParseDirections(Path.Combine(gtfsFolder, "directions.txt"));
-                await _sqliteService.SaveDirections(directions);
-            }),
-            Task.Run(async () =>
-            {
-                var feedInfo = _gtfsService.ParseFeedInfo(Path.Combine(gtfsFolder, "feed_info.txt"));
-                await _sqliteService.SaveFeedInfo(feedInfo);
-            }),
-            Task.Run(async () =>
-            {
-                var routeNamesExceptions = _gtfsService.ParseRouteNamesExceptions(Path.Combine(gtfsFolder, "route_names_exceptions.txt"));
-                await _sqliteService.SaveRouteNamesExceptions(routeNamesExceptions);
-            }),
-            Task.Run(async () =>
-            {
-                var routes = _gtfsService.ParseRoutes(Path.Combine(gtfsFolder, "routes.txt"));
-                await _sqliteService.SaveRoutes(routes);
-            }),
-            Task.Run(async () =>
-            {
-                var shapes = _gtfsService.ParseShapes(Path.Combine(gtfsFolder, "shapes.txt"));
-                await _sqliteService.SaveShapes(shapes);
-            }),
-            Task.Run(async () =>
-            {
-                var signUpPeriods = _gtfsService.ParseSignupPeriods(Path.Combine(gtfsFolder, "signup_periods.txt"));
-                await _sqliteService.SaveSignupPeriods(signUpPeriods);
-            }),
-            Task.Run(async () =>
-            {
-                var stopOrderExceptions = _gtfsService.ParseStopOrderExceptions(Path.Combine(gtfsFolder, "stop_order_exceptions.txt"));
-                await _sqliteService.SaveStopOrderExceptions(stopOrderExceptions);
-            }),
-            Task.Run(async () =>
-            {
-                var stops = _gtfsService.ParseStops(Path.Combine(gtfsFolder, "stops.txt"));
-                await _sqliteService.SaveStops(stops);
-            }),
-            Task.Run(async () =>
-            {
-                var stopTimes = _gtfsService.ParseStopTimes(Path.Combine(gtfsFolder, "stop_times.txt"));
-                await _sqliteService.SaveStopTimes(stopTimes);
-            }),
-            Task.Run(async () =>
-            {
-                var transfers = _gtfsService.ParseTransfers(Path.Combine(gtfsFolder, "transfers.txt"));
-                await _sqliteService.SaveTransfers(transfers);
-            }),
-            Task.Run(async () =>
-            {
-                var trips = _gtfsService.ParseTrips(Path.Combine(gtfsFolder, "trips.txt"));
-                await _sqliteService.SaveTrips(trips);
-            })
-        };
+        //var tasks = new List<Task>
+        //{
+        //    Task.Run(async () =>
+        //    {
+        var agency = _gtfsService.ParseAgency(Path.Combine(gtfsFolder, "agency.txt"));
+        await _sqliteService.SaveAgency(agency);
+        Debug.WriteLine("(1 - Saving agencies...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var calendar = _gtfsService.ParseCalendar(Path.Combine(gtfsFolder, "calendar.txt"));
+        await _sqliteService.SaveCalendars(calendar);
+        Debug.WriteLine("(2 - Saving calendars...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var calendarDates = _gtfsService.ParseCalendarDates(Path.Combine(gtfsFolder, "calendar_dates.txt"));
+        await _sqliteService.SaveCalendarDates(calendarDates);
+        Debug.WriteLine("(3 - Saving calendar dates...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var directionNamesExceptions = _gtfsService.ParseDirectionNamesExceptions(Path.Combine(gtfsFolder, "direction_names_exceptions.txt"));
+        await _sqliteService.SaveDirectionNamesExceptions(directionNamesExceptions);
+        Debug.WriteLine("(4 - Saving direction names exceptions...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        //var directions = _gtfsService.ParseDirections(Path.Combine(gtfsFolder, "directions.txt"));
+        //await _sqliteService.SaveDirections(directions);
+        //Debug.WriteLine("(5 - Saving directions...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var feedInfo = _gtfsService.ParseFeedInfo(Path.Combine(gtfsFolder, "feed_info.txt"));
+        await _sqliteService.SaveFeedInfo(feedInfo);
+        Debug.WriteLine("(6 - Saving feed info...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var routeNamesExceptions = _gtfsService.ParseRouteNamesExceptions(Path.Combine(gtfsFolder, "route_names_exceptions.txt"));
+        await _sqliteService.SaveRouteNamesExceptions(routeNamesExceptions);
+        Debug.WriteLine("(7 - Saving route names exceptions...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var routes = _gtfsService.ParseRoutes(Path.Combine(gtfsFolder, "routes.txt"));
+        await _sqliteService.SaveRoutes(routes);
+        Debug.WriteLine("(8 - Saving routes...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var shapes = _gtfsService.ParseShapes(Path.Combine(gtfsFolder, "shapes.txt"));
+        await _sqliteService.SaveShapes(shapes);
+        Debug.WriteLine("(9 - Saving shapes...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var signUpPeriods = _gtfsService.ParseSignupPeriods(Path.Combine(gtfsFolder, "signup_periods.txt"));
+        await _sqliteService.SaveSignupPeriods(signUpPeriods);
+        Debug.WriteLine("(10 - Saving signup periods...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var stopOrderExceptions = _gtfsService.ParseStopOrderExceptions(Path.Combine(gtfsFolder, "stop_order_exceptions.txt"));
+        await _sqliteService.SaveStopOrderExceptions(stopOrderExceptions);
+        Debug.WriteLine("(11 - Saving stop order exceptions...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var stops = _gtfsService.ParseStops(Path.Combine(gtfsFolder, "stops.txt"));
+        await _sqliteService.SaveStops(stops);
+        Debug.WriteLine("(12 - Saving stops...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var stopTimes = _gtfsService.ParseStopTimes(Path.Combine(gtfsFolder, "stop_times.txt"));
+        await _sqliteService.SaveStopTimes(stopTimes);
+        Debug.WriteLine("(13 - Saving stop times...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var transfers = _gtfsService.ParseTransfers(Path.Combine(gtfsFolder, "transfers.txt"));
+        await _sqliteService.SaveTransfers(transfers);
+        Debug.WriteLine("(14 - Saving transfers...");
+        //    }),
+        //    Task.Run(async () =>
+        //    {
+        var trips = _gtfsService.ParseTrips(Path.Combine(gtfsFolder, "trips.txt"));
+        await _sqliteService.SaveTrips(trips);
+        Debug.WriteLine("(15 - Saving trips...");
+        //    })
+        //};
 
-        await Task.WhenAll(tasks);
+        //await Task.WhenAll(tasks);
+
+        IsBusy = false;
     }
 
     private async Task GetStopInfoCommandExecute()

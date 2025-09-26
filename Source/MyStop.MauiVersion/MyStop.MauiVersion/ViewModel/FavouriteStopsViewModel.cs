@@ -64,7 +64,39 @@ public class FavouriteStopsViewModel : BaseViewModel
         _gtfsService = gtfsService;
         _sqliteService = sqliteService;
 
-        ItemList = new ObservableCollection<SavedStop>();
+        ItemList =
+        [
+            new SavedStop()
+            {
+                stop_code = "50024",
+                stop_name = "WB DAVIE ST FS RICHARDS ST",
+                stop_desc = "006"
+            },
+            new SavedStop()
+            {
+                stop_code = "50025",
+                stop_name = "WB DAVIE ST FS GRANVILLE ST",
+                stop_desc = "006"
+            },
+            new SavedStop()
+            {
+                stop_code = "20026",
+                stop_name = "WB DAVIE ST FS HOWE ST",
+                stop_desc = "006"
+            },
+            new SavedStop()
+            {
+                stop_code = "20027",
+                stop_name = "WB DAVIE ST FS HELMCKEN ST",
+                stop_desc = "006"
+            },
+            new SavedStop()
+            {
+                stop_code = "20028",
+                stop_name = "WB DAVIE ST FS NELSON ST",
+                stop_desc = "006"
+            },
+        ];
 
         EditIcon = "icon_edit";
 

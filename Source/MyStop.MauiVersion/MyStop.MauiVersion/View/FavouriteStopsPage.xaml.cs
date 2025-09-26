@@ -35,6 +35,6 @@ public partial class FavouriteStopsPage : ContentPage
     {
         base.OnAppearing();
 
-        vm.LoadStops();
+        //vm.LoadStops();
     }
 }

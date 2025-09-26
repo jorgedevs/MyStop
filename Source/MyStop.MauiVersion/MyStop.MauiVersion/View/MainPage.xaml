@@ -23,6 +23,14 @@
 
         <Image Grid.Row="0" Source="img_cloud1" HorizontalOptions="Start" Margin="10,10,0,0" />
 
+        <ActivityIndicator 
+            IsRunning="True" 
+            IsVisible="{Binding IsBusy}"
+            HorizontalOptions="End"
+            VerticalOptions="Start"
+            Margin="10"
+            Color="White" />
+
         <StackLayout 
             Grid.Row="1"
             Spacing="5"

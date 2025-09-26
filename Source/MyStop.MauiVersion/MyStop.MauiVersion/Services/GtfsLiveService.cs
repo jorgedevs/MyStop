@@ -1,5 +1,4 @@
-﻿using ProtoBuf;
-using TransitRealtime;
+﻿using TransitRealtime;
 
 namespace MyStop.MauiVersion.Services;
 
@@ -25,7 +24,6 @@ public class GtfsLiveService : IGtfsLiveService
 
             var feed = FeedMessage.Parser.ParseFrom(stream);
 
-            // You can now access feed.Entities, etc.
             foreach (var entity in feed.Entity)
             {
                 if (entity.TripUpdate != null)
@@ -47,7 +45,16 @@ public class GtfsLiveService : IGtfsLiveService
             using var httpClient = new HttpClient();
             using var stream = await httpClient.GetStreamAsync($"https://gtfsapi.translink.ca/v3/gtfsposition?apikey={API_KEY}");
 
-            var feed = Serializer.Deserialize<FeedMessage>(stream);
+            var feed = FeedMessage.Parser.ParseFrom(stream);
+
+            foreach (var entity in feed.Entity)
+            {
+                if (entity.TripUpdate != null)
+                {
+                    var tripUpdate = entity.TripUpdate;
+                    Console.WriteLine($"Trip ID: {tripUpdate.Trip.TripId}");
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -62,7 +69,16 @@ public class GtfsLiveService : IGtfsLiveService
             using var httpClient = new HttpClient();
             using var stream = await httpClient.GetStreamAsync($"https://gtfsapi.translink.ca/v3/gtfsalerts?apikey={API_KEY}");
 
-            var feed = Serializer.Deserialize<FeedMessage>(stream);
+            var feed = FeedMessage.Parser.ParseFrom(stream);
+
+            foreach (var entity in feed.Entity)
+            {
+                if (entity.TripUpdate != null)
+                {
+                    var tripUpdate = entity.TripUpdate;
+                    Console.WriteLine($"Trip ID: {tripUpdate.Trip.TripId}");
+                }
+            }
         }
         catch (Exception ex)
         {
