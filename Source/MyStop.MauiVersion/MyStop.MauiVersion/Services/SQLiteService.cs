@@ -1,6 +1,6 @@
 ﻿using MyStop.MauiVersion.CSVs;
 using MyStop.MauiVersion.Model;
-using MyStop.MauiVersion.Utils;
+using MyStop.MauiVersion.Services.Interfaces;
 using SQLite;
 
 namespace MyStop.MauiVersion.Services;
@@ -41,7 +41,7 @@ public class SQLiteService : ISQLiteService
             await connection.CreateTableAsync<Transfer>();
             await connection.CreateTableAsync<Trip>();
 
-            await connection.CreateTableAsync<SavedStop>();
+            await connection.CreateTableAsync<SavedStopModel>();
         }
         catch (Exception ex)
         {
@@ -178,10 +178,15 @@ public class SQLiteService : ISQLiteService
             return false;
         }
 
-        return connection.Table<SavedStop>().Where(i => i.stop_code == stopCode).CountAsync().Result > 0;
+        return connection.Table<SavedStopModel>().Where(i => i.StopNo == stopCode).CountAsync().Result > 0;
     }
 
-    public async Task SaveStop(SavedStop stop)
+    public async Task<List<StopModel>> GetStops()
+    {
+        return await connection.Table<StopModel>().ToListAsync();
+    }
+
+    public async Task SaveStop(SavedStopModel stop)
     {
         if (stop == null)
         {
@@ -191,8 +196,33 @@ public class SQLiteService : ISQLiteService
         await connection.InsertOrReplaceAsync(stop);
     }
 
-    public List<SavedStop> GetSavedStops()
+    public async Task RemoveStop(SavedStopModel stop)
     {
-        return connection.Table<SavedStop>().ToListAsync().Result;
+        if (stop == null)
+        {
+            return;
+        }
+        await connection.DeleteAsync(stop);
     }
+
+    public List<SavedStopModel> GetSavedStops()
+    {
+        return connection.Table<SavedStopModel>().ToListAsync().Result;
+    }
+}
+
+public static class Constants
+{
+    public const string DatabaseFilename = "MyStopDatabase.db3";
+
+    public const SQLiteOpenFlags Flags =
+        // open the database in read/write mode
+        SQLiteOpenFlags.ReadWrite |
+        // create the database if it doesn't exist
+        SQLiteOpenFlags.Create |
+        // enable multi-threaded database access
+        SQLiteOpenFlags.SharedCache;
+
+    public static string DatabasePath =>
+        Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
 }

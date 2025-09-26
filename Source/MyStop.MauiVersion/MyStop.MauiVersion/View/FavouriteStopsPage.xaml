@@ -3,14 +3,14 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="MyStop.MauiVersion.View.FavouriteStopsPage"
-    Title="My Stops"
+    Title="My Saved Stops"
     BackgroundColor="{StaticResource SkyColor}">
 
-    <ContentPage.ToolbarItems>
+    <!--<ContentPage.ToolbarItems>
         <ToolbarItem 
             IconImageSource="icon_donate.png"
             Command="{Binding GoToAboutPage}" />
-    </ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
 
     <ContentPage.Content>
         <Grid>
@@ -61,15 +61,15 @@
                                             Spacing="0" 
                                             VerticalOptions="Center">
                                             <Label 
-                                                Text="{Binding stop_code, StringFormat='BUS STOP #{0}'}" 
+                                                Text="{Binding StopNo, StringFormat='BUS STOP #{0}'}" 
                                                 TextColor="White"
                                                 FontAttributes="Bold" />
                                             <Label 
-                                                Text="{Binding stop_name}" 
+                                                Text="{Binding Name}" 
                                                 TextColor="White" LineBreakMode="TailTruncation"
                                                 FontAttributes="Bold"/>
                                             <Label 
-                                                Text="{Binding stop_desc, StringFormat='ROUTES {0}'}" 
+                                                Text="{Binding Routes, StringFormat='ROUTES {0}'}" 
                                                 TextColor="#92f4f4" 
                                                 FontAttributes="Bold"
                                                 LineBreakMode="TailTruncation" />

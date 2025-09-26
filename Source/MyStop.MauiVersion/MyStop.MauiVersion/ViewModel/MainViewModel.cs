@@ -1,4 +1,5 @@
 ﻿using MyStop.MauiVersion.Services;
+using MyStop.MauiVersion.Services.Interfaces;
 using MyStop.MauiVersion.View;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -42,11 +43,10 @@ public class MainViewModel : BaseViewModel
         _sqliteService = sqliteService;
         _gtfsLiveService = gtfsLiveService;
 
-        BusStopNumber = "";
+        BusStopNumber = "50023"; //string.Empty;
 
-        GetStopInfoCommand = new Command(Tests);
-        //async () => await c cz43
-        //(),
+        GetStopInfoCommand = new Command(
+            async () => await GetStopInfoCommandExecute());
 
         GoToFavoriteStops = new Command(
             async () => await Shell.Current.GoToAsync(nameof(FavouriteStopsPage)));
@@ -58,7 +58,7 @@ public class MainViewModel : BaseViewModel
     {
         Task.Run(async () =>
         {
-            //await _gtfsLiveService.TripUpdate();
+            await _gtfsLiveService.TripUpdate();
             await _gtfsLiveService.PositionUpdate();
             await _gtfsLiveService.ServiceAlert();
         });
@@ -187,31 +187,30 @@ public class MainViewModel : BaseViewModel
 
         try
         {
-            if (BusStopNumber.Length == 0 || BusStopNumber.Contains("."))
-            {
-                if (Application.Current?.MainPage != null)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Validation Error", "Please enter a valid stop code.", "OK");
-                }
-                else
-                {
-                    Debug.WriteLine("MainPage is null. Cannot display alert.");
-                }
-            }
-            else
-            {
-                bool stopFound = _sqliteService.IsStop(BusStopNumber);
+            //if (BusStopNumber.Length == 0 || BusStopNumber.Contains("."))
+            //{
+            //    if (Application.Current?.MainPage != null)
+            //    {
+            //        await Application.Current.MainPage.DisplayAlert("Validation Error", "Please enter a valid stop code.", "OK");
+            //    }
+            //    else
+            //    {
+            //        Debug.WriteLine("MainPage is null. Cannot display alert.");
+            //    }
+            //}
+            //else
+            //{
+            //    bool stopFound = _sqliteService.IsStop(BusStopNumber);
 
-                if (stopFound)
-                {
-                    await Shell.Current.GoToAsync($"{nameof(BusArrivalsPage)}?BusStopNumber={BusStopNumber}");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Validation Error", "Stop not found", "OK");
-                }
-                //var stop = _sqliteService.GetStopInfo(BusStopNumber);
-            }
+            //    if (stopFound)
+            //    {
+            await Shell.Current.GoToAsync($"{nameof(BusArrivalsPage)}?BusStopNumber={BusStopNumber}");
+            //    }
+            //    else
+            //    {
+            //        await Application.Current.MainPage.DisplayAlert("Validation Error", "Stop not found", "OK");
+            //    }
+            //}
         }
         catch (Exception ex)
         {

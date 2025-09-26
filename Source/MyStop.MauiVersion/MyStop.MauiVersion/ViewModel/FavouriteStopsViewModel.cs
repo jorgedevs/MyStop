@@ -1,6 +1,6 @@
 ﻿using MyStop.MauiVersion.CSVs;
 using MyStop.MauiVersion.Model;
-using MyStop.MauiVersion.Services;
+using MyStop.MauiVersion.Services.Interfaces;
 using MyStop.MauiVersion.View;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -12,7 +12,7 @@ public class FavouriteStopsViewModel : BaseViewModel
     private readonly IGtfsService _gtfsService;
     private readonly ISQLiteService _sqliteService;
 
-    public ObservableCollection<SavedStop> ItemList { get; set; }
+    public ObservableCollection<SavedStopModel> ItemList { get; set; }
 
     bool isEditVisible;
     public bool IsEditVisible
@@ -66,35 +66,35 @@ public class FavouriteStopsViewModel : BaseViewModel
 
         ItemList =
         [
-            new SavedStop()
+            new SavedStopModel()
             {
-                stop_code = "50024",
-                stop_name = "WB DAVIE ST FS RICHARDS ST",
-                stop_desc = "006"
+                StopNo = "50024",
+                Name = "WB DAVIE ST FS RICHARDS ST",
+                Routes = "006"
             },
-            new SavedStop()
+            new SavedStopModel()
             {
-                stop_code = "50025",
-                stop_name = "WB DAVIE ST FS GRANVILLE ST",
-                stop_desc = "006"
+                StopNo = "50025",
+                Name = "WB DAVIE ST FS GRANVILLE ST",
+                Routes = "006"
             },
-            new SavedStop()
+            new SavedStopModel()
             {
-                stop_code = "20026",
-                stop_name = "WB DAVIE ST FS HOWE ST",
-                stop_desc = "006"
+                StopNo = "20026",
+                Name = "WB DAVIE ST FS HOWE ST",
+                Routes = "006"
             },
-            new SavedStop()
+            new SavedStopModel()
             {
-                stop_code = "20027",
-                stop_name = "WB DAVIE ST FS HELMCKEN ST",
-                stop_desc = "006"
+                StopNo = "20027",
+                Name = "WB DAVIE ST FS HELMCKEN ST",
+                Routes = "006"
             },
-            new SavedStop()
+            new SavedStopModel()
             {
-                stop_code = "20028",
-                stop_name = "WB DAVIE ST FS NELSON ST",
-                stop_desc = "006"
+                StopNo = "20028",
+                Name = "WB DAVIE ST FS NELSON ST",
+                Routes = "006"
             },
         ];
 
@@ -170,11 +170,11 @@ public class FavouriteStopsViewModel : BaseViewModel
         ItemList.Clear();
         foreach (var stop in stops)
         {
-            ItemList.Add(new SavedStop()
+            ItemList.Add(new SavedStopModel()
             {
                 //Tag = stop.Tag,
-                stop_name = stop.stop_name,
-                stop_code = stop.stop_code,
+                Name = stop.Name,
+                StopNo = stop.StopNo,
                 //Routes = stop.Routes,
                 //HasTag = !string.IsNullOrEmpty(stop.Tag),
                 //EditMode = false,

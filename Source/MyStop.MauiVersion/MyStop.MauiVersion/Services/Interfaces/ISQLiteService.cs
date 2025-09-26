@@ -1,7 +1,7 @@
 ﻿using MyStop.MauiVersion.CSVs;
 using MyStop.MauiVersion.Model;
 
-namespace MyStop.MauiVersion.Services;
+namespace MyStop.MauiVersion.Services.Interfaces;
 
 public interface ISQLiteService
 {
@@ -41,7 +41,9 @@ public interface ISQLiteService
 
     public bool IsSavedStop(string stopCode);
 
-    public Task SaveStop(SavedStop stop);
+    public Task SaveStop(SavedStopModel stop);
 
-    public List<SavedStop> GetSavedStops();
+    public Task RemoveStop(SavedStopModel stop);
+
+    public List<SavedStopModel> GetSavedStops();
 }

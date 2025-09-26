@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="MyStop.MauiVersion.View.BusArrivalsPage"
-    Title="Bus Arrival Times"
+    Title="Bus Arrivals"
     BackgroundColor="{StaticResource SkyColor}">
 
     <ContentPage.ToolbarItems>
@@ -30,6 +30,11 @@
 
     <ContentPage.Content>
         <Grid>
+            <Image 
+                Source="bg_clouds2"
+                VerticalOptions="Fill"
+                Opacity="0.25" />
+
             <Grid 
                 x:Name="grdContent" 
                 Padding="0,10,0,0">
@@ -39,10 +44,10 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Grid 
+                <Grid
                     Grid.Row="0"
                     ColumnSpacing="10" 
-                    Padding="10,8,10,8">
+                    Padding="20,8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -53,7 +58,7 @@
                         Source="img_stopsign.png" 
                         VerticalOptions="Center" 
                         HorizontalOptions="Start" 
-                        WidthRequest="80" />
+                        WidthRequest="50" />
 
                     <StackLayout 
                         Grid.Column="1" 
@@ -82,13 +87,14 @@
                         SeparatorVisibility="None" 
                         IsPullToRefreshEnabled="true" 
                         IsRefreshing="{Binding IsUpdatingArrivalTimes}" 
-                        Margin="0,5,0,5">
+                        Margin="0,5">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <Grid 
-                                        Padding="17,10" 
-                                        ColumnSpacing="10">
+                                    <Grid
+                                        ColumnSpacing="10"
+                                        Padding="10,10"
+                                        Margin="10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
@@ -135,10 +141,11 @@
                         Aspect="Fill" 
                         HorizontalOptions="Fill" 
                         VerticalOptions="End" />
+                    <!-- IsVisible="false" -->
                     <Image 
                         x:Name="imgBus" 
                         Source="img_bus_side" 
-                        IsVisible="false" Scale="0.9" 
+                        Scale="0.9" 
                         HorizontalOptions="Start" 
                         VerticalOptions="End"  />
                 </Grid>

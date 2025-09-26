@@ -73,9 +73,9 @@ public sealed class RestClient
         return stop;
     }
 
-    public async Task<List<Schedule>> GetBusArrivalsTimes(string busNumber)
+    public async Task<List<ScheduleModel>> GetBusArrivalsTimes(string busNumber)
     {
-        var schedules = new List<Schedule>();
+        var schedules = new List<ScheduleModel>();
         string jsonResponse = string.Empty;
 
         try
@@ -112,7 +112,7 @@ public sealed class RestClient
 
                 foreach (var schedule in nextBus.Schedules)
                 {
-                    var scheduleItem = new Schedule();
+                    var scheduleItem = new ScheduleModel();
                     scheduleItem.RouteNo = nextBus.RouteNo;
                     scheduleItem.Destination = schedule.Destination;
                     scheduleItem.ExpectedCountdown = schedule.ExpectedCountdown;

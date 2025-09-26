@@ -1,6 +1,6 @@
 ﻿using MyStop.MauiVersion.CSVs;
 
-namespace MyStop.MauiVersion.Services;
+namespace MyStop.MauiVersion.Services.Interfaces;
 
 public interface IGtfsService
 {

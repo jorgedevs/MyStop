@@ -1,17 +1,15 @@
-﻿using MyStop.MauiVersion.Utils;
-
-namespace MyStop.MauiVersion;
+﻿namespace MyStop.MauiVersion;
 
 public partial class App : Application
 {
-    public static StopManager StopManager { get; set; }
+    public static bool IsNight { get; set; }
 
     public App()
     {
         InitializeComponent();
 
-        StopManager = new StopManager();
-        //_ = StopManager.Init();
+        IsNight = true;
+        App.Current.Resources["SkyColor"] = Color.FromArgb("#133B4F");
 
         MainPage = new AppShell();
     }
