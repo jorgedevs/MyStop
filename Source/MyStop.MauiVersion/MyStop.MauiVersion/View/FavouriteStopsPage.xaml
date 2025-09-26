@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="MyStop.MauiVersion.View.FavouriteStopsPage"
-    Title="My Saved Stops"
+    Title="Saved Stops"
     BackgroundColor="{StaticResource SkyColor}">
 
     <!--<ContentPage.ToolbarItems>
@@ -117,9 +117,10 @@
                     x:Name="imgBus" 
                     Source="img_bus_side" 
                     IsVisible="true" 
-                    Scale="0.8" 
+                    Scale="0.9" 
                     HorizontalOptions="Start" 
-                    VerticalOptions="End"  />
+                    VerticalOptions="End"
+                    Margin="0,0,0,3"/>
             </Grid>
 
             <Grid 

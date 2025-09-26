@@ -144,7 +144,7 @@
                     <Image 
                         x:Name="imgBus" 
                         Source="img_bus_side" 
-                        Scale="0.95" 
+                        Scale="0.9" 
                         HorizontalOptions="Start" 
                         VerticalOptions="End"
                         Margin="0,0,0,8"/>

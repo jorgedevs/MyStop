@@ -4,8 +4,8 @@ namespace MyStop.MauiVersion.View;
 
 public partial class BusArrivalsPage : ContentPage
 {
-    Random randomBusModel = new Random();
     bool _keepTicking;
+    Random randomBusModel = new Random();
 
     public BusArrivalsPage(BusArrivalsViewModel viewModel)
     {

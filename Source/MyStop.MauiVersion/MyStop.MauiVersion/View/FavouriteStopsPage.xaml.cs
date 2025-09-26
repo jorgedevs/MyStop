@@ -4,12 +4,13 @@ namespace MyStop.MauiVersion.View;
 
 public partial class FavouriteStopsPage : ContentPage
 {
-    FavouriteStopsViewModel vm;
+    bool _keepTicking;
+    Random randomBusModel = new Random();
 
     public FavouriteStopsPage(FavouriteStopsViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = vm = viewModel;
+        BindingContext = viewModel;
 
         if (App.IsNight)
         {
@@ -39,9 +40,48 @@ public partial class FavouriteStopsPage : ContentPage
         }
     }
 
+    public bool Tick()
+    {
+        if (_keepTicking)
+        {
+            //vm.GetData();
+            Animate();
+        }
+        return _keepTicking;
+    }
+
+    async Task Animate()
+    {
+        if (imgBus == null)
+            return;
+
+
+        imgBus.IsVisible = true;
+        imgBus.TranslationX = this.Width + 10;
+        await imgBus!.TranslateTo(0, 0, 3500, Easing.CubicOut);
+        await imgBus!.TranslateTo(0, 0, 2000, null);
+        await imgBus!.TranslateTo(-(this.Width + 10), 0, 3500, Easing.CubicIn);
+
+        string busImageSource = "";
+        busImageSource = (randomBusModel.Next(2) == 0) ? "img_bus_side" : "img_bus_side_long";
+        if (App.IsNight)
+            busImageSource += "_night";
+
+        imgBus.Source = ImageSource.FromFile(busImageSource);
+    }
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
+        _keepTicking = true;
+
+        Dispatcher.StartTimer(
+            new TimeSpan(0, 0, 15),
+            () => Tick()
+        );
+
+        _ = Animate();
 
         //vm.LoadStops();
     }
