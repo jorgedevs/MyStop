@@ -55,7 +55,6 @@ public partial class FavouriteStopsPage : ContentPage
         if (imgBus == null)
             return;
 
-
         imgBus.IsVisible = true;
         imgBus.TranslationX = this.Width + 10;
         await imgBus!.TranslateTo(0, 0, 3500, Easing.CubicOut);

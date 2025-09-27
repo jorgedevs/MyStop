@@ -21,7 +21,12 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Image Grid.Row="0" Source="img_cloud1" HorizontalOptions="Start" Margin="10,10,0,0" />
+        <Image 
+            Grid.Row="0"
+            x:Name="imgCloud1"
+            Source="img_cloud1" 
+            HorizontalOptions="Start"
+            Margin="20,20,0,0" />
 
         <ActivityIndicator 
             IsRunning="True" 
@@ -97,14 +102,16 @@
 
         <Image 
             Grid.Row="2" 
+            x:Name="imgCloud2"
             Source="img_cloud2" 
-            HorizontalOptions="End" 
+            HorizontalOptions="End"
             Margin="0,0,20,0"  />
 
         <Image 
             Grid.Row="3" 
+            x:Name="imgCloud3"
             Source="img_cloud3" 
-            HorizontalOptions="Start" 
+            HorizontalOptions="Start"
             Margin="40,10,0,0"  />
 
         <Grid 
@@ -122,13 +129,13 @@
                 HeightRequest="170" 
                 HorizontalOptions="Start" 
                 VerticalOptions="End" 
-                TranslationY="10" 
+                TranslationY="20" 
                 Margin="30,0,0,0" />
 
             <Image 
                 x:Name="imgLamp"
                 Source="img_lamp" 
-                Scale="0.75" 
+                Scale="1" 
                 HorizontalOptions="End" 
                 Margin="0,0,15,10" />
         </Grid>

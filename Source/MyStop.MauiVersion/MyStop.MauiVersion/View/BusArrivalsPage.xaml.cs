@@ -26,7 +26,7 @@ public partial class BusArrivalsPage : ContentPage
         if (_keepTicking)
         {
             //vm.GetData();
-            Animate();
+            _ = Animate();
         }
         return _keepTicking;
     }
