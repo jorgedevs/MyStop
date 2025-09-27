@@ -20,4 +20,4 @@ On every bus stop, there's a sign with a 5 digit code that you will enter on the
 
 ## Support
 
-Finding bugs or weird behaviors? File an [issue](https://github.com/jorgedevs/NetFrames/issues) with repro steps.
+Finding bugs or weird behaviors? File an [issue](https://github.com/jorgedevs/MyStop/issues) with repro steps.
