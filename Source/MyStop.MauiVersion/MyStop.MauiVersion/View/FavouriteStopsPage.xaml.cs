@@ -16,7 +16,7 @@ public partial class FavouriteStopsPage : ContentPage
         {
             imgBus.Source = ImageSource.FromFile("img_bus_side_night.png");
             imgFooter.Source = ImageSource.FromFile("bg_terminal_night.png");
-            imgTopList.Source = ImageSource.FromFile("img_gradient_top_night.png");
+            //imgTopList.Source = ImageSource.FromFile("img_gradient_top_night.png");
             imgBottomList.Source = ImageSource.FromFile("img_gradient_bottom_night.png");
         }
     }

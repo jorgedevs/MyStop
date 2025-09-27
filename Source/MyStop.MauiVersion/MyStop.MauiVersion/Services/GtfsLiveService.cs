@@ -13,7 +13,7 @@ public interface IGtfsLiveService
 
 public class GtfsLiveService : IGtfsLiveService
 {
-    const string API_KEY = "44X6NZDOgAiPQRRsxySV";
+    const string API_KEY = "API_KEY";
 
     public async Task TripUpdate()
     {

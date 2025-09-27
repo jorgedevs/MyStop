@@ -41,7 +41,7 @@ namespace MyStop
 
             try
             {
-                var response = await client.GetAsync(busNumber + "?apikey=GfGjjbw8OuxcGMNZiWgf", HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
+                var response = await client.GetAsync(busNumber + "?apikey=API KEY", HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 if (!response.IsSuccessStatusCode)
                     return stop;
@@ -73,7 +73,7 @@ namespace MyStop
 
             try
             {
-                HttpResponseMessage response = await client.GetAsync(busNumber + "/estimates?apiKey=GfGjjbw8OuxcGMNZiWgf&fake=", HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
+                HttpResponseMessage response = await client.GetAsync(busNumber + "/estimates?apiKey=API KEY&fake=", HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
                 if (!response.IsSuccessStatusCode)

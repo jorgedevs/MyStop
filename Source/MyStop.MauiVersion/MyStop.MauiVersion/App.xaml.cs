@@ -8,8 +8,8 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        IsNight = true;
-        App.Current.Resources["SkyColor"] = Color.FromArgb("#133B4F");
+        //IsNight = true;
+        //App.Current.Resources["SkyColor"] = Color.FromArgb("#133B4F");
 
         MainPage = new AppShell();
     }

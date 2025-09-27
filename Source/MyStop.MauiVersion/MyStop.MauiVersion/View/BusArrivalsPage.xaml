@@ -119,12 +119,12 @@
                         </ListView.ItemTemplate>
                     </ListView>
 
-                    <Image 
+                    <!--<Image 
                         x:Name="imgTopList" 
                         Source="img_gradient_top" 
                         Aspect="AspectFill" 
                         InputTransparent="true" 
-                        VerticalOptions="Start" />
+                        VerticalOptions="Start" />-->
                     <Image 
                         x:Name="imgBottomList" 
                         Source="img_gradient_bottom" 

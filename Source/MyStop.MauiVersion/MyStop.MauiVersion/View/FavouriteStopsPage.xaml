@@ -15,12 +15,13 @@
     <ContentPage.Content>
         <Grid>
             <Image 
-                Source="bg_clouds2" 
-                Opacity="0.2" 
-                Aspect="AspectFill" />
+                Source="bg_clouds2"
+                VerticalOptions="Fill"
+                Opacity="0.25" />
 
             <Grid 
-                x:Name="grdContent">
+                x:Name="grdContent"
+                Padding="0,10,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
@@ -91,12 +92,11 @@
                         </ListView.ItemTemplate>
                     </ListView>
 
-
-                    <Image 
+                    <!--<Image 
                         x:Name="imgTopList" 
                         Source="img_gradient_top" 
                         Aspect="AspectFill" InputTransparent="true" 
-                        VerticalOptions="Start" />
+                        VerticalOptions="Start" />-->
                     <Image 
                         x:Name="imgBottomList" 
                         Source="img_gradient_bottom" 
@@ -104,23 +104,23 @@
                         VerticalOptions="End" />
                 </Grid>
 
-                <Image 
-                    Grid.Row="1" 
-                    x:Name="imgFooter" 
-                    Source="bg_terminal" 
-                    Scale="1.001"
-                    Aspect="AspectFill" 
-                    HorizontalOptions="Fill"
-                    VerticalOptions="End" />
-                <Image 
-                    Grid.Row="1" 
-                    x:Name="imgBus" 
-                    Source="img_bus_side" 
-                    IsVisible="true" 
-                    Scale="0.9" 
-                    HorizontalOptions="Start" 
-                    VerticalOptions="End"
-                    Margin="0,0,0,3"/>
+                <Grid
+                    Grid.Row="1">
+                    <Image 
+                        x:Name="imgFooter" 
+                        Source="bg_terminal" 
+                        Aspect="Fill" 
+                        HorizontalOptions="Fill" 
+                        VerticalOptions="End" />
+                    <Image 
+                        x:Name="imgBus" 
+                        Source="img_bus_side" 
+                        IsVisible="true" 
+                        Scale="0.9" 
+                        HorizontalOptions="Start" 
+                        VerticalOptions="End"
+                        Margin="0,0,0,3"/>
+                </Grid>
             </Grid>
 
             <Grid 
