@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MyStop.MauiVersion.View.BusArrivalsPage"
+    Title="Bus Arrivals"
+    BackgroundColor="{StaticResource SkyColor}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            IconImageSource="{Binding FavoriteIcon}"
+            Command="{Binding FavouriteCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+            <Style x:Key="ListItemStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontSize" Value="Default" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid>
+            <Image 
+                Source="bg_clouds2"
+                VerticalOptions="Fill"
+                Opacity="0.25" />
+
+            <Grid 
+                x:Name="grdContent" 
+                Padding="0,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid
+                    Grid.Row="0"
+                    ColumnSpacing="10" 
+                    Padding="20,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Image 
+                        Grid.Column="0" 
+                        Source="img_stopsign.png" 
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Start" 
+                        WidthRequest="50" />
+
+                    <StackLayout 
+                        Grid.Column="1" 
+                        Grid.ColumnSpan="2" 
+                        VerticalOptions="Center">
+                        <Label 
+                            Text="{Binding StopInfo}" 
+                            LineBreakMode="TailTruncation" 
+                            Style="{StaticResource TitleStyle}" />
+                        <Label 
+                            Grid.Column="0" 
+                            Text="{Binding StopNumber, StringFormat='Stop #{0}'}" 
+                            Style="{StaticResource TitleStyle}" 
+                            FontSize="40"
+                            FontAttributes="Bold"/>
+                    </StackLayout>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <ListView 
+                        x:Name="listSchedule" 
+                        ItemsSource="{Binding ArrivalTimes}" 
+                        RefreshCommand="{Binding RefreshCommand}" 
+                        BackgroundColor="Transparent" 
+                        HasUnevenRows="true" 
+                        SeparatorVisibility="None" 
+                        IsPullToRefreshEnabled="true" 
+                        IsRefreshing="{Binding IsUpdatingArrivalTimes}" 
+                        Margin="0,5">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Grid
+                                        ColumnSpacing="10"
+                                        Padding="10,10"
+                                        Margin="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label 
+                                            Grid.Column="0" 
+                                            Text="{Binding RouteNo}"
+                                            Style="{StaticResource ListItemStyle}" />
+                                        <Label
+                                            Grid.Column="1" 
+                                            Text="{Binding Destination, StringFormat='{0}'}"
+                                            Style="{StaticResource ListItemStyle}" />
+                                        <Label 
+                                            Grid.Column="2" 
+                                            Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"
+                                            Style="{StaticResource ListItemStyle}" />
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Image 
+                        x:Name="imgTopList" 
+                        Source="img_gradient_top" 
+                        Aspect="AspectFill" 
+                        InputTransparent="true" 
+                        VerticalOptions="Start" />
+                    <Image 
+                        x:Name="imgBottomList" 
+                        Source="img_gradient_bottom" 
+                        Aspect="AspectFill" 
+                        InputTransparent="true" 
+                        VerticalOptions="End" />
+                </Grid>
+
+                <Grid 
+                    Grid.Row="2">
+                    <Image 
+                        x:Name="imgFooter" 
+                        Source="bg_arrivals" 
+                        Aspect="Fill" 
+                        HorizontalOptions="Fill" 
+                        VerticalOptions="End" />
+                    <Image 
+                        x:Name="imgBus" 
+                        Source="img_bus_side" 
+                        Scale="0.9" 
+                        HorizontalOptions="Start" 
+                        VerticalOptions="End"
+                        Margin="0,0,0,8"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

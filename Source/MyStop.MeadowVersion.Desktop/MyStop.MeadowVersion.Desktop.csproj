@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <LangVersion>10</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="Meadow.Desktop" Version="1.12.8" />
+      <PackageReference Include="Meadow.Foundation.Sensors.Hid.Keyboard" Version="1.12.8" />
+      <ProjectReference Include="..\MyStop.MeadowVersion.Core\MyStop.MeadowVersion.Core.csproj" />
+    </ItemGroup>
+</Project>
