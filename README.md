@@ -12,6 +12,13 @@ You can read more about it on the [App Developer Resources](https://www.translin
 
 ## Software Stack
 
+<div align="center">
+  <a href="https://dotnet.microsoft.com/en-us/"><img width="10%" src="/Assets/Images/tile-net.png" alt=".NET"></a>
+  <a href="https://dotnet.microsoft.com/en-us/apps/maui/"><img width="10%" src="/Assets/Images/tile-net-maui.png" alt=".NET MAUI"/></a>
+  <a href="https://sqlite.org/"><img width="10%" src="/Assets/Images/tile-sqlite.png" alt="SQLite"/></a>
+  <a href="https://www.newtonsoft.com/json/"><img width="10%" src="/Assets/Images/tile-json.png" alt="Json"></a>
+</div>
+
 ## How it works
 
 On every bus stop, there's a sign with a 5 digit code that you will enter on the app, and it'll query the bus arrival times on that specific stop, polling data every 10 seconds.
