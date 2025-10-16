@@ -102,6 +102,37 @@
                         Source="img_gradient_bottom" 
                         Aspect="AspectFill" InputTransparent="true" 
                         VerticalOptions="End" />
+
+                    <StackLayout
+
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <Image 
+                            Source="icon_stop.png" 
+                            Aspect="AspectFit" 
+                            WidthRequest="60" />
+                        
+                        <Label 
+                            Text="No Saved Stops found"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            HorizontalOptions="Center"
+                            Margin="0,10,0,0"/>
+                        
+                        <HorizontalStackLayout>
+                            <Label 
+                                Text="Look up a stop and tap "
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                FontSize="Medium"/>
+                            <Image 
+                                Source="icon_favourites_add.png" 
+                                Aspect="AspectFit" 
+                                HeightRequest="25" />
+                        </HorizontalStackLayout>
+                        
+                    </StackLayout>
                 </Grid>
 
                 <Grid

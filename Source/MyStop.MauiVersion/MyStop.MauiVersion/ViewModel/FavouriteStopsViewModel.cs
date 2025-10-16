@@ -64,39 +64,41 @@ public class FavouriteStopsViewModel : BaseViewModel
         _gtfsService = gtfsService;
         _sqliteService = sqliteService;
 
-        ItemList =
-        [
-            new SavedStopModel()
-            {
-                StopNo = "50024",
-                Name = "WB DAVIE ST FS RICHARDS ST",
-                Routes = "006"
-            },
-            new SavedStopModel()
-            {
-                StopNo = "50025",
-                Name = "WB DAVIE ST FS GRANVILLE ST",
-                Routes = "006"
-            },
-            new SavedStopModel()
-            {
-                StopNo = "20026",
-                Name = "WB DAVIE ST FS HOWE ST",
-                Routes = "006"
-            },
-            new SavedStopModel()
-            {
-                StopNo = "20027",
-                Name = "WB DAVIE ST FS HELMCKEN ST",
-                Routes = "006"
-            },
-            new SavedStopModel()
-            {
-                StopNo = "20028",
-                Name = "WB DAVIE ST FS NELSON ST",
-                Routes = "006"
-            },
-        ];
+        ItemList = new ObservableCollection<SavedStopModel>();
+
+        //ItemList =
+        //[
+        //    new SavedStopModel()
+        //    {
+        //        StopNo = "50024",
+        //        Name = "WB DAVIE ST FS RICHARDS ST",
+        //        Routes = "006"
+        //    },
+        //    new SavedStopModel()
+        //    {
+        //        StopNo = "50025",
+        //        Name = "WB DAVIE ST FS GRANVILLE ST",
+        //        Routes = "006"
+        //    },
+        //    new SavedStopModel()
+        //    {
+        //        StopNo = "20026",
+        //        Name = "WB DAVIE ST FS HOWE ST",
+        //        Routes = "006"
+        //    },
+        //    new SavedStopModel()
+        //    {
+        //        StopNo = "20027",
+        //        Name = "WB DAVIE ST FS HELMCKEN ST",
+        //        Routes = "006"
+        //    },
+        //    new SavedStopModel()
+        //    {
+        //        StopNo = "20028",
+        //        Name = "WB DAVIE ST FS NELSON ST",
+        //        Routes = "006"
+        //    },
+        //];
 
         EditIcon = "icon_edit";
 
@@ -107,6 +109,8 @@ public class FavouriteStopsViewModel : BaseViewModel
         SaveChangesCommand = new Command(SaveChangesCommandExecute);
 
         GoToAboutPage = new Command(async () => await Shell.Current.GoToAsync(nameof(AboutPage)));
+
+        LoadStops();
     }
 
     private void ToggleEditCommandExecute()
