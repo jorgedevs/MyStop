@@ -104,7 +104,7 @@
                         VerticalOptions="End" />
 
                     <StackLayout
-                        IsVisible="False"
+                        IsVisible="{Binding IsEmpty}"
                         HorizontalOptions="Center"
                         VerticalOptions="Center">
                         <Image 

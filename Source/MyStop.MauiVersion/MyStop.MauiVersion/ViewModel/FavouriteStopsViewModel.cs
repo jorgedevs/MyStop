@@ -28,6 +28,13 @@ public class FavouriteStopsViewModel : BaseViewModel
         set { enableEdit = value; OnPropertyChanged(nameof(EnableEdit)); }
     }
 
+    bool isEmpty;
+    public bool IsEmpty
+    {
+        get => isEmpty;
+        set { isEmpty = value; OnPropertyChanged(nameof(IsEmpty)); }
+    }
+
     string tagName;
     public string TagName
     {
@@ -169,7 +176,10 @@ public class FavouriteStopsViewModel : BaseViewModel
         var stops = _sqliteService.GetSavedStops();
 
         if (stops == null)
+        {
+            IsEmpty = true;
             return;
+        }
 
         ItemList.Clear();
         foreach (var stop in stops)
@@ -184,5 +194,7 @@ public class FavouriteStopsViewModel : BaseViewModel
                 //EditMode = false,
             });
         }
+
+        IsEmpty = ItemList.Count == 0;
     }
 }
