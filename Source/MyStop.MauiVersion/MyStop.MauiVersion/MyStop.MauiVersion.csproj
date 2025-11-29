@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
-        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+        <TargetFramework>net10.0-android</TargetFramework>
         <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
         <!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
 
@@ -37,6 +36,12 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(OS)' == 'Unix'">
+        <!-- Try standard Linux locations for Android SDK -->
+        <AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' and Exists('$(HOME)/Android/Sdk')">$(HOME)/Android/Sdk</AndroidSdkDirectory>
+        <AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' and Exists('/usr/lib/android-sdk')">/usr/lib/android-sdk</AndroidSdkDirectory>
+    </PropertyGroup>
+
     <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#3B70DF" />
@@ -58,7 +63,7 @@
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Google.Protobuf" Version="3.32.1" />
-        <PackageReference Include="GtfsRealtimeBindings" Version="2.0.0" />
+        <PackageReference Include="GtfsRealtimeBindings" Version="*" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.110" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.110" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
