@@ -45,3 +45,4 @@ Source/MyStop.XamarinVersion (Legacy)/MyStop/obj/
 Source/MyStop.MauiVersion/MyStop.MauiVersion/bin/
 Source/MyStop.XamarinVersion (Legacy)/MyStop.Common/obj/
 Source/MyStop.MauiVersion/MyStop.MauiVersion/MyStop.MauiVersion.csproj.user
+.nuget/
