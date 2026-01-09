@@ -51,7 +51,7 @@ public class MainViewModel : BaseViewModel
         GoToFavoriteStops = new Command(
             async () => await Shell.Current.GoToAsync(nameof(FavouriteStopsPage)));
 
-        //_ = Initialize();
+        _ = Initialize();
     }
 
     public void Tests()
