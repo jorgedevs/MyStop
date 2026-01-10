@@ -11,7 +11,7 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     private readonly ISQLiteService _sqliteService;
 
     // Configuration constants
-    private const int MaxStopTimesToProcess = 50;
+    private const int MaxStopTimesToProcess = 500;
     private const int MaxMinutesAhead = 120; // 2 hours
     private const int MaxArrivalsToDisplay = 15;
 
@@ -149,6 +149,9 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             if (stopInfo == null)
                 return;
 
+            // Get active service IDs for today
+            var activeServices = await _sqliteService.GetActiveServiceIdsAsync(DateTime.Now);
+
             // Get all stop times for this stop
             var stopTimes = await _sqliteService.GetStopTimesForStopAsync(stopInfo.stop_id!);
 
@@ -163,6 +166,15 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             {
                 // Parse arrival time (format: HH:MM:SS, can be > 24:00:00 for next day)
                 if (string.IsNullOrEmpty(stopTime.arrival_time))
+                    continue;
+
+                // Get trip to check if service is active today
+                var trip = await _sqliteService.GetTripAsync(stopTime.trip_id!);
+                if (trip == null)
+                    continue;
+
+                // Check if this trip's service is active today
+                if (!activeServices.Contains(trip.service_id!))
                     continue;
 
                 var timeParts = stopTime.arrival_time.Split(':');
@@ -186,11 +198,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 
                 // Only show arrivals within the next 2 hours
                 if (minutesUntilArrival > MaxMinutesAhead)
-                    continue;
-
-                // Get trip and route info
-                var trip = await _sqliteService.GetTripAsync(stopTime.trip_id!);
-                if (trip == null)
                     continue;
 
                 var route = await _sqliteService.GetRouteAsync(trip.route_id!);

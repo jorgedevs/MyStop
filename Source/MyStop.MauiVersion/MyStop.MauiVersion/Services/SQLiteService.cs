@@ -241,6 +241,78 @@ public class SQLiteService : ISQLiteService
         return await connection.Table<Route>()
             .FirstOrDefaultAsync(r => r.route_id == routeId);
     }
+
+    public async Task<List<Calendar>> GetCalendarsAsync()
+    {
+        return await connection.Table<Calendar>().ToListAsync();
+    }
+
+    public async Task<List<CalendarDate>> GetCalendarDatesAsync()
+    {
+        return await connection.Table<CalendarDate>().ToListAsync();
+    }
+
+    public async Task<HashSet<string>> GetActiveServiceIdsAsync(DateTime date)
+    {
+        var activeServices = new HashSet<string>();
+
+        // Get the date string in YYYYMMDD format
+        var dateString = date.ToString("yyyyMMdd");
+
+        // Get the day of week
+        var dayOfWeek = date.DayOfWeek;
+
+        // Get all calendars
+        var calendars = await GetCalendarsAsync();
+
+        foreach (var calendar in calendars)
+        {
+            // Check if the date is within the calendar's date range
+            if (string.Compare(dateString, calendar.start_date) >= 0 &&
+                string.Compare(dateString, calendar.end_date) <= 0)
+            {
+                // Check if service runs on this day of week
+                bool runsToday = dayOfWeek switch
+                {
+                    DayOfWeek.Monday => calendar.monday == "1",
+                    DayOfWeek.Tuesday => calendar.tuesday == "1",
+                    DayOfWeek.Wednesday => calendar.wednesday == "1",
+                    DayOfWeek.Thursday => calendar.thursday == "1",
+                    DayOfWeek.Friday => calendar.friday == "1",
+                    DayOfWeek.Saturday => calendar.saturday == "1",
+                    DayOfWeek.Sunday => calendar.sunday == "1",
+                    _ => false
+                };
+
+                if (runsToday && !string.IsNullOrEmpty(calendar.service_id))
+                {
+                    activeServices.Add(calendar.service_id);
+                }
+            }
+        }
+
+        // Apply calendar_dates exceptions
+        var calendarDates = await GetCalendarDatesAsync();
+
+        foreach (var calendarDate in calendarDates)
+        {
+            if (calendarDate.date == dateString && !string.IsNullOrEmpty(calendarDate.service_id))
+            {
+                if (calendarDate.exception_type == "1")
+                {
+                    // Service added for this date
+                    activeServices.Add(calendarDate.service_id);
+                }
+                else if (calendarDate.exception_type == "2")
+                {
+                    // Service removed for this date
+                    activeServices.Remove(calendarDate.service_id);
+                }
+            }
+        }
+
+        return activeServices;
+    }
 }
 
 public static class Constants

@@ -54,4 +54,10 @@ public interface ISQLiteService
     public Task<Trip> GetTripAsync(string tripId);
 
     public Task<Route> GetRouteAsync(string routeId);
+
+    public Task<List<Calendar>> GetCalendarsAsync();
+
+    public Task<List<CalendarDate>> GetCalendarDatesAsync();
+
+    public Task<HashSet<string>> GetActiveServiceIdsAsync(DateTime date);
 }
