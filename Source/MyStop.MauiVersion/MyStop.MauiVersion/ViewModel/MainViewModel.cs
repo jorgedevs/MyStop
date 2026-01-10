@@ -68,6 +68,16 @@ public class MainViewModel : BaseViewModel
     {
         try
         {
+            Debug.WriteLine("Checking if GTFS data already exists...");
+
+            // Check if data already exists in the database
+            bool hasData = await _sqliteService.HasGtfsDataAsync();
+            if (hasData)
+            {
+                Debug.WriteLine("GTFS data already exists in database. Skipping download.");
+                return;
+            }
+
             Debug.WriteLine("Starting GTFS data loading on background thread...");
 
             string gtfsUrl = "https://gtfs-static.translink.ca/gtfs/google_transit.zip";
@@ -267,30 +277,33 @@ public class MainViewModel : BaseViewModel
 
         try
         {
-            //if (BusStopNumber.Length == 0 || BusStopNumber.Contains("."))
-            //{
-            //    if (Application.Current?.MainPage != null)
-            //    {
-            //        await Application.Current.MainPage.DisplayAlert("Validation Error", "Please enter a valid stop code.", "OK");
-            //    }
-            //    else
-            //    {
-            //        Debug.WriteLine("MainPage is null. Cannot display alert.");
-            //    }
-            //}
-            //else
-            //{
-            //    bool stopFound = _sqliteService.IsStop(BusStopNumber);
+            if (string.IsNullOrWhiteSpace(BusStopNumber) || BusStopNumber.Contains("."))
+            {
+                if (Application.Current?.MainPage != null)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Validation Error", "Please enter a valid stop code.", "OK");
+                }
+                else
+                {
+                    Debug.WriteLine("MainPage is null. Cannot display alert.");
+                }
+            }
+            else
+            {
+                bool stopFound = _sqliteService.IsStop(BusStopNumber);
 
-            //    if (stopFound)
-            //    {
-            await Shell.Current.GoToAsync($"{nameof(BusArrivalsPage)}?BusStopNumber={BusStopNumber}");
-            //    }
-            //    else
-            //    {
-            //        await Application.Current.MainPage.DisplayAlert("Validation Error", "Stop not found", "OK");
-            //    }
-            //}
+                if (stopFound)
+                {
+                    await Shell.Current.GoToAsync($"{nameof(BusArrivalsPage)}?BusStopNumber={BusStopNumber}");
+                }
+                else
+                {
+                    if (Application.Current?.MainPage != null)
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Validation Error", "Stop not found", "OK");
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {

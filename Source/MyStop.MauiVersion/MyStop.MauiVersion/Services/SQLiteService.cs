@@ -209,6 +209,38 @@ public class SQLiteService : ISQLiteService
     {
         return connection.Table<SavedStopModel>().ToListAsync().Result;
     }
+
+    public async Task<bool> HasGtfsDataAsync()
+    {
+        try
+        {
+            var stopCount = await connection.Table<Stop>().CountAsync();
+            return stopCount > 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<List<StopTime>> GetStopTimesForStopAsync(string stopId)
+    {
+        return await connection.Table<StopTime>()
+            .Where(st => st.stop_id == stopId)
+            .ToListAsync();
+    }
+
+    public async Task<Trip> GetTripAsync(string tripId)
+    {
+        return await connection.Table<Trip>()
+            .FirstOrDefaultAsync(t => t.trip_id == tripId);
+    }
+
+    public async Task<Route> GetRouteAsync(string routeId)
+    {
+        return await connection.Table<Route>()
+            .FirstOrDefaultAsync(r => r.route_id == routeId);
+    }
 }
 
 public static class Constants

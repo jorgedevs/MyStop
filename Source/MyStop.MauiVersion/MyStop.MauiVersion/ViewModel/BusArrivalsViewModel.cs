@@ -10,6 +10,11 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     private readonly IGtfsService _gtfsService;
     private readonly ISQLiteService _sqliteService;
 
+    // Configuration constants
+    private const int MaxStopTimesToProcess = 50;
+    private const int MaxMinutesAhead = 120; // 2 hours
+    private const int MaxArrivalsToDisplay = 15;
+
     public StopModel Stop { get; set; }
 
     public ScheduleModel Schedule { get; set; }
@@ -96,44 +101,141 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         {
             string? stopCode = query["BusStopNumber"] as string;
 
-            var stop = new StopModel()
-            {
-                StopNo = "50023",
-                Name = "WB DAVIE ST NS HAMILTON ST"
-            };
+            var stopInfo = _sqliteService.GetStopInfo(stopCode!);
 
-            //var stop = _sqliteService.GetStopInfo(stopCode!);
-            Stop = stop;
-            StopNumber = Stop.StopNo!;
-            StopInfo = Stop.Name!;
+            if (stopInfo != null)
+            {
+                var stop = new StopModel()
+                {
+                    StopNo = stopInfo.stop_code,
+                    Name = stopInfo.stop_name
+                };
+
+                Stop = stop;
+                StopNumber = Stop.StopNo!;
+                StopInfo = Stop.Name!;
+            }
+            else
+            {
+                // Fallback if stop not found
+                var stop = new StopModel()
+                {
+                    StopNo = stopCode,
+                    Name = "Stop information not available"
+                };
+
+                Stop = stop;
+                StopNumber = Stop.StopNo!;
+                StopInfo = Stop.Name!;
+            }
         }
     }
 
     private async Task GetBusArrivalsTimes()
     {
-        //if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-        //{
-        //    var bufferList = await RestClient.Instance.GetBusArrivalsTimes(StopNumber);
-        //    if (bufferList.Count > 0)
-        //    {
-        //        ArrivalTimes.Clear();
-        //        foreach (var item in bufferList)
-        //            ArrivalTimes.Add(item);
-        //    }
-        //}
+        try
+        {
+            ArrivalTimes.Clear();
 
-        ArrivalTimes.Clear();
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 3 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 10 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 15 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 20 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 24 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 28 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 33 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 40 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 48 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 60 });
-        ArrivalTimes.Add(new ScheduleModel() { RouteNo = "006", Destination = "Davie", ExpectedCountdown = 65 });
+            if (Stop == null || string.IsNullOrEmpty(StopNumber))
+                return;
+
+            // Get stop info to get the stop_id
+            var stopInfo = _sqliteService.GetStopInfo(StopNumber);
+            if (stopInfo == null)
+                return;
+
+            // Get all stop times for this stop
+            var stopTimes = await _sqliteService.GetStopTimesForStopAsync(stopInfo.stop_id!);
+
+            // Get current time
+            var now = DateTime.Now;
+            var currentTimeOfDay = now.TimeOfDay;
+
+            // Process each stop time and calculate arrival
+            var arrivals = new List<ScheduleModel>();
+
+            foreach (var stopTime in stopTimes.Take(MaxStopTimesToProcess))
+            {
+                // Parse arrival time (format: HH:MM:SS, can be > 24:00:00 for next day)
+                if (string.IsNullOrEmpty(stopTime.arrival_time))
+                    continue;
+
+                var timeParts = stopTime.arrival_time.Split(':');
+                if (timeParts.Length < 2)
+                    continue;
+
+                if (!int.TryParse(timeParts[0], out int hours) ||
+                    !int.TryParse(timeParts[1], out int minutes))
+                    continue;
+
+                // Handle hours >= 24 (next day)
+                var adjustedHours = hours % 24;
+                var arrivalTimeSpan = new TimeSpan(adjustedHours, minutes, 0);
+
+                // Calculate minutes until arrival
+                var diff = arrivalTimeSpan - currentTimeOfDay;
+                if (diff.TotalMinutes < 0)
+                    diff = diff.Add(TimeSpan.FromHours(24)); // Next day
+
+                var minutesUntilArrival = (int)diff.TotalMinutes;
+
+                // Only show arrivals within the next 2 hours
+                if (minutesUntilArrival > MaxMinutesAhead)
+                    continue;
+
+                // Get trip and route info
+                var trip = await _sqliteService.GetTripAsync(stopTime.trip_id!);
+                if (trip == null)
+                    continue;
+
+                var route = await _sqliteService.GetRouteAsync(trip.route_id!);
+                if (route == null)
+                    continue;
+
+                var routeNo = route.route_short_name ?? route.route_id ?? "?";
+                var destination = trip.trip_headsign ?? route.route_long_name ?? "Unknown";
+
+                arrivals.Add(new ScheduleModel()
+                {
+                    RouteNo = routeNo,
+                    Destination = destination,
+                    ExpectedCountdown = minutesUntilArrival
+                });
+            }
+
+            // Sort by arrival time and take top results
+            var sortedArrivals = arrivals.OrderBy(a => a.ExpectedCountdown).Take(MaxArrivalsToDisplay);
+
+            foreach (var arrival in sortedArrivals)
+            {
+                ArrivalTimes.Add(arrival);
+            }
+
+            // If no arrivals found, show a message
+            if (ArrivalTimes.Count == 0)
+            {
+                ArrivalTimes.Add(new ScheduleModel()
+                {
+                    RouteNo = "--",
+                    Destination = "No upcoming arrivals found",
+                    ExpectedCountdown = 0
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error getting arrival times: {ex.Message}");
+
+            // Show error state
+            ArrivalTimes.Clear();
+            ArrivalTimes.Add(new ScheduleModel()
+            {
+                RouteNo = "--",
+                Destination = "Error loading arrival times",
+                ExpectedCountdown = 0
+            });
+        }
     }
 
     private async void ToggleSaveBusStop()

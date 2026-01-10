@@ -46,4 +46,12 @@ public interface ISQLiteService
     public Task RemoveStop(SavedStopModel stop);
 
     public List<SavedStopModel> GetSavedStops();
+
+    public Task<bool> HasGtfsDataAsync();
+
+    public Task<List<StopTime>> GetStopTimesForStopAsync(string stopId);
+
+    public Task<Trip> GetTripAsync(string tripId);
+
+    public Task<Route> GetRouteAsync(string routeId);
 }
