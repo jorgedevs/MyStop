@@ -92,7 +92,8 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         else
             FavoriteIcon = "icon_favourites_add.png";
 
-        await GetBusArrivalsTimes();
+        // Note: GetBusArrivalsTimes() is now called from ApplyQueryAttributes()
+        // after the stop info is available
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -128,6 +129,9 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 StopNumber = Stop.StopNo!;
                 StopInfo = Stop.Name!;
             }
+
+            // Load arrival times after stop info is set
+            _ = GetBusArrivalsTimes();
         }
     }
 
