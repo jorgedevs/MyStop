@@ -12,132 +12,155 @@
             Command="{Binding GoToFavoriteStops}" />
     </ContentPage.ToolbarItems>
 
-    <Grid RowSpacing="60">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="75" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <ContentPage.Content>
+        <Grid>
+            <Grid RowSpacing="60">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="75" />
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-        <Image 
-            Grid.Row="0"
-            x:Name="imgCloud1"
-            Source="img_cloud1" 
-            HorizontalOptions="Start"
-            Margin="20,20,0,0" />
+                <Image 
+                    Grid.Row="0"
+                    x:Name="imgCloud1"
+                    Source="img_cloud1" 
+                    HorizontalOptions="Start"
+                    Margin="20,20,0,0" />
 
-        <ActivityIndicator 
-            IsRunning="True" 
-            IsVisible="{Binding IsBusy}"
-            HorizontalOptions="End"
-            VerticalOptions="Start"
-            Margin="10"
-            Color="White" />
+                
 
-        <StackLayout 
-            Grid.Row="1"
-            Spacing="5"
-            HorizontalOptions="Center"
-            VerticalOptions="Center">
+                <StackLayout 
+                    Grid.Row="1"
+                    Spacing="5"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
 
-            <Label 
-                Text="MyStop" 
-                TextColor="White" 
-                FontSize="35" 
-                FontAttributes="Bold" 
-                HorizontalOptions="Center" />
+                    <Label 
+                        Text="MyStop" 
+                        TextColor="White" 
+                        FontSize="35" 
+                        FontAttributes="Bold" 
+                        HorizontalOptions="Center" />
 
-            <Label 
-                Text="enter stop number" 
-                TextColor="Aqua" 
-                FontSize="Small" 
-                HorizontalOptions="Center" />
+                    <Label 
+                        Text="enter stop number" 
+                        TextColor="Aqua" 
+                        FontSize="Small" 
+                        HorizontalOptions="Center" />
 
-            <Grid
-                Margin="0" 
-                ColumnSpacing="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="40" />
-                </Grid.ColumnDefinitions>
+                    <Grid
+                        Margin="0" 
+                        ColumnSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="40" />
+                        </Grid.ColumnDefinitions>
 
-                <Frame 
-                    Grid.Column="0" 
-                    HasShadow="False" 
-                    BackgroundColor="White" 
-                    BorderColor="White" 
-                    Padding="5,0" 
-                    CornerRadius="5">
-                    <Grid>
-                        <Entry 
-                            x:Name="entSearch" 
-                            Text="{Binding BusStopNumber}" 
-                            FontSize="20" 
-                            MaxLength="5" 
-                            Placeholder="50075" 
-                            TextColor="{StaticResource SkyColor}" 
-                            HorizontalTextAlignment="Center" 
-                            VerticalOptions="Center" 
-                            Keyboard="Numeric" />
+                        <Frame 
+                            Grid.Column="0" 
+                            HasShadow="False" 
+                            BackgroundColor="White" 
+                            BorderColor="White" 
+                            Padding="5,0" 
+                            CornerRadius="5">
+                            <Grid>
+                                <Entry 
+                                    x:Name="entSearch" 
+                                    Text="{Binding BusStopNumber}" 
+                                    FontSize="20" 
+                                    MaxLength="5" 
+                                    Placeholder="50075" 
+                                    TextColor="{StaticResource SkyColor}" 
+                                    HorizontalTextAlignment="Center" 
+                                    VerticalOptions="Center" 
+                                    Keyboard="Numeric" />
+                            </Grid>
+                        </Frame>
+
+                        <Grid 
+                            Grid.Column="1">
+                            <Image 
+                                Source="icon_search" 
+                                Margin="5" 
+                                Aspect="AspectFit" />
+                            <Button 
+                                BackgroundColor="#55FFFFFF" 
+                                BorderColor="White"
+                                BorderWidth="1" 
+                                CornerRadius="5"
+                                Command="{Binding GetStopInfoCommand}" />
+                        </Grid>
                     </Grid>
-                </Frame>
+                </StackLayout>
+
+                <Image 
+                    Grid.Row="2" 
+                    x:Name="imgCloud2"
+                    Source="img_cloud2" 
+                    HorizontalOptions="End"
+                    Margin="0,0,20,0"  />
+
+                <Image 
+                    Grid.Row="3" 
+                    x:Name="imgCloud3"
+                    Source="img_cloud3" 
+                    HorizontalOptions="Start"
+                    Margin="40,10,0,0"  />
 
                 <Grid 
-                    Grid.Column="1">
+                    Grid.Row="4">
                     <Image 
-                        Source="icon_search" 
-                        Margin="5" 
-                        Aspect="AspectFit" />
-                    <Button 
-                        BackgroundColor="#55FFFFFF" 
-                        BorderColor="White"
-                        BorderWidth="1" 
-                        CornerRadius="5"
-                        Command="{Binding GetStopInfoCommand}" />
+                        x:Name="imgFooter"
+                        Source="bg_home" 
+                        Scale="1.1" 
+                        HorizontalOptions="Fill" 
+                        VerticalOptions="End" />
+
+                    <Image 
+                        x:Name="imgBusFront"
+                        Source="img_bus_front" 
+                        HeightRequest="170" 
+                        HorizontalOptions="Start" 
+                        VerticalOptions="End" 
+                        TranslationY="20" 
+                        Margin="30,0,0,0" />
+
+                    <Image 
+                        x:Name="imgLamp"
+                        Source="img_lamp" 
+                        Scale="1" 
+                        HorizontalOptions="End" 
+                        Margin="0,0,15,10" />
                 </Grid>
             </Grid>
-        </StackLayout>
 
-        <Image 
-            Grid.Row="2" 
-            x:Name="imgCloud2"
-            Source="img_cloud2" 
-            HorizontalOptions="End"
-            Margin="0,0,20,0"  />
+            <!-- Loading Overlay -->
+            <Grid
+                BackgroundColor="#88000000">
+                <StackLayout
+                    Spacing="10"
+                    Margin="100,0"
+                    VerticalOptions="Center">
+                    <Label 
+                        Text="Loading..." 
+                        TextColor="Aqua" 
+                        FontSize="Medium" 
+                        HorizontalOptions="Center" />
+                    
+                    <Label 
+                        Text="agency.txt" 
+                        TextColor="Aqua" 
+                        FontSize="Caption" 
+                        HorizontalOptions="Center" />
 
-        <Image 
-            Grid.Row="3" 
-            x:Name="imgCloud3"
-            Source="img_cloud3" 
-            HorizontalOptions="Start"
-            Margin="40,10,0,0"  />
-
-        <Grid 
-            Grid.Row="4">
-            <Image 
-                x:Name="imgFooter"
-                Source="bg_home" 
-                Scale="1.1" 
-                HorizontalOptions="Fill" 
-                VerticalOptions="End" />
-
-            <Image 
-                x:Name="imgBusFront"
-                Source="img_bus_front" 
-                HeightRequest="170" 
-                HorizontalOptions="Start" 
-                VerticalOptions="End" 
-                TranslationY="20" 
-                Margin="30,0,0,0" />
-
-            <Image 
-                x:Name="imgLamp"
-                Source="img_lamp" 
-                Scale="1" 
-                HorizontalOptions="End" 
-                Margin="0,0,15,10" />
+                    <ProgressBar
+                        ProgressColor="Aqua"
+                        HorizontalOptions="Fill" />
+                </StackLayout>
+            </Grid>
         </Grid>
-    </Grid>
+    </ContentPage.Content>
 </ContentPage>
