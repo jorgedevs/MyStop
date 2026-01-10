@@ -51,7 +51,7 @@ public class MainViewModel : BaseViewModel
         GoToFavoriteStops = new Command(
             async () => await Shell.Current.GoToAsync(nameof(FavouriteStopsPage)));
 
-        _ = Initialize();
+        _ = Task.Run(async () => await LoadGtfsDataAsync());
     }
 
     public void Tests()
@@ -62,6 +62,86 @@ public class MainViewModel : BaseViewModel
             await _gtfsLiveService.PositionUpdate();
             await _gtfsLiveService.ServiceAlert();
         });
+    }
+
+    private async Task LoadGtfsDataAsync()
+    {
+        try
+        {
+            Debug.WriteLine("Starting GTFS data loading on background thread...");
+
+            string gtfsUrl = "https://gtfs-static.translink.ca/gtfs/google_transit.zip";
+            string localPath = Path.Combine(FileSystem.AppDataDirectory, "GTFS");
+            string gtfsFolder = Path.Combine(localPath, "unzipped");
+
+            // Download and extract GTFS data
+            await _gtfsService.DownloadAndExtractGtfsAsync(gtfsUrl, localPath);
+            Debug.WriteLine("GTFS data downloaded and extracted.");
+
+            // Parse and save each file type
+            var agency = _gtfsService.ParseAgency(Path.Combine(gtfsFolder, "agency.txt"));
+            await _sqliteService.SaveAgency(agency);
+            Debug.WriteLine("1) Saved agency");
+
+            var calendar = _gtfsService.ParseCalendar(Path.Combine(gtfsFolder, "calendar.txt"));
+            await _sqliteService.SaveCalendars(calendar);
+            Debug.WriteLine("2) Saved calendars");
+
+            var calendarDates = _gtfsService.ParseCalendarDates(Path.Combine(gtfsFolder, "calendar_dates.txt"));
+            await _sqliteService.SaveCalendarDates(calendarDates);
+            Debug.WriteLine("3) Saved calendar dates");
+
+            var directionNamesExceptions = _gtfsService.ParseDirectionNamesExceptions(Path.Combine(gtfsFolder, "direction_names_exceptions.txt"));
+            await _sqliteService.SaveDirectionNamesExceptions(directionNamesExceptions);
+            Debug.WriteLine("4) Saved direction names exceptions");
+
+            var feedInfo = _gtfsService.ParseFeedInfo(Path.Combine(gtfsFolder, "feed_info.txt"));
+            await _sqliteService.SaveFeedInfo(feedInfo);
+            Debug.WriteLine("5) Saved feed info");
+
+            var routeNamesExceptions = _gtfsService.ParseRouteNamesExceptions(Path.Combine(gtfsFolder, "route_names_exceptions.txt"));
+            await _sqliteService.SaveRouteNamesExceptions(routeNamesExceptions);
+            Debug.WriteLine("6) Saved route names exceptions");
+
+            var routes = _gtfsService.ParseRoutes(Path.Combine(gtfsFolder, "routes.txt"));
+            await _sqliteService.SaveRoutes(routes);
+            Debug.WriteLine("7) Saved routes");
+
+            var shapes = _gtfsService.ParseShapes(Path.Combine(gtfsFolder, "shapes.txt"));
+            await _sqliteService.SaveShapes(shapes);
+            Debug.WriteLine("8) Saved shapes");
+
+            var signUpPeriods = _gtfsService.ParseSignupPeriods(Path.Combine(gtfsFolder, "signup_periods.txt"));
+            await _sqliteService.SaveSignupPeriods(signUpPeriods);
+            Debug.WriteLine("9) Saved signup periods");
+
+            var stopOrderExceptions = _gtfsService.ParseStopOrderExceptions(Path.Combine(gtfsFolder, "stop_order_exceptions.txt"));
+            await _sqliteService.SaveStopOrderExceptions(stopOrderExceptions);
+            Debug.WriteLine("10) Saved stop order exceptions");
+
+            var stops = _gtfsService.ParseStops(Path.Combine(gtfsFolder, "stops.txt"));
+            await _sqliteService.SaveStops(stops);
+            Debug.WriteLine("11) Saved stops");
+
+            var stopTimes = _gtfsService.ParseStopTimes(Path.Combine(gtfsFolder, "stop_times.txt"));
+            await _sqliteService.SaveStopTimes(stopTimes);
+            Debug.WriteLine("12) Saved stop times");
+
+            var transfers = _gtfsService.ParseTransfers(Path.Combine(gtfsFolder, "transfers.txt"));
+            await _sqliteService.SaveTransfers(transfers);
+            Debug.WriteLine("13) Saved transfers");
+
+            var trips = _gtfsService.ParseTrips(Path.Combine(gtfsFolder, "trips.txt"));
+            await _sqliteService.SaveTrips(trips);
+            Debug.WriteLine("14) Saved trips");
+
+            Debug.WriteLine("GTFS data loading completed successfully!");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error loading GTFS data: {ex.Message}");
+            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
     }
 
     private async Task Initialize()
