@@ -139,24 +139,26 @@
 
             <!-- Loading Overlay -->
             <Grid
-                BackgroundColor="#88000000">
+                BackgroundColor="#88000000"
+                IsVisible="{Binding IsLoadingGtfs}">
                 <StackLayout
                     Spacing="10"
-                    Margin="100,0"
+                    Margin="40,0"
                     VerticalOptions="Center">
                     <Label 
-                        Text="Loading..." 
+                        Text="{Binding LoadingStatusText}" 
                         TextColor="Aqua" 
                         FontSize="Medium" 
                         HorizontalOptions="Center" />
                     
                     <Label 
-                        Text="agency.txt" 
-                        TextColor="Aqua" 
+                        Text="{Binding CurrentFileName}" 
+                        TextColor="White" 
                         FontSize="Caption" 
                         HorizontalOptions="Center" />
 
                     <ProgressBar
+                        Progress="{Binding LoadingProgress}"
                         ProgressColor="Aqua"
                         HorizontalOptions="Fill" />
                 </StackLayout>

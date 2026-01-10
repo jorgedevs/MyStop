@@ -16,11 +16,42 @@ public class MainViewModel : BaseViewModel
     public const string STOP_NOT_FOUND = "STOP_NOT_FOUND";
     public const string STOP_FOUND = "STOP_FOUND";
 
+    // Total number of files to process during GTFS loading
+    private const int TotalGtfsFiles = 14;
+
     bool isBusy;
     public bool IsBusy
     {
         get => isBusy;
         set { isBusy = value; OnPropertyChanged(nameof(IsBusy)); }
+    }
+
+    bool isLoadingGtfs;
+    public bool IsLoadingGtfs
+    {
+        get => isLoadingGtfs;
+        set { isLoadingGtfs = value; OnPropertyChanged(nameof(IsLoadingGtfs)); }
+    }
+
+    double loadingProgress;
+    public double LoadingProgress
+    {
+        get => loadingProgress;
+        set { loadingProgress = value; OnPropertyChanged(nameof(LoadingProgress)); }
+    }
+
+    string loadingStatusText;
+    public string LoadingStatusText
+    {
+        get => loadingStatusText;
+        set { loadingStatusText = value; OnPropertyChanged(nameof(LoadingStatusText)); }
+    }
+
+    string currentFileName;
+    public string CurrentFileName
+    {
+        get => currentFileName;
+        set { currentFileName = value; OnPropertyChanged(nameof(CurrentFileName)); }
     }
 
     string busStopNumber;
@@ -44,6 +75,10 @@ public class MainViewModel : BaseViewModel
         _gtfsLiveService = gtfsLiveService;
 
         BusStopNumber = "50023"; //string.Empty;
+        LoadingStatusText = "Checking data...";
+        CurrentFileName = "";
+        LoadingProgress = 0;
+        IsLoadingGtfs = false;
 
         GetStopInfoCommand = new Command(
             async () => await GetStopInfoCommandExecute());
@@ -51,7 +86,15 @@ public class MainViewModel : BaseViewModel
         GoToFavoriteStops = new Command(
             async () => await Shell.Current.GoToAsync(nameof(FavouriteStopsPage)));
 
-        //_ = Task.Run(async () => await LoadGtfsDataAsync());
+        _ = Task.Run(async () => await LoadGtfsDataAsync());
+    }
+
+    private void UpdateProgress(int fileNumber, string fileName)
+    {
+        LoadingProgress = (double)fileNumber / TotalGtfsFiles;
+        CurrentFileName = fileName;
+        LoadingStatusText = $"Processing {fileNumber} of {TotalGtfsFiles}...";
+        Debug.WriteLine($"{fileNumber}) Processing {fileName}");
     }
 
     private async Task LoadGtfsDataAsync()
@@ -59,16 +102,25 @@ public class MainViewModel : BaseViewModel
         try
         {
             Debug.WriteLine("Checking if GTFS data already exists...");
+            LoadingStatusText = "Checking existing data...";
+            CurrentFileName = "";
 
             // Check if data already exists in the database
             bool hasData = await _sqliteService.HasGtfsDataAsync();
             if (hasData)
             {
                 Debug.WriteLine("GTFS data already exists in database. Skipping download.");
+                IsLoadingGtfs = false;
                 return;
             }
 
+            // Show loading overlay
+            IsLoadingGtfs = true;
+            LoadingProgress = 0;
+
             Debug.WriteLine("Starting GTFS data loading on background thread...");
+            LoadingStatusText = "Downloading GTFS data...";
+            CurrentFileName = "google_transit.zip";
 
             string gtfsUrl = "https://gtfs-static.translink.ca/gtfs/google_transit.zip";
             string localPath = Path.Combine(FileSystem.AppDataDirectory, "GTFS");
@@ -78,69 +130,79 @@ public class MainViewModel : BaseViewModel
             await _gtfsService.DownloadAndExtractGtfsAsync(gtfsUrl, localPath);
             Debug.WriteLine("GTFS data downloaded and extracted.");
 
-            // Parse and save each file type
+            // Parse and save each file type with progress updates
+            UpdateProgress(1, "agency.txt");
             var agency = _gtfsService.ParseAgency(Path.Combine(gtfsFolder, "agency.txt"));
             await _sqliteService.SaveAgency(agency);
-            Debug.WriteLine("1) Saved agency");
 
+            UpdateProgress(2, "calendar.txt");
             var calendar = _gtfsService.ParseCalendar(Path.Combine(gtfsFolder, "calendar.txt"));
             await _sqliteService.SaveCalendars(calendar);
-            Debug.WriteLine("2) Saved calendars");
 
+            UpdateProgress(3, "calendar_dates.txt");
             var calendarDates = _gtfsService.ParseCalendarDates(Path.Combine(gtfsFolder, "calendar_dates.txt"));
             await _sqliteService.SaveCalendarDates(calendarDates);
-            Debug.WriteLine("3) Saved calendar dates");
 
+            UpdateProgress(4, "direction_names_exceptions.txt");
             var directionNamesExceptions = _gtfsService.ParseDirectionNamesExceptions(Path.Combine(gtfsFolder, "direction_names_exceptions.txt"));
             await _sqliteService.SaveDirectionNamesExceptions(directionNamesExceptions);
-            Debug.WriteLine("4) Saved direction names exceptions");
 
+            UpdateProgress(5, "feed_info.txt");
             var feedInfo = _gtfsService.ParseFeedInfo(Path.Combine(gtfsFolder, "feed_info.txt"));
             await _sqliteService.SaveFeedInfo(feedInfo);
-            Debug.WriteLine("5) Saved feed info");
 
+            UpdateProgress(6, "route_names_exceptions.txt");
             var routeNamesExceptions = _gtfsService.ParseRouteNamesExceptions(Path.Combine(gtfsFolder, "route_names_exceptions.txt"));
             await _sqliteService.SaveRouteNamesExceptions(routeNamesExceptions);
-            Debug.WriteLine("6) Saved route names exceptions");
 
+            UpdateProgress(7, "routes.txt");
             var routes = _gtfsService.ParseRoutes(Path.Combine(gtfsFolder, "routes.txt"));
             await _sqliteService.SaveRoutes(routes);
-            Debug.WriteLine("7) Saved routes");
 
+            UpdateProgress(8, "shapes.txt");
             var shapes = _gtfsService.ParseShapes(Path.Combine(gtfsFolder, "shapes.txt"));
             await _sqliteService.SaveShapes(shapes);
-            Debug.WriteLine("8) Saved shapes");
 
+            UpdateProgress(9, "signup_periods.txt");
             var signUpPeriods = _gtfsService.ParseSignupPeriods(Path.Combine(gtfsFolder, "signup_periods.txt"));
             await _sqliteService.SaveSignupPeriods(signUpPeriods);
-            Debug.WriteLine("9) Saved signup periods");
 
+            UpdateProgress(10, "stop_order_exceptions.txt");
             var stopOrderExceptions = _gtfsService.ParseStopOrderExceptions(Path.Combine(gtfsFolder, "stop_order_exceptions.txt"));
             await _sqliteService.SaveStopOrderExceptions(stopOrderExceptions);
-            Debug.WriteLine("10) Saved stop order exceptions");
 
+            UpdateProgress(11, "stops.txt");
             var stops = _gtfsService.ParseStops(Path.Combine(gtfsFolder, "stops.txt"));
             await _sqliteService.SaveStops(stops);
-            Debug.WriteLine("11) Saved stops");
 
+            UpdateProgress(12, "stop_times.txt");
             var stopTimes = _gtfsService.ParseStopTimes(Path.Combine(gtfsFolder, "stop_times.txt"));
             await _sqliteService.SaveStopTimes(stopTimes);
-            Debug.WriteLine("12) Saved stop times");
 
+            UpdateProgress(13, "transfers.txt");
             var transfers = _gtfsService.ParseTransfers(Path.Combine(gtfsFolder, "transfers.txt"));
             await _sqliteService.SaveTransfers(transfers);
-            Debug.WriteLine("13) Saved transfers");
 
+            UpdateProgress(14, "trips.txt");
             var trips = _gtfsService.ParseTrips(Path.Combine(gtfsFolder, "trips.txt"));
             await _sqliteService.SaveTrips(trips);
-            Debug.WriteLine("14) Saved trips");
 
+            // Complete
+            LoadingProgress = 1.0;
+            LoadingStatusText = "Complete!";
+            CurrentFileName = "";
             Debug.WriteLine("GTFS data loading completed successfully!");
+
+            // Hide loading overlay
+            IsLoadingGtfs = false;
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error loading GTFS data: {ex.Message}");
             Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            LoadingStatusText = "Error loading data";
+            CurrentFileName = ex.Message;
+            IsLoadingGtfs = false;
         }
     }
 
