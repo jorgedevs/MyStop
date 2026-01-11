@@ -14,7 +14,10 @@
 
     <ContentPage.Content>
         <Grid>
-            <Grid RowSpacing="60">
+            <!-- Main Content (hidden during loading) -->
+            <Grid 
+                RowSpacing="60"
+                IsVisible="{Binding IsLoadingGtfs, Converter={StaticResource InvertedBoolConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="100" />
                     <RowDefinition Height="Auto" />
@@ -137,29 +140,42 @@
                 </Grid>
             </Grid>
 
-            <!-- Loading Overlay -->
+            <!-- Full-screen Loading Overlay (matches splash screen) -->
             <Grid
-                BackgroundColor="#88000000"
+                BackgroundColor="#3B70DF"
                 IsVisible="{Binding IsLoadingGtfs}">
+                
+                <!-- Logo in center -->
+                <Image 
+                    Source="splash"
+                    HeightRequest="150"
+                    WidthRequest="250"
+                    Aspect="AspectFit"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+
+                <!-- Progress section at bottom -->
                 <StackLayout
                     Spacing="10"
-                    Margin="40,0"
-                    VerticalOptions="Center">
+                    Margin="40,0,40,80"
+                    VerticalOptions="End">
+                    
                     <Label 
                         Text="{Binding LoadingStatusText}" 
-                        TextColor="Aqua" 
+                        TextColor="White" 
                         FontSize="Medium" 
                         HorizontalOptions="Center" />
                     
                     <Label 
                         Text="{Binding CurrentFileName}" 
                         TextColor="White" 
-                        FontSize="Caption" 
+                        FontSize="Caption"
+                        Opacity="0.8"
                         HorizontalOptions="Center" />
 
                     <ProgressBar
                         Progress="{Binding LoadingProgress}"
-                        ProgressColor="Aqua"
+                        ProgressColor="White"
                         HorizontalOptions="Fill" />
                 </StackLayout>
             </Grid>

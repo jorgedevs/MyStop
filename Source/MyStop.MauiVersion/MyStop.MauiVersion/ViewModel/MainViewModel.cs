@@ -78,7 +78,7 @@ public class MainViewModel : BaseViewModel
         LoadingStatusText = "Checking data...";
         CurrentFileName = "";
         LoadingProgress = 0;
-        IsLoadingGtfs = false;
+        IsLoadingGtfs = true; // Start with loading screen visible for seamless splash transition
 
         GetStopInfoCommand = new Command(
             async () => await GetStopInfoCommandExecute());
