@@ -35,52 +35,49 @@ public partial class MainPage : ContentPage
         if (imgCloud1 == null || imgCloud2 == null || imgCloud3 == null)
             return;
 
-        //_ = Task.Run(async () =>
-        //{
-        //    await imgCloud1!.TranslateTo(500, 0, (uint)(animationLength / 4) * 1000, null);
-        //    await imgCloud1!.TranslateTo(-500, 0, 0, null);
-        //    await imgCloud1!.TranslateTo(0, 0, (uint)(animationLength / 4) * 1000, null);
-        //    await Task.Delay((animationLength / 3) * 1000);
-        //});
-
-        //_ = Task.Run(async () =>
-        //{
-        //    await imgCloud2!.TranslateTo(500, 0, (uint)(animationLength / 3) * 1000, null);
-        //    await imgCloud2!.TranslateTo(-200, 0, 0, null);
-        //    await Task.Delay((animationLength / 3) * 1000);
-        //});
-
-        //_ = Task.Run(async () =>
-        //{
-        //    await imgCloud3!.TranslateTo(500, 0, (uint)(animationLength / 2) * 1000, null);
-        //    await imgCloud3!.TranslateTo(-200, 0, 0, null);
-        //    await Task.Delay((animationLength / 3) * 1000);
-        //});
-
-        _ = Task.Run(async () =>
+        // Run animations on the main thread using MainThread.BeginInvokeOnMainThread
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            for (int i = 0; i < animationLength; i++)
+            try
             {
-                imgLamp?.TranslateTo(0, 0, 0, null);
-                await imgLamp!.ScaleTo(1, 0, null);
+                for (int i = 0; i < animationLength; i++)
+                {
+                    if (imgLamp == null) return;
+                    
+                    imgLamp.TranslationX = 0;
+                    imgLamp.Scale = 1;
 
-                imgLamp?.TranslateTo(-80, 0, 2000, null);
-                await imgLamp!.ScaleTo(0.55, 2000, null);
+                    await imgLamp.TranslateTo(-80, 0, 2000);
+                    await imgLamp.ScaleTo(0.55, 2000);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Animation error: {ex.Message}");
             }
         });
 
-        _ = Task.Run(async () =>
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            for (int i = 0; i < animationLength; i++)
+            try
             {
-                if (i % 2 == 0)
+                for (int i = 0; i < animationLength; i++)
                 {
-                    await imgBusFront!.TranslateTo(0, 20, 1000, null);
+                    if (imgBusFront == null) return;
+                    
+                    if (i % 2 == 0)
+                    {
+                        await imgBusFront.TranslateTo(0, 20, 1000);
+                    }
+                    else
+                    {
+                        await imgBusFront.TranslateTo(-5, 20, 1000);
+                    }
                 }
-                else
-                {
-                    await imgBusFront!.TranslateTo(-5, 20, 1000, null);
-                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Animation error: {ex.Message}");
             }
         });
     }
