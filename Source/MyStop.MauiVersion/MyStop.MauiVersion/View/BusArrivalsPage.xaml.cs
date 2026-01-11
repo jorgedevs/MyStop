@@ -6,10 +6,12 @@ public partial class BusArrivalsPage : ContentPage
 {
     bool _keepTicking;
     Random randomBusModel = new Random();
+    private readonly BusArrivalsViewModel _viewModel;
 
     public BusArrivalsPage(BusArrivalsViewModel viewModel)
     {
         InitializeComponent();
+        _viewModel = viewModel;
         BindingContext = viewModel;
 
         if (App.IsNight)
@@ -25,7 +27,8 @@ public partial class BusArrivalsPage : ContentPage
     {
         if (_keepTicking)
         {
-            //vm.GetData();
+            // Refresh arrival times every 15 seconds
+            _viewModel.RefreshArrivalTimes();
             _ = Animate();
         }
         return _keepTicking;
@@ -62,5 +65,13 @@ public partial class BusArrivalsPage : ContentPage
         );
 
         _ = Animate();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        // Stop auto-refresh when page is not visible
+        _keepTicking = false;
     }
 }

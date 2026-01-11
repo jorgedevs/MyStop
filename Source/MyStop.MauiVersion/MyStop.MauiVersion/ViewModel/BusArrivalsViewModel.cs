@@ -60,6 +60,14 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 
     public ICommand RefreshCommand { get; set; }
 
+    /// <summary>
+    /// Refreshes arrival times. Called automatically every 15 seconds and on pull-to-refresh.
+    /// </summary>
+    public void RefreshArrivalTimes()
+    {
+        _ = GetBusArrivalsTimes();
+    }
+
     public BusArrivalsViewModel(
         IGtfsService gtfsService,
         ISQLiteService sqliteService)
