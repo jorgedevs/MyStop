@@ -11,6 +11,7 @@
             <Color x:Key="SkyColor">#06bfcc</Color>
             
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:DataSourceColorConverter x:Key="DataSourceColorConverter" />
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />

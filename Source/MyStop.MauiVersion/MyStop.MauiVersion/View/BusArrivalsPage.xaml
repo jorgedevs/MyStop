@@ -25,6 +25,17 @@
                 <Setter Property="FontSize" Value="Default" />
                 <Setter Property="VerticalOptions" Value="Center" />
             </Style>
+            <Style x:Key="StatusStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="End" />
+            </Style>
+            <Style x:Key="DataSourceBadgeStyle" TargetType="Frame">
+                <Setter Property="Padding" Value="8,4" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HasShadow" Value="False" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -51,6 +62,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <Image 
@@ -62,19 +74,34 @@
 
                     <StackLayout 
                         Grid.Column="1" 
-                        Grid.ColumnSpan="2" 
                         VerticalOptions="Center">
                         <Label 
                             Text="{Binding StopInfo}" 
                             LineBreakMode="TailTruncation" 
                             Style="{StaticResource TitleStyle}" />
                         <Label 
-                            Grid.Column="0" 
                             Text="{Binding StopNumber, StringFormat='Stop #{0}'}" 
                             Style="{StaticResource TitleStyle}" 
                             FontSize="40"
                             FontAttributes="Bold"/>
                     </StackLayout>
+
+                    <!-- Data Source Badge -->
+                    <Frame 
+                        Grid.Column="2"
+                        Style="{StaticResource DataSourceBadgeStyle}"
+                        BackgroundColor="{Binding DataSourceText, Converter={StaticResource DataSourceColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleDataSourceCommand}" />
+                        </Frame.GestureRecognizers>
+                        <Label 
+                            Text="{Binding DataSourceText}"
+                            TextColor="White"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
+                    </Frame>
                 </Grid>
 
                 <Grid Grid.Row="1">
@@ -93,38 +120,80 @@
                                 <ViewCell>
                                     <Grid
                                         ColumnSpacing="10"
+                                        RowSpacing="2"
                                         Padding="10,10"
                                         Margin="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="60" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
 
+                                        <!-- Route Number -->
                                         <Label 
+                                            Grid.Row="0"
+                                            Grid.RowSpan="2"
                                             Grid.Column="0" 
                                             Text="{Binding RouteNo}"
-                                            Style="{StaticResource ListItemStyle}" />
+                                            Style="{StaticResource ListItemStyle}"
+                                            FontSize="24"
+                                            FontAttributes="Bold"
+                                            VerticalOptions="Center" />
+                                        
+                                        <!-- Destination -->
                                         <Label
+                                            Grid.Row="0"
                                             Grid.Column="1" 
-                                            Text="{Binding Destination, StringFormat='{0}'}"
-                                            Style="{StaticResource ListItemStyle}" />
+                                            Text="{Binding Destination}"
+                                            Style="{StaticResource ListItemStyle}"
+                                            LineBreakMode="TailTruncation" />
+                                        
+                                        <!-- Schedule Status -->
                                         <Label 
+                                            Grid.Row="1"
+                                            Grid.Column="1" 
+                                            Text="{Binding ScheduleStatus}"
+                                            Style="{StaticResource StatusStyle}"
+                                            HorizontalOptions="Start">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="On Time">
+                                                    <Setter Property="TextColor" Value="#4CAF50" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Early">
+                                                    <Setter Property="TextColor" Value="#2196F3" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Delayed">
+                                                    <Setter Property="TextColor" Value="#FF9800" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Late">
+                                                    <Setter Property="TextColor" Value="#F44336" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Scheduled">
+                                                    <Setter Property="TextColor" Value="#9E9E9E" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        
+                                        <!-- Arrival Time -->
+                                        <Label 
+                                            Grid.Row="0"
+                                            Grid.RowSpan="2"
                                             Grid.Column="2" 
                                             Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"
-                                            Style="{StaticResource ListItemStyle}" />
+                                            Style="{StaticResource ListItemStyle}"
+                                            FontSize="20"
+                                            FontAttributes="Bold"
+                                            VerticalOptions="Center" />
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
 
-                    <!--<Image 
-                        x:Name="imgTopList" 
-                        Source="img_gradient_top" 
-                        Aspect="AspectFill" 
-                        InputTransparent="true" 
-                        VerticalOptions="Start" />-->
                     <Image 
                         x:Name="imgBottomList" 
                         Source="img_gradient_bottom" 
