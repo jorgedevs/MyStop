@@ -14,12 +14,33 @@ public partial class BusArrivalsPage : ContentPage
         _viewModel = viewModel;
         BindingContext = viewModel;
 
-        if (App.IsNight)
+        ApplyTheme(App.IsNight);
+
+        // Subscribe to theme changes
+        if (App.ThemeService != null)
+        {
+            App.ThemeService.ThemeChanged += OnThemeChanged;
+        }
+    }
+
+    private void OnThemeChanged(object? sender, bool isNight)
+    {
+        MainThread.BeginInvokeOnMainThread(() => ApplyTheme(isNight));
+    }
+
+    private void ApplyTheme(bool isNight)
+    {
+        if (isNight)
         {
             imgFooter.Source = ImageSource.FromFile("bg_arrivals_night.png");
             imgBus.Source = ImageSource.FromFile("img_bus_side_night.png");
-            //imgTopList.Source = ImageSource.FromFile("img_gradient_top_night.png");
             imgBottomList.Source = ImageSource.FromFile("img_gradient_bottom_night.png");
+        }
+        else
+        {
+            imgFooter.Source = ImageSource.FromFile("bg_arrivals.png");
+            imgBus.Source = ImageSource.FromFile("img_bus_side.png");
+            imgBottomList.Source = ImageSource.FromFile("img_gradient_bottom.png");
         }
     }
 
@@ -57,6 +78,9 @@ public partial class BusArrivalsPage : ContentPage
     {
         base.OnAppearing();
 
+        // Refresh theme when page appears
+        ApplyTheme(App.IsNight);
+
         _keepTicking = true;
 
         Dispatcher.StartTimer(
@@ -73,5 +97,11 @@ public partial class BusArrivalsPage : ContentPage
 
         // Stop auto-refresh when page is not visible
         _keepTicking = false;
+
+        // Unsubscribe to prevent memory leaks
+        if (App.ThemeService != null)
+        {
+            App.ThemeService.ThemeChanged -= OnThemeChanged;
+        }
     }
 }
