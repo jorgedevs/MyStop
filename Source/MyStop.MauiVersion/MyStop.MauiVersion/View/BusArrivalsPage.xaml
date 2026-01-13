@@ -28,7 +28,7 @@
             <Style x:Key="StatusStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="VerticalOptions" Value="Center" />
-                <Setter Property="HorizontalOptions" Value="End" />
+                <Setter Property="HorizontalOptions" Value="Center" />
             </Style>
             <Style x:Key="DataSourceBadgeStyle" TargetType="Frame">
                 <Setter Property="Padding" Value="8,4" />
@@ -120,13 +120,8 @@
                                 <ViewCell>
                                     <Grid
                                         ColumnSpacing="10"
-                                        RowSpacing="2"
                                         Padding="10,10"
                                         Margin="10">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="60" />
                                             <ColumnDefinition Width="*" />
@@ -135,8 +130,6 @@
 
                                         <!-- Route Number -->
                                         <Label 
-                                            Grid.Row="0"
-                                            Grid.RowSpan="2"
                                             Grid.Column="0" 
                                             Text="{Binding RouteNo}"
                                             Style="{StaticResource ListItemStyle}"
@@ -146,48 +139,51 @@
                                         
                                         <!-- Destination -->
                                         <Label
-                                            Grid.Row="0"
                                             Grid.Column="1" 
                                             Text="{Binding Destination}"
                                             Style="{StaticResource ListItemStyle}"
-                                            LineBreakMode="TailTruncation" />
-                                        
-                                        <!-- Schedule Status -->
-                                        <Label 
-                                            Grid.Row="1"
-                                            Grid.Column="1" 
-                                            Text="{Binding ScheduleStatus}"
-                                            Style="{StaticResource StatusStyle}"
-                                            HorizontalOptions="Start">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="On Time">
-                                                    <Setter Property="TextColor" Value="#4CAF50" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Early">
-                                                    <Setter Property="TextColor" Value="#2196F3" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Delayed">
-                                                    <Setter Property="TextColor" Value="#FF9800" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Late">
-                                                    <Setter Property="TextColor" Value="#F44336" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Scheduled">
-                                                    <Setter Property="TextColor" Value="#9E9E9E" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                        
-                                        <!-- Arrival Time -->
-                                        <Label 
-                                            Grid.Row="0"
-                                            Grid.RowSpan="2"
-                                            Grid.Column="2" 
-                                            Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"
-                                            Style="{StaticResource ListItemStyle}"
-                                            FontSize="20"
-                                            FontAttributes="Bold"
+                                            LineBreakMode="TailTruncation"
+                                            FontSize="24"
                                             VerticalOptions="Center" />
+                                        
+                                        <!-- Arrival Time and Status -->
+                                        <StackLayout
+                                            Grid.Column="2"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End"
+                                            Spacing="2">
+                                            
+                                            <!-- Arrival Time -->
+                                            <Label 
+                                                Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"
+                                                Style="{StaticResource ListItemStyle}"
+                                                FontSize="20"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Center" />
+                                            
+                                            <!-- Schedule Status -->
+                                            <Label 
+                                                Text="{Binding ScheduleStatus}"
+                                                Style="{StaticResource StatusStyle}">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="On Time">
+                                                        <Setter Property="TextColor" Value="#4CAF50" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Early">
+                                                        <Setter Property="TextColor" Value="#2196F3" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Delayed">
+                                                        <Setter Property="TextColor" Value="#FF9800" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Late">
+                                                        <Setter Property="TextColor" Value="#F44336" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Scheduled">
+                                                        <Setter Property="TextColor" Value="#9E9E9E" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </StackLayout>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>

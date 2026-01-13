@@ -275,10 +275,13 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 // Determine schedule status based on delay
                 string scheduleStatus = GetScheduleStatus(rt.ArrivalDelay ?? 0);
 
+                var routeNo = rt.RouteShortName ?? "?";
+                var destination = CleanDestination(rt.Headsign, routeNo);
+
                 arrivals.Add(new ScheduleModel()
                 {
-                    RouteNo = rt.RouteShortName ?? "?",
-                    Destination = rt.Headsign ?? "Unknown",
+                    RouteNo = routeNo,
+                    Destination = destination,
                     ExpectedCountdown = Math.Max(0, minutesUntilArrival),
                     ScheduleStatus = scheduleStatus
                 });
@@ -353,14 +356,15 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                     continue;
 
                 var routeNo = route.route_short_name ?? route.route_id ?? "?";
-                var destination = trip.trip_headsign ?? route.route_long_name ?? "Unknown";
+                var rawDestination = trip.trip_headsign ?? route.route_long_name ?? "Unknown";
+                var destination = CleanDestination(rawDestination, routeNo);
 
                 arrivals.Add(new ScheduleModel()
                 {
                     RouteNo = routeNo,
                     Destination = destination,
                     ExpectedCountdown = minutesUntilArrival,
-                    ScheduleStatus = "Scheduled" // Static data doesn't have delay info
+                    ScheduleStatus = "Scheduled"
                 });
             }
         }
@@ -409,5 +413,42 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             IsFavouriteBusStop = true;
             FavoriteIcon = "icon_favourites_remove.png";
         }
+    }
+
+    /// <summary>
+    /// Strips the route number prefix from the destination/headsign.
+    /// TransLink headsigns often start with the route number (e.g., "49 UBC" -> "UBC")
+    /// </summary>
+    private static string CleanDestination(string? destination, string? routeNo)
+    {
+        if (string.IsNullOrEmpty(destination))
+            return "Unknown";
+
+        if (string.IsNullOrEmpty(routeNo))
+            return destination;
+
+        var trimmed = destination.Trim();
+        var route = routeNo.Trim();
+
+        // Check if destination starts with route number followed by space or dash
+        if (trimmed.StartsWith(route + " "))
+            return trimmed[(route.Length + 1)..].Trim();
+
+        if (trimmed.StartsWith(route + "-"))
+            return trimmed[(route.Length + 1)..].Trim();
+
+        // Also check for patterns like "049 UBC" when route is "49"
+        if (trimmed.Length > route.Length + 1)
+        {
+            var firstWord = trimmed.Split(' ', '-')[0];
+            if (firstWord.TrimStart('0') == route.TrimStart('0'))
+            {
+                var separatorIndex = trimmed.IndexOfAny([' ', '-']);
+                if (separatorIndex > 0 && separatorIndex < trimmed.Length - 1)
+                    return trimmed[(separatorIndex + 1)..].Trim();
+            }
+        }
+
+        return trimmed;
     }
 }

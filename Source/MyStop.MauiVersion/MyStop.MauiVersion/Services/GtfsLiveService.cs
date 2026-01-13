@@ -72,7 +72,20 @@ public class GtfsLiveService : IGtfsLiveService
 
         try
         {
+            Debug.WriteLine($"[GTFS Realtime] Getting arrivals for stop_id: {stopId}");
+
             var tripUpdates = await GetAllTripUpdatesAsync();
+
+            Debug.WriteLine($"[GTFS Realtime] Searching {tripUpdates.Count} trip updates for stop {stopId}");
+
+            // Log some sample stop IDs from the feed to help debug
+            var sampleStopIds = tripUpdates.Values
+                .SelectMany(t => t.StopTimeUpdates)
+                .Select(s => s.StopId)
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Distinct()
+                .Take(10);
+            Debug.WriteLine($"[GTFS Realtime] Sample stop IDs in feed: {string.Join(", ", sampleStopIds)}");
 
             foreach (var tripUpdate in tripUpdates.Values)
             {
@@ -98,6 +111,8 @@ public class GtfsLiveService : IGtfsLiveService
                         headsign = trip?.trip_headsign;
                     }
 
+                    Debug.WriteLine($"[GTFS Realtime] Found arrival: Route={routeShortName}, Headsign={headsign}, ArrivalTime={stopTimeUpdate.ArrivalTime}");
+
                     arrivals.Add(new RealtimeArrivalModel
                     {
                         TripId = tripUpdate.TripId,
@@ -116,11 +131,12 @@ public class GtfsLiveService : IGtfsLiveService
                 }
             }
 
-            Debug.WriteLine($"Found {arrivals.Count} realtime arrivals for stop {stopId}");
+            Debug.WriteLine($"[GTFS Realtime] Found {arrivals.Count} realtime arrivals for stop {stopId}");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error getting realtime arrivals: {ex.Message}");
+            Debug.WriteLine($"[GTFS Realtime] Error getting realtime arrivals: {ex.Message}");
+            Debug.WriteLine($"[GTFS Realtime] Stack trace: {ex.StackTrace}");
         }
 
         return arrivals;
@@ -134,8 +150,11 @@ public class GtfsLiveService : IGtfsLiveService
             // Return cached data if still valid
             if (_tripUpdatesCache != null && DateTime.Now - _lastCacheUpdate < _cacheExpiry)
             {
+                Debug.WriteLine($"[GTFS Realtime] Using cached data ({_tripUpdatesCache.Count} trips)");
                 return _tripUpdatesCache;
             }
+
+            Debug.WriteLine($"[GTFS Realtime] Fetching fresh data from TransLink API...");
 
             // Run network and parsing on background thread to avoid Android NetworkOnMainThreadException
             var tripUpdates = await Task.Run(async () =>
@@ -143,19 +162,27 @@ public class GtfsLiveService : IGtfsLiveService
                 var updates = new Dictionary<string, TripUpdateInfo>();
 
                 using var httpClient = new HttpClient();
-                httpClient.Timeout = TimeSpan.FromSeconds(10);
+                httpClient.Timeout = TimeSpan.FromSeconds(15);
+
+                var url = $"https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey={API_KEY}";
+                Debug.WriteLine($"[GTFS Realtime] Requesting: {url.Replace(API_KEY, "***")}");
 
                 // Download the data as bytes first
-                var bytes = await httpClient.GetByteArrayAsync(
-                    $"https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey={API_KEY}");
+                var bytes = await httpClient.GetByteArrayAsync(url);
+                Debug.WriteLine($"[GTFS Realtime] Received {bytes.Length} bytes");
 
-                // Parse the protobuf message from bytes (synchronous but now on background thread)
+                // Parse the protobuf message from bytes
                 var feed = FeedMessage.Parser.ParseFrom(bytes);
+                Debug.WriteLine($"[GTFS Realtime] Parsed feed with {feed.Entity.Count} entities");
+
+                int tripUpdateCount = 0;
+                int stopTimeUpdateCount = 0;
 
                 foreach (var entity in feed.Entity)
                 {
                     if (entity.TripUpdate != null)
                     {
+                        tripUpdateCount++;
                         var tripUpdate = entity.TripUpdate;
                         var tripId = tripUpdate.Trip?.TripId;
 
@@ -171,6 +198,7 @@ public class GtfsLiveService : IGtfsLiveService
 
                         foreach (var stu in tripUpdate.StopTimeUpdate)
                         {
+                            stopTimeUpdateCount++;
                             info.StopTimeUpdates.Add(new StopTimeUpdateInfo
                             {
                                 StopId = stu.StopId,
@@ -187,6 +215,8 @@ public class GtfsLiveService : IGtfsLiveService
                     }
                 }
 
+                Debug.WriteLine($"[GTFS Realtime] Processed {tripUpdateCount} trip updates with {stopTimeUpdateCount} stop time updates");
+
                 return updates;
             });
 
@@ -194,15 +224,20 @@ public class GtfsLiveService : IGtfsLiveService
             _tripUpdatesCache = tripUpdates;
             _lastCacheUpdate = DateTime.Now;
 
-            Debug.WriteLine($"Fetched {tripUpdates.Count} trip updates from realtime feed");
+            Debug.WriteLine($"[GTFS Realtime] Cached {tripUpdates.Count} trip updates");
 
             return tripUpdates;
         }
+        catch (HttpRequestException ex)
+        {
+            Debug.WriteLine($"[GTFS Realtime] HTTP Error: {ex.Message}");
+            Debug.WriteLine($"[GTFS Realtime] This might be an API key issue or network problem");
+            return _tripUpdatesCache ?? new Dictionary<string, TripUpdateInfo>();
+        }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error fetching trip updates: {ex.Message}");
-
-            // Return cached data if available, even if expired
+            Debug.WriteLine($"[GTFS Realtime] Error fetching trip updates: {ex.Message}");
+            Debug.WriteLine($"[GTFS Realtime] Stack trace: {ex.StackTrace}");
             return _tripUpdatesCache ?? new Dictionary<string, TripUpdateInfo>();
         }
         finally
@@ -216,9 +251,9 @@ public class GtfsLiveService : IGtfsLiveService
         try
         {
             var updates = await GetAllTripUpdatesAsync();
-            foreach (var update in updates.Values)
+            foreach (var update in updates.Values.Take(5))
             {
-                Debug.WriteLine($"Trip ID: {update.TripId}, Route: {update.RouteId}");
+                Debug.WriteLine($"Trip ID: {update.TripId}, Route: {update.RouteId}, Stops: {update.StopTimeUpdates.Count}");
             }
         }
         catch (Exception ex)
@@ -239,7 +274,7 @@ public class GtfsLiveService : IGtfsLiveService
 
                 var feed = FeedMessage.Parser.ParseFrom(bytes);
 
-                foreach (var entity in feed.Entity)
+                foreach (var entity in feed.Entity.Take(5))
                 {
                     if (entity.Vehicle != null)
                     {
@@ -269,7 +304,7 @@ public class GtfsLiveService : IGtfsLiveService
 
                 var feed = FeedMessage.Parser.ParseFrom(bytes);
 
-                foreach (var entity in feed.Entity)
+                foreach (var entity in feed.Entity.Take(5))
                 {
                     if (entity.Alert != null)
                     {
