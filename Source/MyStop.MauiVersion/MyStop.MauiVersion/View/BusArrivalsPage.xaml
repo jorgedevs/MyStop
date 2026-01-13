@@ -143,7 +143,7 @@
                                             Text="{Binding Destination}"
                                             Style="{StaticResource ListItemStyle}"
                                             LineBreakMode="TailTruncation"
-                                            FontSize="24"
+                                            FontSize="22"
                                             VerticalOptions="Center" />
                                         
                                         <!-- Arrival Time and Status -->
