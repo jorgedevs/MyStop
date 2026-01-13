@@ -165,9 +165,14 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Frame 
+                <Border 
                     BackgroundColor="{StaticResource SkyColor}" 
+                    StrokeThickness="0"
+                    Padding="15"
                     Grid.Row="1">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
                     <Grid 
                         RowSpacing="10">
                         <Grid.RowDefinitions>
@@ -189,16 +194,19 @@
                             Color="White" 
                             HeightRequest="1" />
 
-                        <Frame 
+                        <Border 
                             Grid.Row="2" 
                             BackgroundColor="White" 
-                            HasShadow="false"
+                            StrokeThickness="0"
                             Padding="10">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5" />
+                            </Border.StrokeShape>
                             <Entry 
                                 Text="{Binding TagName}" 
                                 TextColor="{StaticResource SkyColor}" 
                                 Placeholder="Enter bus stop name" />
-                        </Frame>
+                        </Border>
 
                         <Grid Grid.Row="3" >
                             <Grid.ColumnDefinitions>
@@ -224,7 +232,7 @@
                                 BackgroundColor="#55FFFFFF" />
                         </Grid>
                     </Grid>
-                </Frame>
+                </Border>
             </Grid>
         </Grid>
     </ContentPage.Content>

@@ -30,10 +30,9 @@
                 <Setter Property="VerticalOptions" Value="Center" />
                 <Setter Property="HorizontalOptions" Value="Center" />
             </Style>
-            <Style x:Key="DataSourceBadgeStyle" TargetType="Frame">
+            <Style x:Key="DataSourceBadgeStyle" TargetType="Border">
                 <Setter Property="Padding" Value="8,4" />
-                <Setter Property="CornerRadius" Value="12" />
-                <Setter Property="HasShadow" Value="False" />
+                <Setter Property="StrokeThickness" Value="0" />
                 <Setter Property="VerticalOptions" Value="Center" />
             </Style>
         </ResourceDictionary>
@@ -87,13 +86,16 @@
                     </StackLayout>
 
                     <!-- Data Source Badge -->
-                    <Frame 
+                    <Border 
                         Grid.Column="2"
                         Style="{StaticResource DataSourceBadgeStyle}"
                         BackgroundColor="{Binding DataSourceText, Converter={StaticResource DataSourceColorConverter}}">
-                        <Frame.GestureRecognizers>
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding ToggleDataSourceCommand}" />
-                        </Frame.GestureRecognizers>
+                        </Border.GestureRecognizers>
                         <Label 
                             Text="{Binding DataSourceText}"
                             TextColor="White"
@@ -101,7 +103,7 @@
                             FontAttributes="Bold"
                             HorizontalOptions="Center"
                             VerticalOptions="Center" />
-                    </Frame>
+                    </Border>
                 </Grid>
 
                 <Grid Grid.Row="1">
