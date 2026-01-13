@@ -75,7 +75,7 @@
                                     Text="{Binding BusStopNumber}" 
                                     FontSize="20" 
                                     MaxLength="5" 
-                                    Placeholder="50075" 
+                                    Placeholder="51195" 
                                     TextColor="{StaticResource SkyColor}" 
                                     HorizontalTextAlignment="Center" 
                                     VerticalOptions="Center" 
@@ -128,15 +128,14 @@
                         HeightRequest="170" 
                         HorizontalOptions="Start" 
                         VerticalOptions="End" 
-                        TranslationY="20" 
+                        TranslationY="10" 
                         Margin="30,0,0,0" />
 
                     <Image 
                         x:Name="imgLamp"
                         Source="img_lamp" 
-                        Scale="1" 
                         HorizontalOptions="End" 
-                        Margin="0,0,15,10" />
+                        Margin="0,0,5,10" />
                 </Grid>
             </Grid>
 

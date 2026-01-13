@@ -67,9 +67,10 @@ public partial class MainPage : ContentPage
                     if (imgLamp == null) return;
                     
                     imgLamp.TranslationX = 0;
+                    imgLamp.TranslationY = 0;
                     imgLamp.Scale = 1;
 
-                    imgLamp.TranslateTo(-100, 0, 2000);
+                    imgLamp.TranslateTo(-80, 25, 2000);
                     await imgLamp.ScaleTo(0.55, 2000);
                 }
             }
@@ -89,11 +90,11 @@ public partial class MainPage : ContentPage
                     
                     if (i % 2 == 0)
                     {
-                        await imgBusFront.TranslateTo(0, 20, 1000);
+                        await imgBusFront.TranslateTo(0, 10, 1000);
                     }
                     else
                     {
-                        await imgBusFront.TranslateTo(-5, 20, 1000);
+                        await imgBusFront.TranslateTo(-5, 10, 1000);
                     }
                 }
             }
