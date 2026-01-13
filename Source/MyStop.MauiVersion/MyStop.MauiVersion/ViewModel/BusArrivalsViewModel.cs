@@ -145,14 +145,13 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     {
         try
         {
-            ArrivalTimes.Clear();
-
             if (Stop == null || string.IsNullOrEmpty(StopNumber))
                 return;
 
             var arrivals = new List<ScheduleModel>();
             bool usedRealtime = false;
 
+            // Fetch new data first (keep showing old data while loading)
             if (UseRealtimeData && !string.IsNullOrEmpty(_stopId))
             {
                 arrivals = await GetRealtimeArrivals(_stopId);
@@ -165,16 +164,25 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 usedRealtime = false;
             }
 
+            // Only update the UI after we have new data
             DataSourceText = usedRealtime ? "Realtime" : "Schedule";
 
-            var sortedArrivals = arrivals.OrderBy(a => a.ExpectedCountdown).Take(MaxArrivalsToDisplay);
+            var sortedArrivals = arrivals
+                .OrderBy(a => a.ExpectedCountdown)
+                .Take(MaxArrivalsToDisplay)
+                .ToList();
 
-            foreach (var arrival in sortedArrivals)
+            // Clear and repopulate only after data is ready
+            ArrivalTimes.Clear();
+
+            if (sortedArrivals.Count > 0)
             {
-                ArrivalTimes.Add(arrival);
+                foreach (var arrival in sortedArrivals)
+                {
+                    ArrivalTimes.Add(arrival);
+                }
             }
-
-            if (ArrivalTimes.Count == 0)
+            else
             {
                 ArrivalTimes.Add(new ScheduleModel
                 {
@@ -187,14 +195,18 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         }
         catch
         {
-            ArrivalTimes.Clear();
-            ArrivalTimes.Add(new ScheduleModel
+            // Only show error if we have no existing data
+            if (ArrivalTimes.Count == 0)
             {
-                RouteNo = "--",
-                Destination = "Error loading arrival times",
-                ExpectedCountdown = 0,
-                ScheduleStatus = ""
-            });
+                ArrivalTimes.Add(new ScheduleModel
+                {
+                    RouteNo = "--",
+                    Destination = "Error loading arrival times",
+                    ExpectedCountdown = 0,
+                    ScheduleStatus = ""
+                });
+            }
+            // Otherwise keep showing the old data
         }
     }
 

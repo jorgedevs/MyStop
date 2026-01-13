@@ -27,6 +27,7 @@
             </Style>
             <Style x:Key="StatusStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontAttributes" Value="Bold" />
                 <Setter Property="VerticalOptions" Value="Center" />
                 <Setter Property="HorizontalOptions" Value="Center" />
             </Style>
@@ -86,7 +87,7 @@
                     </StackLayout>
 
                     <!-- Data Source Badge -->
-                    <Border 
+                    <!--<Border 
                         Grid.Column="2"
                         Style="{StaticResource DataSourceBadgeStyle}"
                         BackgroundColor="{Binding DataSourceText, Converter={StaticResource DataSourceColorConverter}}">
@@ -103,7 +104,7 @@
                             FontAttributes="Bold"
                             HorizontalOptions="Center"
                             VerticalOptions="Center" />
-                    </Border>
+                    </Border>-->
                 </Grid>
 
                 <Grid Grid.Row="1">
@@ -181,7 +182,7 @@
                                                         <Setter Property="TextColor" Value="#F44336" />
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Scheduled">
-                                                        <Setter Property="TextColor" Value="#9E9E9E" />
+                                                        <Setter Property="TextColor" Value="#CBCBCB" />
                                                     </DataTrigger>
                                                 </Label.Triggers>
                                             </Label>
