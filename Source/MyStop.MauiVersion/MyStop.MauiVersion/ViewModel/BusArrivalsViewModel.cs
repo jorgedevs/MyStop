@@ -2,7 +2,6 @@
 using MyStop.MauiVersion.Services;
 using MyStop.MauiVersion.Services.Interfaces;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace MyStop.MauiVersion.ViewModel;
@@ -13,15 +12,12 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     private readonly ISQLiteService _sqliteService;
     private readonly IGtfsLiveService _gtfsLiveService;
 
-    // Configuration constants
     private const int MaxStopTimesToProcess = 500;
-    private const int MaxMinutesAhead = 120; // 2 hours
+    private const int MaxMinutesAhead = 120;
     private const int MaxArrivalsToDisplay = 15;
 
     public StopModel Stop { get; set; }
-
     public ScheduleModel Schedule { get; set; }
-
     public ObservableCollection<ScheduleModel> ArrivalTimes { get; set; }
 
     bool isFavouriteBusStop;
@@ -39,9 +35,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     }
 
     bool useRealtimeData = true;
-    /// <summary>
-    /// When true, uses GTFS realtime data for arrivals. Falls back to static schedule if realtime fails.
-    /// </summary>
     public bool UseRealtimeData
     {
         get => useRealtimeData;
@@ -49,9 +42,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     }
 
     string dataSourceText = "Realtime";
-    /// <summary>
-    /// Indicates the current data source being used (Realtime or Schedule).
-    /// </summary>
     public string DataSourceText
     {
         get => dataSourceText;
@@ -79,18 +69,12 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         set { favoriteIcon = value; OnPropertyChanged(nameof(FavoriteIcon)); }
     }
 
-    // Store stop_id for realtime queries
     private string? _stopId;
 
     public ICommand FavouriteCommand { get; set; }
-
     public ICommand RefreshCommand { get; set; }
-
     public ICommand ToggleDataSourceCommand { get; set; }
 
-    /// <summary>
-    /// Refreshes arrival times. Called automatically every 15 seconds and on pull-to-refresh.
-    /// </summary>
     public void RefreshArrivalTimes()
     {
         _ = GetBusArrivalsTimes();
@@ -106,7 +90,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         _gtfsLiveService = gtfsLiveService;
 
         ArrivalTimes = new ObservableCollection<ScheduleModel>();
-
         IsFavouriteBusStop = false;
 
         FavouriteCommand = new Command(ToggleSaveBusStop);
@@ -129,11 +112,7 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     private async Task Initialize()
     {
         IsFavouriteBusStop = false;
-
-        if (IsFavouriteBusStop)
-            FavoriteIcon = "icon_favourites_remove.png";
-        else
-            FavoriteIcon = "icon_favourites_add.png";
+        FavoriteIcon = IsFavouriteBusStop ? "icon_favourites_remove.png" : "icon_favourites_add.png";
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -141,37 +120,23 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         if (query.ContainsKey("BusStopNumber"))
         {
             string? stopCode = query["BusStopNumber"] as string;
-
             var stopInfo = _sqliteService.GetStopInfo(stopCode!);
 
             if (stopInfo != null)
             {
-                var stop = new StopModel()
-                {
-                    StopNo = stopInfo.stop_code,
-                    Name = stopInfo.stop_name
-                };
-
-                Stop = stop;
+                Stop = new StopModel { StopNo = stopInfo.stop_code, Name = stopInfo.stop_name };
                 StopNumber = Stop.StopNo!;
                 StopInfo = Stop.Name!;
-                _stopId = stopInfo.stop_id; // Store for realtime queries
+                _stopId = stopInfo.stop_id;
             }
             else
             {
-                var stop = new StopModel()
-                {
-                    StopNo = stopCode,
-                    Name = "Stop information not available"
-                };
-
-                Stop = stop;
+                Stop = new StopModel { StopNo = stopCode, Name = "Stop information not available" };
                 StopNumber = Stop.StopNo!;
                 StopInfo = Stop.Name!;
                 _stopId = null;
             }
 
-            // Load arrival times after stop info is set
             _ = GetBusArrivalsTimes();
         }
     }
@@ -188,24 +153,20 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             var arrivals = new List<ScheduleModel>();
             bool usedRealtime = false;
 
-            // Try realtime data first if enabled
             if (UseRealtimeData && !string.IsNullOrEmpty(_stopId))
             {
                 arrivals = await GetRealtimeArrivals(_stopId);
                 usedRealtime = arrivals.Count > 0;
             }
 
-            // Fall back to static schedule if no realtime data or realtime is disabled
             if (arrivals.Count == 0)
             {
                 arrivals = await GetStaticScheduleArrivals();
                 usedRealtime = false;
             }
 
-            // Update data source indicator
             DataSourceText = usedRealtime ? "Realtime" : "Schedule";
 
-            // Sort by arrival time and take top results
             var sortedArrivals = arrivals.OrderBy(a => a.ExpectedCountdown).Take(MaxArrivalsToDisplay);
 
             foreach (var arrival in sortedArrivals)
@@ -213,10 +174,9 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 ArrivalTimes.Add(arrival);
             }
 
-            // If no arrivals found, show a message
             if (ArrivalTimes.Count == 0)
             {
-                ArrivalTimes.Add(new ScheduleModel()
+                ArrivalTimes.Add(new ScheduleModel
                 {
                     RouteNo = "--",
                     Destination = "No upcoming arrivals found",
@@ -225,12 +185,10 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 });
             }
         }
-        catch (Exception ex)
+        catch
         {
-            Debug.WriteLine($"Error getting arrival times: {ex.Message}");
-
             ArrivalTimes.Clear();
-            ArrivalTimes.Add(new ScheduleModel()
+            ArrivalTimes.Add(new ScheduleModel
             {
                 RouteNo = "--",
                 Destination = "Error loading arrival times",
@@ -240,9 +198,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         }
     }
 
-    /// <summary>
-    /// Gets arrivals from GTFS realtime feed.
-    /// </summary>
     private async Task<List<ScheduleModel>> GetRealtimeArrivals(string stopId)
     {
         var arrivals = new List<ScheduleModel>();
@@ -250,12 +205,10 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         try
         {
             var realtimeArrivals = await _gtfsLiveService.GetRealtimeArrivalsForStopAsync(stopId);
-
             var now = DateTimeOffset.Now.ToUnixTimeSeconds();
 
             foreach (var rt in realtimeArrivals)
             {
-                // Skip cancelled trips
                 if (rt.ScheduleRelationship == "CANCELED" || rt.ScheduleRelationship == "Canceled")
                     continue;
 
@@ -263,43 +216,34 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 if (!arrivalTimestamp.HasValue)
                     continue;
 
-                // Calculate minutes until arrival
                 var secondsUntilArrival = arrivalTimestamp.Value - now;
-                if (secondsUntilArrival < -60) // Already passed (with 1 min buffer)
+                if (secondsUntilArrival < -60)
                     continue;
 
                 var minutesUntilArrival = (int)(secondsUntilArrival / 60);
                 if (minutesUntilArrival > MaxMinutesAhead)
                     continue;
 
-                // Determine schedule status based on delay
-                string scheduleStatus = GetScheduleStatus(rt.ArrivalDelay ?? 0);
-
                 var routeNo = rt.RouteShortName ?? "?";
                 var destination = CleanDestination(rt.Headsign, routeNo);
 
-                arrivals.Add(new ScheduleModel()
+                arrivals.Add(new ScheduleModel
                 {
                     RouteNo = routeNo,
                     Destination = destination,
                     ExpectedCountdown = Math.Max(0, minutesUntilArrival),
-                    ScheduleStatus = scheduleStatus
+                    ScheduleStatus = GetScheduleStatus(rt.ArrivalDelay ?? 0)
                 });
             }
-
-            Debug.WriteLine($"Got {arrivals.Count} realtime arrivals for stop {stopId}");
         }
-        catch (Exception ex)
+        catch
         {
-            Debug.WriteLine($"Error getting realtime arrivals: {ex.Message}");
+            // Return empty list on error
         }
 
         return arrivals;
     }
 
-    /// <summary>
-    /// Gets arrivals from static GTFS schedule data.
-    /// </summary>
     private async Task<List<ScheduleModel>> GetStaticScheduleArrivals()
     {
         var arrivals = new List<ScheduleModel>();
@@ -310,10 +254,7 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             if (stopInfo == null)
                 return arrivals;
 
-            // Get active service IDs for today
             var activeServices = await _sqliteService.GetActiveServiceIdsAsync(DateTime.Now);
-
-            // Get all stop times for this stop
             var stopTimes = await _sqliteService.GetStopTimesForStopAsync(stopInfo.stop_id!);
 
             var now = DateTime.Now;
@@ -325,10 +266,7 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                     continue;
 
                 var trip = await _sqliteService.GetTripAsync(stopTime.trip_id!);
-                if (trip == null)
-                    continue;
-
-                if (!activeServices.Contains(trip.service_id!))
+                if (trip == null || !activeServices.Contains(trip.service_id!))
                     continue;
 
                 var timeParts = stopTime.arrival_time.Split(':');
@@ -347,7 +285,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                     diff = diff.Add(TimeSpan.FromHours(24));
 
                 var minutesUntilArrival = (int)diff.TotalMinutes;
-
                 if (minutesUntilArrival > MaxMinutesAhead)
                     continue;
 
@@ -357,35 +294,31 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 
                 var routeNo = route.route_short_name ?? route.route_id ?? "?";
                 var rawDestination = trip.trip_headsign ?? route.route_long_name ?? "Unknown";
-                var destination = CleanDestination(rawDestination, routeNo);
 
-                arrivals.Add(new ScheduleModel()
+                arrivals.Add(new ScheduleModel
                 {
                     RouteNo = routeNo,
-                    Destination = destination,
+                    Destination = CleanDestination(rawDestination, routeNo),
                     ExpectedCountdown = minutesUntilArrival,
                     ScheduleStatus = "Scheduled"
                 });
             }
         }
-        catch (Exception ex)
+        catch
         {
-            Debug.WriteLine($"Error getting static arrivals: {ex.Message}");
+            // Return empty list on error
         }
 
         return arrivals;
     }
 
-    /// <summary>
-    /// Determines the schedule status text based on delay seconds.
-    /// </summary>
     private static string GetScheduleStatus(int delaySeconds)
     {
-        if (delaySeconds < -60) // More than 1 minute early
+        if (delaySeconds < -60)
             return "Early";
-        else if (delaySeconds > 300) // More than 5 minutes late
+        else if (delaySeconds > 300)
             return "Late";
-        else if (delaySeconds > 60) // 1-5 minutes late
+        else if (delaySeconds > 60)
             return "Delayed";
         else
             return "On Time";
@@ -393,7 +326,7 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 
     private async void ToggleSaveBusStop()
     {
-        var stop = new SavedStopModel()
+        var stop = new SavedStopModel
         {
             Name = Stop.Name,
             Routes = Stop.Routes,
@@ -415,10 +348,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         }
     }
 
-    /// <summary>
-    /// Strips the route number prefix from the destination/headsign.
-    /// TransLink headsigns often start with the route number (e.g., "49 UBC" -> "UBC")
-    /// </summary>
     private static string CleanDestination(string? destination, string? routeNo)
     {
         if (string.IsNullOrEmpty(destination))
@@ -430,14 +359,12 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         var trimmed = destination.Trim();
         var route = routeNo.Trim();
 
-        // Check if destination starts with route number followed by space or dash
         if (trimmed.StartsWith(route + " "))
             return trimmed[(route.Length + 1)..].Trim();
 
         if (trimmed.StartsWith(route + "-"))
             return trimmed[(route.Length + 1)..].Trim();
 
-        // Also check for patterns like "049 UBC" when route is "49"
         if (trimmed.Length > route.Length + 1)
         {
             var firstWord = trimmed.Split(' ', '-')[0];

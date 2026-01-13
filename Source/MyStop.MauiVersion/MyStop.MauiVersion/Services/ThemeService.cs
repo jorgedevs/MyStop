@@ -96,15 +96,10 @@ public class ThemeService : IThemeService
 
             var isNightNow = currentTime < sunriseTime || currentTime > sunsetTime;
 
-            Debug.WriteLine($"Theme check: Now={now:HH:mm:ss} ({currentTime}), Sunrise={_cachedSunrise:HH:mm} ({sunriseTime}), Sunset={_cachedSunset:HH:mm} ({sunsetTime})");
-            Debug.WriteLine($"Theme check: {currentTime} < {sunriseTime} = {currentTime < sunriseTime}, {currentTime} > {sunsetTime} = {currentTime > sunsetTime}");
-            Debug.WriteLine($"Theme check: IsNight = {isNightNow}");
-
             IsNight = isNightNow;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Error refreshing theme: {ex.Message}");
             // Fallback: winter hours for Vancouver
             var hour = DateTime.Now.Hour;
             IsNight = hour >= 17 || hour < 8;
@@ -141,8 +136,6 @@ public class ThemeService : IThemeService
                         latitude = location.Latitude;
                         longitude = location.Longitude;
                         utcOffset = TimeZoneInfo.Local.GetUtcOffset(now).TotalHours;
-
-                        Debug.WriteLine($"Using device location: Lat={latitude:F4}, Lon={longitude:F4}, UTC={utcOffset}");
                     }
                     else
                     {
@@ -154,9 +147,8 @@ public class ThemeService : IThemeService
                     (latitude, longitude, utcOffset) = GetVancouverDefaults(now);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"Location error: {ex.Message}");
                 (latitude, longitude, utcOffset) = GetVancouverDefaults(now);
             }
 
@@ -164,12 +156,9 @@ public class ThemeService : IThemeService
             _cachedSunrise = sunrise;
             _cachedSunset = sunset;
             _lastCalculationDate = now;
-
-            Debug.WriteLine($"Sun times cached: Sunrise={_cachedSunrise:HH:mm}, Sunset={_cachedSunset:HH:mm}");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Error calculating sun times: {ex.Message}");
             // Use winter defaults for Vancouver as fallback
             var now = DateTime.Now;
             _cachedSunrise = now.Date.AddHours(8);  // 8:00 AM
@@ -202,7 +191,6 @@ public class ThemeService : IThemeService
             }
         }
 
-        Debug.WriteLine($"Using Vancouver defaults: Lat={vancouverLat}, Lon={vancouverLon}, UTC={offset}");
         return (vancouverLat, vancouverLon, offset);
     }
 
@@ -214,8 +202,6 @@ public class ThemeService : IThemeService
             _themeTimer.Interval = TimeSpan.FromMinutes(1);
             _themeTimer.Tick += async (s, e) => await RefreshThemeAsync();
             _themeTimer.Start();
-
-            Debug.WriteLine("Theme monitoring started (checking every minute)");
         }
     }
 
@@ -235,13 +221,11 @@ public class ThemeService : IThemeService
                 {
                     var skyColor = _isNight ? Color.FromArgb("#133B4F") : Color.FromArgb("#06bfcc");
                     Application.Current.Resources["SkyColor"] = skyColor;
-
-                    Debug.WriteLine($"Applied theme: IsNight={_isNight}, SkyColor={(_isNight ? "#133B4F" : "#06bfcc")}");
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Debug.WriteLine($"Error applying theme: {ex.Message}");
+                // Ignore theme application errors
             }
         });
     }

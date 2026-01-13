@@ -59,10 +59,6 @@ public static class SunCalculator
         var sunrise = date.Date.AddMinutes(sunriseMinutes);
         var sunset = date.Date.AddMinutes(sunsetMinutes);
 
-        Debug.WriteLine($"SunCalculator: Date={date:yyyy-MM-dd}, Lat={latitude:F2}, Lon={longitude:F2}, UTC={utcOffset}");
-        Debug.WriteLine($"SunCalculator: SolarNoon={solarNoon:F0}min, HA={haSunrise:F2}°, EqTime={eqOfTime:F2}min");
-        Debug.WriteLine($"SunCalculator: Sunrise={sunrise:HH:mm}, Sunset={sunset:HH:mm}");
-
         return (sunrise, sunset);
     }
 
@@ -177,7 +173,6 @@ public static class SunCalculator
             }
         }
 
-        Debug.WriteLine($"Vancouver defaults: Lat={vancouverLat}, Lon={vancouverLon}, UTC={offset}");
         return (vancouverLat, vancouverLon, offset);
     }
 }

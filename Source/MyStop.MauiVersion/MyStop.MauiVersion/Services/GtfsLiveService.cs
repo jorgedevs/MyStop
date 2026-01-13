@@ -1,6 +1,5 @@
 ﻿using MyStop.MauiVersion.Model;
 using MyStop.MauiVersion.Services.Interfaces;
-using System.Diagnostics;
 using TransitRealtime;
 
 namespace MyStop.MauiVersion.Services;
@@ -18,10 +17,6 @@ public interface IGtfsLiveService
     /// Gets all current trip updates from the realtime feed.
     /// </summary>
     Task<Dictionary<string, TripUpdateInfo>> GetAllTripUpdatesAsync();
-
-    Task TripUpdate();
-    Task PositionUpdate();
-    Task ServiceAlert();
 }
 
 /// <summary>
@@ -53,7 +48,8 @@ public class GtfsLiveService : IGtfsLiveService
 {
     private readonly ISQLiteService _sqliteService;
 
-    const string API_KEY = "API_KEY"; // TODO: Move to secure configuration
+    // TODO: Move API key to secure configuration (e.g., user secrets, environment variable)
+    const string API_KEY = "YOUR_API_KEY_HERE";
 
     // Cache for trip updates to avoid frequent API calls
     private Dictionary<string, TripUpdateInfo>? _tripUpdatesCache;
@@ -72,30 +68,15 @@ public class GtfsLiveService : IGtfsLiveService
 
         try
         {
-            Debug.WriteLine($"[GTFS Realtime] Getting arrivals for stop_id: {stopId}");
-
             var tripUpdates = await GetAllTripUpdatesAsync();
-
-            Debug.WriteLine($"[GTFS Realtime] Searching {tripUpdates.Count} trip updates for stop {stopId}");
-
-            // Log some sample stop IDs from the feed to help debug
-            var sampleStopIds = tripUpdates.Values
-                .SelectMany(t => t.StopTimeUpdates)
-                .Select(s => s.StopId)
-                .Where(s => !string.IsNullOrEmpty(s))
-                .Distinct()
-                .Take(10);
-            Debug.WriteLine($"[GTFS Realtime] Sample stop IDs in feed: {string.Join(", ", sampleStopIds)}");
 
             foreach (var tripUpdate in tripUpdates.Values)
             {
-                // Find stop time updates for this stop
                 var stopTimeUpdate = tripUpdate.StopTimeUpdates
                     .FirstOrDefault(stu => stu.StopId == stopId);
 
                 if (stopTimeUpdate != null)
                 {
-                    // Get route info from database
                     string? routeShortName = null;
                     string? headsign = tripUpdate.Headsign;
 
@@ -110,8 +91,6 @@ public class GtfsLiveService : IGtfsLiveService
                         var trip = await _sqliteService.GetTripAsync(tripUpdate.TripId);
                         headsign = trip?.trip_headsign;
                     }
-
-                    Debug.WriteLine($"[GTFS Realtime] Found arrival: Route={routeShortName}, Headsign={headsign}, ArrivalTime={stopTimeUpdate.ArrivalTime}");
 
                     arrivals.Add(new RealtimeArrivalModel
                     {
@@ -130,13 +109,10 @@ public class GtfsLiveService : IGtfsLiveService
                     });
                 }
             }
-
-            Debug.WriteLine($"[GTFS Realtime] Found {arrivals.Count} realtime arrivals for stop {stopId}");
         }
-        catch (Exception ex)
+        catch
         {
-            Debug.WriteLine($"[GTFS Realtime] Error getting realtime arrivals: {ex.Message}");
-            Debug.WriteLine($"[GTFS Realtime] Stack trace: {ex.StackTrace}");
+            // Return empty list on error, will fall back to static schedule
         }
 
         return arrivals;
@@ -150,11 +126,8 @@ public class GtfsLiveService : IGtfsLiveService
             // Return cached data if still valid
             if (_tripUpdatesCache != null && DateTime.Now - _lastCacheUpdate < _cacheExpiry)
             {
-                Debug.WriteLine($"[GTFS Realtime] Using cached data ({_tripUpdatesCache.Count} trips)");
                 return _tripUpdatesCache;
             }
-
-            Debug.WriteLine($"[GTFS Realtime] Fetching fresh data from TransLink API...");
 
             // Run network and parsing on background thread to avoid Android NetworkOnMainThreadException
             var tripUpdates = await Task.Run(async () =>
@@ -165,24 +138,13 @@ public class GtfsLiveService : IGtfsLiveService
                 httpClient.Timeout = TimeSpan.FromSeconds(15);
 
                 var url = $"https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey={API_KEY}";
-                Debug.WriteLine($"[GTFS Realtime] Requesting: {url.Replace(API_KEY, "***")}");
-
-                // Download the data as bytes first
                 var bytes = await httpClient.GetByteArrayAsync(url);
-                Debug.WriteLine($"[GTFS Realtime] Received {bytes.Length} bytes");
-
-                // Parse the protobuf message from bytes
                 var feed = FeedMessage.Parser.ParseFrom(bytes);
-                Debug.WriteLine($"[GTFS Realtime] Parsed feed with {feed.Entity.Count} entities");
-
-                int tripUpdateCount = 0;
-                int stopTimeUpdateCount = 0;
 
                 foreach (var entity in feed.Entity)
                 {
                     if (entity.TripUpdate != null)
                     {
-                        tripUpdateCount++;
                         var tripUpdate = entity.TripUpdate;
                         var tripId = tripUpdate.Trip?.TripId;
 
@@ -198,7 +160,6 @@ public class GtfsLiveService : IGtfsLiveService
 
                         foreach (var stu in tripUpdate.StopTimeUpdate)
                         {
-                            stopTimeUpdateCount++;
                             info.StopTimeUpdates.Add(new StopTimeUpdateInfo
                             {
                                 StopId = stu.StopId,
@@ -215,8 +176,6 @@ public class GtfsLiveService : IGtfsLiveService
                     }
                 }
 
-                Debug.WriteLine($"[GTFS Realtime] Processed {tripUpdateCount} trip updates with {stopTimeUpdateCount} stop time updates");
-
                 return updates;
             });
 
@@ -224,99 +183,16 @@ public class GtfsLiveService : IGtfsLiveService
             _tripUpdatesCache = tripUpdates;
             _lastCacheUpdate = DateTime.Now;
 
-            Debug.WriteLine($"[GTFS Realtime] Cached {tripUpdates.Count} trip updates");
-
             return tripUpdates;
         }
-        catch (HttpRequestException ex)
+        catch
         {
-            Debug.WriteLine($"[GTFS Realtime] HTTP Error: {ex.Message}");
-            Debug.WriteLine($"[GTFS Realtime] This might be an API key issue or network problem");
-            return _tripUpdatesCache ?? new Dictionary<string, TripUpdateInfo>();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"[GTFS Realtime] Error fetching trip updates: {ex.Message}");
-            Debug.WriteLine($"[GTFS Realtime] Stack trace: {ex.StackTrace}");
+            // Return cached data if available, even if expired
             return _tripUpdatesCache ?? new Dictionary<string, TripUpdateInfo>();
         }
         finally
         {
             _cacheLock.Release();
-        }
-    }
-
-    public async Task TripUpdate()
-    {
-        try
-        {
-            var updates = await GetAllTripUpdatesAsync();
-            foreach (var update in updates.Values.Take(5))
-            {
-                Debug.WriteLine($"Trip ID: {update.TripId}, Route: {update.RouteId}, Stops: {update.StopTimeUpdates.Count}");
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error: {ex.Message}");
-        }
-    }
-
-    public async Task PositionUpdate()
-    {
-        try
-        {
-            await Task.Run(async () =>
-            {
-                using var httpClient = new HttpClient();
-                var bytes = await httpClient.GetByteArrayAsync(
-                    $"https://gtfsapi.translink.ca/v3/gtfsposition?apikey={API_KEY}");
-
-                var feed = FeedMessage.Parser.ParseFrom(bytes);
-
-                foreach (var entity in feed.Entity.Take(5))
-                {
-                    if (entity.Vehicle != null)
-                    {
-                        var vehicle = entity.Vehicle;
-                        Debug.WriteLine($"Vehicle ID: {vehicle.Vehicle?.Id}, " +
-                            $"Trip: {vehicle.Trip?.TripId}, " +
-                            $"Position: {vehicle.Position?.Latitude}, {vehicle.Position?.Longitude}");
-                    }
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error: {ex.Message}");
-        }
-    }
-
-    public async Task ServiceAlert()
-    {
-        try
-        {
-            await Task.Run(async () =>
-            {
-                using var httpClient = new HttpClient();
-                var bytes = await httpClient.GetByteArrayAsync(
-                    $"https://gtfsapi.translink.ca/v3/gtfsalerts?apikey={API_KEY}");
-
-                var feed = FeedMessage.Parser.ParseFrom(bytes);
-
-                foreach (var entity in feed.Entity.Take(5))
-                {
-                    if (entity.Alert != null)
-                    {
-                        var alert = entity.Alert;
-                        Debug.WriteLine($"Alert: {alert.HeaderText?.Translation?.FirstOrDefault()?.Text}");
-                    }
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error: {ex.Message}");
         }
     }
 }
