@@ -4,12 +4,6 @@
 
 This .NET MAUI app is intended to interact with Vancouver, BC's public system API (TransLink), providing real-time data on all their busses across the entire city.
 
-## Important Note!
-
-As of December 2024, TransLink replaced their Real Time Transit Information (RTTI) Web API with General Transit Feed Specification (GTFS), which means the current implementation needs work to adapt to the new common format for public transportation.
-
-You can read more about it on the [App Developer Resources](https://www.translink.ca/about-us/doing-business-with-translink/app-developer-resources).
-
 ## Software Stack
 
 <div align="center">
