@@ -199,6 +199,54 @@
                         Aspect="AspectFill" 
                         InputTransparent="true" 
                         VerticalOptions="End" />
+
+                    <!-- Empty State View -->
+                    <StackLayout
+                        IsVisible="{Binding IsEmpty}"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Spacing="10">
+                        <Image 
+                            Source="icon_stop.png" 
+                            Aspect="AspectFit" 
+                            WidthRequest="80"
+                            Opacity="0.85"
+                            HorizontalOptions="Center" />
+                        <Label 
+                            Text="No upcoming arrivals"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center" />
+                        <Label 
+                            Text="There are no scheduled buses for this stop"
+                            TextColor="#CCCCCC"
+                            FontSize="14"
+                            HorizontalOptions="Center" />
+                    </StackLayout>
+
+                    <!-- Error State View -->
+                    <StackLayout
+                        IsVisible="{Binding HasError}"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Spacing="10">
+                        <Label 
+                            Text="⚠️"
+                            FontSize="48"
+                            HorizontalOptions="Center" />
+                        <Label 
+                            Text="Error loading arrivals"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center" />
+                        <Label 
+                            Text="Pull down to refresh"
+                            TextColor="#CCCCCC"
+                            FontSize="14"
+                            HorizontalOptions="Center" />
+                    </StackLayout>
                 </Grid>
 
                 <Grid 

@@ -34,6 +34,20 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         set { isUpdatingArrivalTimes = value; OnPropertyChanged(nameof(IsUpdatingArrivalTimes)); }
     }
 
+    bool isEmpty;
+    public bool IsEmpty
+    {
+        get => isEmpty;
+        set { isEmpty = value; OnPropertyChanged(nameof(IsEmpty)); }
+    }
+
+    bool hasError;
+    public bool HasError
+    {
+        get => hasError;
+        set { hasError = value; OnPropertyChanged(nameof(HasError)); }
+    }
+
     bool useRealtimeData = true;
     public bool UseRealtimeData
     {
@@ -203,6 +217,7 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 
             // Clear and repopulate only after data is ready
             ArrivalTimes.Clear();
+            HasError = false;
 
             if (sortedArrivals.Count > 0)
             {
@@ -210,16 +225,11 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 {
                     ArrivalTimes.Add(arrival);
                 }
+                IsEmpty = false;
             }
             else
             {
-                ArrivalTimes.Add(new ScheduleModel
-                {
-                    RouteNo = "--",
-                    Destination = "No upcoming arrivals found",
-                    ExpectedCountdown = 0,
-                    ScheduleStatus = ""
-                });
+                IsEmpty = true;
             }
         }
         catch
@@ -227,13 +237,8 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             // Only show error if we have no existing data
             if (ArrivalTimes.Count == 0)
             {
-                ArrivalTimes.Add(new ScheduleModel
-                {
-                    RouteNo = "--",
-                    Destination = "Error loading arrival times",
-                    ExpectedCountdown = 0,
-                    ScheduleStatus = ""
-                });
+                HasError = true;
+                IsEmpty = false;
             }
             // Otherwise keep showing the old data
         }

@@ -325,18 +325,44 @@ public class SQLiteService : ISQLiteService
                 return [];
 
             var stopTimes = await GetStopTimesForStopAsync(stopInfo.stop_id);
+            if (stopTimes.Count == 0)
+                return [];
 
-            foreach (var stopTime in stopTimes.Take(100))
+            // Get unique trip IDs from stop times
+            var tripIds = stopTimes
+                .Take(100)
+                .Select(st => st.trip_id)
+                .Where(id => !string.IsNullOrEmpty(id))
+                .Distinct()
+                .ToList();
+
+            if (tripIds.Count == 0)
+                return [];
+
+            // Batch fetch all trips at once
+            var trips = await connection.Table<Trip>()
+                .Where(t => tripIds.Contains(t.trip_id))
+                .ToListAsync();
+
+            // Get unique route IDs from trips
+            var routeIds = trips
+                .Select(t => t.route_id)
+                .Where(id => !string.IsNullOrEmpty(id))
+                .Distinct()
+                .ToList();
+
+            if (routeIds.Count == 0)
+                return [];
+
+            // Batch fetch all routes at once
+            var routes = await connection.Table<Route>()
+                .Where(r => routeIds.Contains(r.route_id))
+                .ToListAsync();
+
+            // Collect route short names
+            foreach (var route in routes)
             {
-                if (string.IsNullOrEmpty(stopTime.trip_id))
-                    continue;
-
-                var trip = await GetTripAsync(stopTime.trip_id);
-                if (trip == null || string.IsNullOrEmpty(trip.route_id))
-                    continue;
-
-                var route = await GetRouteAsync(trip.route_id);
-                if (route != null && !string.IsNullOrEmpty(route.route_short_name))
+                if (!string.IsNullOrEmpty(route.route_short_name))
                 {
                     routeNumbers.Add(route.route_short_name);
                 }
