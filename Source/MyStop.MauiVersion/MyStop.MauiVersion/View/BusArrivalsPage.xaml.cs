@@ -84,7 +84,7 @@ public partial class BusArrivalsPage : ContentPage
         _keepTicking = true;
 
         Dispatcher.StartTimer(
-            new TimeSpan(0, 0, 15),
+            new TimeSpan(0, 0, 20),
             () => Tick()
         );
 

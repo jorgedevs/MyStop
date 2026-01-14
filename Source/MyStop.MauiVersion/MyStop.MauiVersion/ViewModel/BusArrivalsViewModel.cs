@@ -14,7 +14,7 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 
     private const int MaxStopTimesToProcess = 500;
     private const int MaxMinutesAhead = 120;
-    private const int MaxArrivalsToDisplay = 15;
+    private const int MaxArrivalsToDisplay = 20;
 
     public StopModel Stop { get; set; }
     public ScheduleModel Schedule { get; set; }
@@ -137,6 +137,10 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 _stopId = null;
             }
 
+            // Check if this stop is already saved as a favourite
+            IsFavouriteBusStop = _sqliteService.IsSavedStop(stopCode!);
+            FavoriteIcon = IsFavouriteBusStop ? "icon_favourites_remove.png" : "icon_favourites_add.png";
+
             _ = GetBusArrivalsTimes();
         }
     }
@@ -148,6 +152,8 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             if (Stop == null || string.IsNullOrEmpty(StopNumber))
                 return;
 
+            IsUpdatingArrivalTimes = true;
+
             var arrivals = new List<ScheduleModel>();
             bool usedRealtime = false;
 
@@ -158,14 +164,37 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 usedRealtime = arrivals.Count > 0;
             }
 
+            bool addedScheduled = false;
+
             if (arrivals.Count == 0)
             {
                 arrivals = await GetStaticScheduleArrivals();
                 usedRealtime = false;
             }
+            else if (arrivals.Count < MaxArrivalsToDisplay)
+            {
+                // Supplement realtime data with scheduled arrivals
+                // Only add scheduled times that are more than 10 minutes after the last realtime arrival
+                var lastRealtimeEta = arrivals.Max(a => a.ExpectedCountdown);
+                var minScheduledEta = lastRealtimeEta + 10;
+
+                var scheduledArrivals = await GetStaticScheduleArrivals();
+
+                foreach (var scheduled in scheduledArrivals.Where(s => s.ExpectedCountdown >= minScheduledEta))
+                {
+                    if (arrivals.Count >= MaxArrivalsToDisplay)
+                        break;
+
+                    scheduled.ScheduleStatus = "Scheduled";
+                    arrivals.Add(scheduled);
+                    addedScheduled = true;
+                }
+            }
 
             // Only update the UI after we have new data
-            DataSourceText = usedRealtime ? "Realtime" : "Schedule";
+            DataSourceText = usedRealtime 
+                ? (addedScheduled ? "Realtime + Schedule" : "Realtime") 
+                : "Schedule";
 
             var sortedArrivals = arrivals
                 .OrderBy(a => a.ExpectedCountdown)
@@ -207,6 +236,10 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 });
             }
             // Otherwise keep showing the old data
+        }
+        finally
+        {
+            IsUpdatingArrivalTimes = false;
         }
     }
 

@@ -1,3 +1,4 @@
+using MyStop.MauiVersion.Model;
 using MyStop.MauiVersion.ViewModel;
 
 namespace MyStop.MauiVersion.View;
@@ -46,18 +47,9 @@ public partial class FavouriteStopsPage : ContentPage
     {
         listStops.SelectedItem = null;
 
-        if (e.Item != null)
+        if (e.Item is SavedStopModel stop && !string.IsNullOrEmpty(stop.StopNo))
         {
-            //if (((FavouriteStop)e.Item).EditMode)
-            //{
-            //    vm.StopNumber = ((FavouriteStop)e.Item).StopNo!;
-            //    vm.TagName = ((FavouriteStop)e.Item).Tag;
-            //    vm.IsEditVisible = true;
-            //}
-            //else
-            //{
-            //    await Navigation.PushAsync(new BusArrivalsPage(e.Item as Stop));
-            //}
+            await Shell.Current.GoToAsync($"{nameof(BusArrivalsPage)}?BusStopNumber={stop.StopNo}");
         }
     }
 
@@ -97,6 +89,12 @@ public partial class FavouriteStopsPage : ContentPage
         // Refresh theme when page appears
         ApplyTheme(App.IsNight);
 
+        // Refresh the list of saved stops when page appears
+        if (BindingContext is FavouriteStopsViewModel viewModel)
+        {
+            viewModel.LoadStops();
+        }
+
         _keepTicking = true;
 
         Dispatcher.StartTimer(
@@ -105,8 +103,6 @@ public partial class FavouriteStopsPage : ContentPage
         );
 
         _ = Animate();
-
-        //vm.LoadStops();
     }
 
     protected override void OnDisappearing()

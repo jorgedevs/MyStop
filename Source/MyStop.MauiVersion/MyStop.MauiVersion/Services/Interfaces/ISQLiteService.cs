@@ -60,4 +60,6 @@ public interface ISQLiteService
     public Task<List<CalendarDate>> GetCalendarDatesAsync();
 
     public Task<HashSet<string>> GetActiveServiceIdsAsync(DateTime date);
+
+    public Task<List<string>> GetRouteNumbersForStopAsync(string stopCode);
 }

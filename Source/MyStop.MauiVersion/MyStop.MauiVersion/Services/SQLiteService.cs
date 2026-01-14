@@ -313,6 +313,42 @@ public class SQLiteService : ISQLiteService
 
         return activeServices;
     }
+
+    public async Task<List<string>> GetRouteNumbersForStopAsync(string stopCode)
+    {
+        var routeNumbers = new HashSet<string>();
+
+        try
+        {
+            var stopInfo = GetStopInfo(stopCode);
+            if (stopInfo == null || string.IsNullOrEmpty(stopInfo.stop_id))
+                return [];
+
+            var stopTimes = await GetStopTimesForStopAsync(stopInfo.stop_id);
+
+            foreach (var stopTime in stopTimes.Take(100))
+            {
+                if (string.IsNullOrEmpty(stopTime.trip_id))
+                    continue;
+
+                var trip = await GetTripAsync(stopTime.trip_id);
+                if (trip == null || string.IsNullOrEmpty(trip.route_id))
+                    continue;
+
+                var route = await GetRouteAsync(trip.route_id);
+                if (route != null && !string.IsNullOrEmpty(route.route_short_name))
+                {
+                    routeNumbers.Add(route.route_short_name);
+                }
+            }
+        }
+        catch
+        {
+            // Return empty list on error
+        }
+
+        return routeNumbers.OrderBy(r => r).ToList();
+    }
 }
 
 public static class Constants

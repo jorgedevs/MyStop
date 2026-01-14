@@ -35,6 +35,8 @@ public class FavouriteStopsViewModel : BaseViewModel
         set { isEmpty = value; OnPropertyChanged(nameof(IsEmpty)); }
     }
 
+    private bool _isLoadingStops;
+
     string tagName;
     public string TagName
     {
@@ -73,39 +75,7 @@ public class FavouriteStopsViewModel : BaseViewModel
 
         ItemList = new ObservableCollection<SavedStopModel>();
 
-        //ItemList =
-        //[
-        //    new SavedStopModel()
-        //    {
-        //        StopNo = "50024",
-        //        Name = "WB DAVIE ST FS RICHARDS ST",
-        //        Routes = "006"
-        //    },
-        //    new SavedStopModel()
-        //    {
-        //        StopNo = "50025",
-        //        Name = "WB DAVIE ST FS GRANVILLE ST",
-        //        Routes = "006"
-        //    },
-        //    new SavedStopModel()
-        //    {
-        //        StopNo = "20026",
-        //        Name = "WB DAVIE ST FS HOWE ST",
-        //        Routes = "006"
-        //    },
-        //    new SavedStopModel()
-        //    {
-        //        StopNo = "20027",
-        //        Name = "WB DAVIE ST FS HELMCKEN ST",
-        //        Routes = "006"
-        //    },
-        //    new SavedStopModel()
-        //    {
-        //        StopNo = "20028",
-        //        Name = "WB DAVIE ST FS NELSON ST",
-        //        Routes = "006"
-        //    },
-        //];
+
 
         EditIcon = "icon_edit";
 
@@ -116,8 +86,6 @@ public class FavouriteStopsViewModel : BaseViewModel
         SaveChangesCommand = new Command(SaveChangesCommandExecute);
 
         GoToAboutPage = new Command(async () => await Shell.Current.GoToAsync(nameof(AboutPage)));
-
-        LoadStops();
     }
 
     private void ToggleEditCommandExecute()
@@ -171,30 +139,45 @@ public class FavouriteStopsViewModel : BaseViewModel
         IsEditVisible = false;
     }
 
-    public void LoadStops()
+    public async void LoadStops()
     {
-        var stops = _sqliteService.GetSavedStops();
-
-        if (stops == null)
-        {
-            IsEmpty = true;
+        if (_isLoadingStops)
             return;
-        }
 
-        ItemList.Clear();
-        foreach (var stop in stops)
+        _isLoadingStops = true;
+
+        try
         {
-            ItemList.Add(new SavedStopModel()
-            {
-                //Tag = stop.Tag,
-                Name = stop.Name,
-                StopNo = stop.StopNo,
-                //Routes = stop.Routes,
-                //HasTag = !string.IsNullOrEmpty(stop.Tag),
-                //EditMode = false,
-            });
-        }
+            var stops = _sqliteService.GetSavedStops();
 
-        IsEmpty = ItemList.Count == 0;
+            if (stops == null)
+            {
+                IsEmpty = true;
+                return;
+            }
+
+            ItemList.Clear();
+            foreach (var stop in stops)
+            {
+                var routeNumbers = await _sqliteService.GetRouteNumbersForStopAsync(stop.StopNo ?? "");
+                var routesText = routeNumbers.Count > 0 ? string.Join(", ", routeNumbers) : null;
+
+                ItemList.Add(new SavedStopModel()
+                {
+                    //Tag = stop.Tag,
+                    Name = stop.Name,
+                    StopNo = stop.StopNo,
+                    Routes = routesText,
+                    //HasTag = !string.IsNullOrEmpty(stop.Tag),
+                    //EditMode = false,
+                });
+            }
+
+            IsEmpty = ItemList.Count == 0;
+        }
+        finally
+        {
+            _isLoadingStops = false;
+        }
     }
 }
