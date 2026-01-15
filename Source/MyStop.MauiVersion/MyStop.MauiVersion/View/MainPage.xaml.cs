@@ -8,6 +8,16 @@ public partial class MainPage : ContentPage
     bool isAnimating;
     bool keepTicking;
 
+    // Reference screen heights (in device-independent pixels)
+    private const double Pixel5Height = 732;
+    private const double Pixel8ProHeight = 932;
+
+    // Translation values for reference devices
+    private const double Pixel5TranslateX = -85;
+    private const double Pixel5TranslateY = -20;
+    private const double Pixel8ProTranslateX = -80;
+    private const double Pixel8ProTranslateY = 25;
+
     public MainPage(MainViewModel viewModel)
     {
         InitializeComponent();
@@ -15,13 +25,29 @@ public partial class MainPage : ContentPage
 
         ApplyTheme(App.IsNight);
 
-        // Subscribe to theme changes
         if (App.ThemeService != null)
         {
             App.ThemeService.ThemeChanged += OnThemeChanged;
         }
 
         _ = Animate();
+    }
+
+    private (double translateX, double translateY) GetLampTranslation()
+    {
+        var screenHeight = DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
+
+        // Clamp the screen height to our reference range
+        var clampedHeight = Math.Clamp(screenHeight, Pixel5Height, Pixel8ProHeight);
+
+        // Calculate interpolation factor (0 = Pixel 5, 1 = Pixel 8 Pro)
+        var t = (clampedHeight - Pixel5Height) / (Pixel8ProHeight - Pixel5Height);
+
+        // Linearly interpolate between the two reference values
+        var translateX = Pixel5TranslateX + (Pixel8ProTranslateX - Pixel5TranslateX) * t;
+        var translateY = Pixel5TranslateY + (Pixel8ProTranslateY - Pixel5TranslateY) * t;
+
+        return (translateX, translateY);
     }
 
     private void OnThemeChanged(object? sender, bool isNight)
@@ -57,11 +83,12 @@ public partial class MainPage : ContentPage
         if (imgCloud1 == null || imgCloud2 == null || imgCloud3 == null)
             return;
 
-        // Run animations on the main thread using MainThread.BeginInvokeOnMainThread
         MainThread.BeginInvokeOnMainThread(async () =>
         {
             try
             {
+                var (translateX, translateY) = GetLampTranslation();
+
                 for (int i = 0; i < animationLength; i++)
                 {
                     if (imgLamp == null) return;
@@ -70,7 +97,7 @@ public partial class MainPage : ContentPage
                     imgLamp.TranslationY = 0;
                     imgLamp.Scale = 1;
 
-                    imgLamp.TranslateTo(-80, 25, 2000);
+                    imgLamp.TranslateTo(translateX, translateY, 2000);
                     await imgLamp.ScaleTo(0.55, 2000);
                 }
             }
@@ -109,7 +136,6 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
 
-        // Refresh theme when page appears
         ApplyTheme(App.IsNight);
 
         keepTicking = true;
@@ -123,7 +149,6 @@ public partial class MainPage : ContentPage
     {
         base.OnDisappearing();
 
-        // Unsubscribe when page disappears to prevent memory leaks
         if (App.ThemeService != null)
         {
             App.ThemeService.ThemeChanged -= OnThemeChanged;
