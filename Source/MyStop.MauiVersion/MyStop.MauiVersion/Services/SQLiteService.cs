@@ -256,22 +256,17 @@ public class SQLiteService : ISQLiteService
     {
         var activeServices = new HashSet<string>();
 
-        // Get the date string in YYYYMMDD format
         var dateString = date.ToString("yyyyMMdd");
 
-        // Get the day of week
         var dayOfWeek = date.DayOfWeek;
 
-        // Get all calendars
         var calendars = await GetCalendarsAsync();
 
         foreach (var calendar in calendars)
         {
-            // Check if the date is within the calendar's date range
             if (string.Compare(dateString, calendar.start_date) >= 0 &&
                 string.Compare(dateString, calendar.end_date) <= 0)
             {
-                // Check if service runs on this day of week
                 bool runsToday = dayOfWeek switch
                 {
                     DayOfWeek.Monday => calendar.monday == "1",
@@ -291,7 +286,6 @@ public class SQLiteService : ISQLiteService
             }
         }
 
-        // Apply calendar_dates exceptions
         var calendarDates = await GetCalendarDatesAsync();
 
         foreach (var calendarDate in calendarDates)
@@ -300,12 +294,10 @@ public class SQLiteService : ISQLiteService
             {
                 if (calendarDate.exception_type == "1")
                 {
-                    // Service added for this date
                     activeServices.Add(calendarDate.service_id);
                 }
                 else if (calendarDate.exception_type == "2")
                 {
-                    // Service removed for this date
                     activeServices.Remove(calendarDate.service_id);
                 }
             }
@@ -328,7 +320,6 @@ public class SQLiteService : ISQLiteService
             if (stopTimes.Count == 0)
                 return [];
 
-            // Get unique trip IDs from stop times
             var tripIds = stopTimes
                 .Take(100)
                 .Select(st => st.trip_id)
@@ -339,12 +330,10 @@ public class SQLiteService : ISQLiteService
             if (tripIds.Count == 0)
                 return [];
 
-            // Batch fetch all trips at once
             var trips = await connection.Table<Trip>()
                 .Where(t => tripIds.Contains(t.trip_id))
                 .ToListAsync();
 
-            // Get unique route IDs from trips
             var routeIds = trips
                 .Select(t => t.route_id)
                 .Where(id => !string.IsNullOrEmpty(id))
@@ -354,12 +343,10 @@ public class SQLiteService : ISQLiteService
             if (routeIds.Count == 0)
                 return [];
 
-            // Batch fetch all routes at once
             var routes = await connection.Table<Route>()
                 .Where(r => routeIds.Contains(r.route_id))
                 .ToListAsync();
 
-            // Collect route short names
             foreach (var route in routes)
             {
                 if (!string.IsNullOrEmpty(route.route_short_name))
@@ -370,7 +357,6 @@ public class SQLiteService : ISQLiteService
         }
         catch
         {
-            // Return empty list on error
         }
 
         return routeNumbers.OrderBy(r => r).ToList();
@@ -382,11 +368,8 @@ public static class Constants
     public const string DatabaseFilename = "MyStopDatabase.db3";
 
     public const SQLiteOpenFlags Flags =
-        // open the database in read/write mode
         SQLiteOpenFlags.ReadWrite |
-        // create the database if it doesn't exist
         SQLiteOpenFlags.Create |
-        // enable multi-threaded database access
         SQLiteOpenFlags.SharedCache;
 
     public static string DatabasePath =>

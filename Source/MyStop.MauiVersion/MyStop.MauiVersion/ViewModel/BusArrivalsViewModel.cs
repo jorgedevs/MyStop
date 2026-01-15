@@ -8,7 +8,6 @@ namespace MyStop.MauiVersion.ViewModel;
 
 public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 {
-    private readonly IGtfsService _gtfsService;
     private readonly ISQLiteService _sqliteService;
     private readonly IGtfsLiveService _gtfsLiveService;
 
@@ -17,7 +16,9 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     private const int MaxArrivalsToDisplay = 20;
 
     public StopModel Stop { get; set; }
+
     public ScheduleModel Schedule { get; set; }
+
     public ObservableCollection<ScheduleModel> ArrivalTimes { get; set; }
 
     bool isFavouriteBusStop;
@@ -95,11 +96,9 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     }
 
     public BusArrivalsViewModel(
-        IGtfsService gtfsService,
         ISQLiteService sqliteService,
         IGtfsLiveService gtfsLiveService)
     {
-        _gtfsService = gtfsService;
         _sqliteService = sqliteService;
         _gtfsLiveService = gtfsLiveService;
 
@@ -151,7 +150,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 _stopId = null;
             }
 
-            // Check if this stop is already saved as a favourite
             IsFavouriteBusStop = _sqliteService.IsSavedStop(stopCode!);
             FavoriteIcon = IsFavouriteBusStop ? "icon_favourites_remove.png" : "icon_favourites_add.png";
 
@@ -171,7 +169,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             var arrivals = new List<ScheduleModel>();
             bool usedRealtime = false;
 
-            // Fetch new data first (keep showing old data while loading)
             if (UseRealtimeData && !string.IsNullOrEmpty(_stopId))
             {
                 arrivals = await GetRealtimeArrivals(_stopId);
@@ -187,8 +184,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             }
             else if (arrivals.Count < MaxArrivalsToDisplay)
             {
-                // Supplement realtime data with scheduled arrivals
-                // Only add scheduled times that are more than 10 minutes after the last realtime arrival
                 var lastRealtimeEta = arrivals.Max(a => a.ExpectedCountdown);
                 var minScheduledEta = lastRealtimeEta + 10;
 
@@ -205,7 +200,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 }
             }
 
-            // Only update the UI after we have new data
             DataSourceText = usedRealtime 
                 ? (addedScheduled ? "Realtime + Schedule" : "Realtime") 
                 : "Schedule";
@@ -215,7 +209,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
                 .Take(MaxArrivalsToDisplay)
                 .ToList();
 
-            // Clear and repopulate only after data is ready
             ArrivalTimes.Clear();
             HasError = false;
 
@@ -234,13 +227,11 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         }
         catch
         {
-            // Only show error if we have no existing data
             if (ArrivalTimes.Count == 0)
             {
                 HasError = true;
                 IsEmpty = false;
             }
-            // Otherwise keep showing the old data
         }
         finally
         {
@@ -288,7 +279,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         }
         catch
         {
-            // Return empty list on error
         }
 
         return arrivals;
@@ -356,7 +346,6 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         }
         catch
         {
-            // Return empty list on error
         }
 
         return arrivals;
