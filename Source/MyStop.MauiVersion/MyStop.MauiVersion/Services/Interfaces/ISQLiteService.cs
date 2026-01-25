@@ -62,4 +62,17 @@ public interface ISQLiteService
     public Task<HashSet<string>> GetActiveServiceIdsAsync(DateTime date);
 
     public Task<List<string>> GetRouteNumbersForStopAsync(string stopCode);
+
+    // Bus Alert methods
+    public Task CreateBusAlertsTableAsync();
+
+    public Task SaveBusAlertAsync(BusAlertModel alert);
+
+    public Task UpdateBusAlertAsync(BusAlertModel alert);
+
+    public Task<BusAlertModel?> GetBusAlertAsync(int alertId);
+
+    public Task<List<BusAlertModel>> GetActiveAlertsForStopAsync(string stopCode);
+
+    public Task CleanupExpiredAlertsAsync();
 }

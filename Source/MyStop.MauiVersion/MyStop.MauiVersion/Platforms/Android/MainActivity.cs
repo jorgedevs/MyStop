@@ -1,5 +1,7 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
+using Plugin.LocalNotification;
 
 namespace MyStop.MauiVersion;
 
@@ -11,5 +13,9 @@ namespace MyStop.MauiVersion;
     ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
-
+    protected override void OnNewIntent(Intent? intent)
+    {
+        base.OnNewIntent(intent);
+        LocalNotificationCenter.NotifyNotificationTapped(intent);
+    }
 }

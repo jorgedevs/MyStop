@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage 
+<ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:view="clr-namespace:MyStop.MauiVersion.View"
     x:Class="MyStop.MauiVersion.View.BusArrivalsPage"
     Title="Bus Arrivals"
     BackgroundColor="{StaticResource SkyColor}">
@@ -124,7 +125,10 @@
                                     <Grid
                                         ColumnSpacing="10"
                                         Padding="10,10"
-                                        Margin="10">
+                                        Margin="5">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnArrivalItemTapped" />
+                                        </Grid.GestureRecognizers>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="60" />
                                             <ColumnDefinition Width="*" />
@@ -132,14 +136,14 @@
                                         </Grid.ColumnDefinitions>
 
                                         <!-- Route Number -->
-                                        <Label 
-                                            Grid.Column="0" 
+                                        <Label
+                                            Grid.Column="0"
                                             Text="{Binding RouteNo}"
                                             Style="{StaticResource ListItemStyle}"
                                             FontSize="24"
                                             FontAttributes="Bold"
                                             VerticalOptions="Center" />
-                                        
+
                                         <!-- Destination -->
                                         <Label
                                             Grid.Column="1" 
@@ -150,43 +154,67 @@
                                             VerticalOptions="Center" />
                                         
                                         <!-- Arrival Time and Status -->
-                                        <StackLayout
+                                        <Border 
                                             Grid.Column="2"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="End"
-                                            Spacing="2">
-                                            
-                                            <!-- Arrival Time -->
-                                            <Label 
-                                                Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"
-                                                Style="{StaticResource ListItemStyle}"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                HorizontalOptions="Center" />
-                                            
-                                            <!-- Schedule Status -->
-                                            <Label 
-                                                Text="{Binding ScheduleStatus}"
-                                                Style="{StaticResource StatusStyle}">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="On Time">
-                                                        <Setter Property="TextColor" Value="#4CAF50" />
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Early">
-                                                        <Setter Property="TextColor" Value="#2196F3" />
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Delayed">
-                                                        <Setter Property="TextColor" Value="#FF9800" />
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Late">
-                                                        <Setter Property="TextColor" Value="#F44336" />
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Scheduled">
-                                                        <Setter Property="TextColor" Value="#CBCBCB" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                        </StackLayout>
+                                            Padding="5,2"
+                                            BackgroundColor="Transparent"
+                                            Stroke="Transparent"
+                                            StrokeThickness="2">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="8" />
+                                            </Border.StrokeShape>
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding HasAlert}" Value="True">
+                                                    <Setter Property="BackgroundColor" Value="White" />
+                                                    <Setter Property="Stroke" Value="Transparent" />
+                                                </DataTrigger>
+                                            </Border.Triggers>
+                                            <StackLayout
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="End"
+                                                Spacing="2">
+
+                                                <!-- Arrival Time -->
+                                                <Label 
+                                                    Text="{Binding ExpectedCountdown, StringFormat='{0} min'}"
+                                                    Style="{StaticResource ListItemStyle}"
+                                                    FontSize="20"
+                                                    FontAttributes="Bold"
+                                                    HorizontalOptions="Center">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding HasAlert}" Value="True">
+                                                            <Setter Property="TextColor" Value="{StaticResource SkyColor}" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+
+                                                <!-- Schedule Status -->
+                                                <Label 
+                                                    Text="{Binding ScheduleStatus}"
+                                                    Style="{StaticResource StatusStyle}">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="On Time">
+                                                            <Setter Property="TextColor" Value="#4CAF50" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Early">
+                                                            <Setter Property="TextColor" Value="#2196F3" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Delayed">
+                                                            <Setter Property="TextColor" Value="#FF9800" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Late">
+                                                            <Setter Property="TextColor" Value="#F44336" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding ScheduleStatus}" Value="Scheduled">
+                                                            <Setter Property="TextColor" Value="#CBCBCB" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding HasAlert}" Value="True">
+                                                            <Setter Property="TextColor" Value="{StaticResource SkyColor}" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                            </StackLayout>
+                                        </Border>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>
@@ -266,6 +294,11 @@
                         Margin="0,0,0,8"/>
                 </Grid>
             </Grid>
+
+            <!-- Alert Popup Overlay -->
+            <view:AlertPopupView
+                x:Name="alertPopup"
+                Grid.RowSpan="3" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

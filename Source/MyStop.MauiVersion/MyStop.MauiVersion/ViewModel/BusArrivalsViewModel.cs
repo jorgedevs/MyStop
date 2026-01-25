@@ -10,6 +10,7 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly ISQLiteService _sqliteService;
     private readonly IGtfsLiveService _gtfsLiveService;
+    private readonly IAlertService _alertService;
 
     private const int MaxStopTimesToProcess = 500;
     private const int MaxMinutesAhead = 120;
@@ -97,10 +98,12 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
 
     public BusArrivalsViewModel(
         ISQLiteService sqliteService,
-        IGtfsLiveService gtfsLiveService)
+        IGtfsLiveService gtfsLiveService,
+        IAlertService alertService)
     {
         _sqliteService = sqliteService;
         _gtfsLiveService = gtfsLiveService;
+        _alertService = alertService;
 
         ArrivalTimes = new ObservableCollection<ScheduleModel>();
         IsFavouriteBusStop = false;
@@ -126,6 +129,9 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
     {
         IsFavouriteBusStop = false;
         FavoriteIcon = IsFavouriteBusStop ? "icon_favourites_remove.png" : "icon_favourites_add.png";
+
+        // Request notification permissions on first load
+        await _alertService.RequestPermissionsAsync();
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -224,6 +230,9 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
             {
                 IsEmpty = true;
             }
+
+            // Check for existing alerts and mark schedules
+            await UpdateAlertStatesAsync();
         }
         catch
         {
@@ -416,5 +425,94 @@ public class BusArrivalsViewModel : BaseViewModel, IQueryAttributable
         }
 
         return trimmed;
+    }
+
+    // Alert Management Methods
+    public async Task CreateAlertAsync(
+        ScheduleModel schedule,
+        int alertMinutesBefore,
+        bool isContinuous)
+    {
+        try
+        {
+            var alert = await _alertService.CreateAlertAsync(
+                schedule,
+                StopNumber,
+                alertMinutesBefore,
+                isContinuous);
+
+            if (alert != null)
+            {
+                // Mark schedule as having an alert
+                schedule.HasAlert = true;
+                schedule.AlertId = alert.Id;
+
+                // Show confirmation
+                if (Application.Current?.MainPage != null)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Alert Set",
+                        isContinuous
+                            ? $"You'll receive notifications every minute starting {alertMinutesBefore} minutes before arrival."
+                            : $"You'll be notified when the bus is {alertMinutesBefore} minute{(alertMinutesBefore != 1 ? "s" : "")} away.",
+                        "OK");
+                }
+            }
+            else
+            {
+                if (Application.Current?.MainPage != null)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Permission Required",
+                        "Please enable notifications for MyStop in your device settings.",
+                        "OK");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            if (Application.Current?.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    "Failed to create alert. Please try again.",
+                    "OK");
+            }
+        }
+    }
+
+    public async Task CancelAlertAsync(ScheduleModel schedule)
+    {
+        if (schedule.AlertId.HasValue)
+        {
+            await _alertService.CancelAlertAsync(schedule.AlertId.Value);
+            schedule.HasAlert = false;
+            schedule.AlertId = null;
+        }
+    }
+
+    private async Task UpdateAlertStatesAsync()
+    {
+        try
+        {
+            var activeAlerts = await _alertService.GetActiveAlertsForStopAsync(StopNumber);
+
+            foreach (var arrival in ArrivalTimes)
+            {
+                var matchingAlert = activeAlerts.FirstOrDefault(a =>
+                    a.RouteNo == arrival.RouteNo &&
+                    Math.Abs(a.OriginalCountdown - arrival.ExpectedCountdown) <= 2);
+
+                if (matchingAlert != null)
+                {
+                    arrival.HasAlert = true;
+                    arrival.AlertId = matchingAlert.Id;
+                }
+            }
+        }
+        catch
+        {
+            // Silently fail - alert state is non-critical
+        }
     }
 }

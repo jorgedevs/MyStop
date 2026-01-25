@@ -1,3 +1,4 @@
+using MyStop.MauiVersion.Model;
 using MyStop.MauiVersion.ViewModel;
 
 namespace MyStop.MauiVersion.View;
@@ -21,6 +22,10 @@ public partial class BusArrivalsPage : ContentPage
         {
             App.ThemeService.ThemeChanged += OnThemeChanged;
         }
+
+        // Wire up alert popup events
+        alertPopup.AlertConfirmed += OnAlertConfirmed;
+        alertPopup.AlertCancelled += OnAlertCancelled;
     }
 
     private void OnThemeChanged(object? sender, bool isNight)
@@ -103,5 +108,49 @@ public partial class BusArrivalsPage : ContentPage
         {
             App.ThemeService.ThemeChanged -= OnThemeChanged;
         }
+
+        // Unsubscribe from alert popup
+        alertPopup.AlertConfirmed -= OnAlertConfirmed;
+        alertPopup.AlertCancelled -= OnAlertCancelled;
+    }
+
+    private async void OnArrivalItemTapped(object? sender, EventArgs e)
+    {
+        if (sender is Grid grid && grid.BindingContext is ScheduleModel schedule)
+        {
+            if (schedule.HasAlert)
+            {
+                // Ask if user wants to cancel alert
+                bool cancel = await DisplayAlert(
+                    "Alert Active",
+                    "This bus has an active alert. What would you like to do?",
+                    "Cancel Alert",
+                    "Keep Alert");
+
+                if (cancel)
+                {
+                    await _viewModel.CancelAlertAsync(schedule);
+                    await DisplayAlert("Alert Cancelled", "The alert has been removed.", "OK");
+                }
+            }
+            else
+            {
+                // Show alert configuration popup
+                alertPopup.Show(schedule);
+            }
+        }
+    }
+
+    private async void OnAlertConfirmed(object? sender, AlertConfigurationEventArgs e)
+    {
+        await _viewModel.CreateAlertAsync(
+            e.Schedule,
+            e.AlertMinutesBefore,
+            e.IsContinuous);
+    }
+
+    private void OnAlertCancelled(object? sender, EventArgs e)
+    {
+        // User cancelled - nothing to do
     }
 }

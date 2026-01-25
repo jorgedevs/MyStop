@@ -42,6 +42,7 @@ public class SQLiteService : ISQLiteService
             await connection.CreateTableAsync<Trip>();
 
             await connection.CreateTableAsync<SavedStopModel>();
+            await connection.CreateTableAsync<BusAlertModel>();
         }
         catch (Exception ex)
         {
@@ -360,6 +361,51 @@ public class SQLiteService : ISQLiteService
         }
 
         return routeNumbers.OrderBy(r => r).ToList();
+    }
+
+    // Bus Alert methods
+    public async Task CreateBusAlertsTableAsync()
+    {
+        await connection.CreateTableAsync<BusAlertModel>();
+    }
+
+    public async Task SaveBusAlertAsync(BusAlertModel alert)
+    {
+        await connection.InsertAsync(alert);
+    }
+
+    public async Task UpdateBusAlertAsync(BusAlertModel alert)
+    {
+        await connection.UpdateAsync(alert);
+    }
+
+    public async Task<BusAlertModel?> GetBusAlertAsync(int alertId)
+    {
+        return await connection.Table<BusAlertModel>()
+            .Where(a => a.Id == alertId)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<List<BusAlertModel>> GetActiveAlertsForStopAsync(string stopCode)
+    {
+        return await connection.Table<BusAlertModel>()
+            .Where(a => a.StopCode == stopCode && a.IsActive)
+            .ToListAsync();
+    }
+
+    public async Task CleanupExpiredAlertsAsync()
+    {
+        var expiredCutoff = DateTime.Now.AddHours(-2);
+
+        var expiredAlerts = await connection.Table<BusAlertModel>()
+            .Where(a => a.ScheduledTime < expiredCutoff && a.IsActive)
+            .ToListAsync();
+
+        foreach (var alert in expiredAlerts)
+        {
+            alert.IsActive = false;
+            await connection.UpdateAsync(alert);
+        }
     }
 }
 

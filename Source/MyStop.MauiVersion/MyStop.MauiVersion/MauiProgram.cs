@@ -3,6 +3,7 @@ using MyStop.MauiVersion.Services;
 using MyStop.MauiVersion.Services.Interfaces;
 using MyStop.MauiVersion.View;
 using MyStop.MauiVersion.ViewModel;
+using Plugin.LocalNotification;
 
 namespace MyStop.MauiVersion;
 
@@ -13,6 +14,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseLocalNotification()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -28,6 +30,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IGtfsService, GtfsService>();
         builder.Services.AddSingleton<ISQLiteService, SQLiteService>();
         builder.Services.AddSingleton<IGtfsLiveService, GtfsLiveService>();
+        builder.Services.AddSingleton<IAlertService, AlertService>();
 
         // ViewModels
         builder.Services.AddTransient<BaseViewModel>();

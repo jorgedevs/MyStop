@@ -45,4 +45,37 @@ public class ScheduleModel : BaseModel
             NotifyPropertyChanged(nameof(ScheduleStatus));
         }
     }
+
+    bool hasAlert;
+    public bool HasAlert
+    {
+        get => hasAlert;
+        set
+        {
+            hasAlert = value;
+            NotifyPropertyChanged(nameof(HasAlert));
+        }
+    }
+
+    int? alertId;
+    public int? AlertId
+    {
+        get => alertId;
+        set
+        {
+            alertId = value;
+            NotifyPropertyChanged(nameof(AlertId));
+        }
+    }
+
+    string? uniqueKey;
+    public string? UniqueKey
+    {
+        get => uniqueKey;
+        set
+        {
+            uniqueKey = value;
+            NotifyPropertyChanged(nameof(UniqueKey));
+        }
+    }
 }
