@@ -112,7 +112,7 @@ public class AlertService : IAlertService
             },
             Android = new AndroidOptions
             {
-                IconSmallName = new AndroidIcon("appicon"),
+                IconSmallName = new AndroidIcon("ic_notification"),
                 ChannelId = "mystop_alerts",
                 Priority = AndroidPriority.High,
                 VibrationPattern = [0, 500, 250, 500]
